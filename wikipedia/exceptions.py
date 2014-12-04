@@ -37,9 +37,9 @@ class PageError(WikipediaException):
 
   def __unicode__(self):
     if hasattr(self, 'title'):
-      return u"\"{0}\" does not match any pages. Try another query!".format(self.title)
+      return "\"{0}\" does not match any pages. Try another query!".format(self.title)
     else:
-      return u"Page id \"{0}\" does not match any pages. Try another id!".format(self.pageid)
+      return "Page id \"{0}\" does not match any pages. Try another id!".format(self.pageid)
 
 
 class DisambiguationError(WikipediaException):
@@ -57,7 +57,7 @@ class DisambiguationError(WikipediaException):
     self.options = may_refer_to
 
   def __unicode__(self):
-    return u"\"{0}\" may refer to: \n{1}".format(self.title, '\n'.join(self.options))
+    return "\"{0}\" may refer to: \n{1}".format(self.title, '\n'.join(self.options))
 
 
 class RedirectError(WikipediaException):
@@ -67,7 +67,7 @@ class RedirectError(WikipediaException):
     self.title = title
 
   def __unicode__(self):
-    return u"\"{0}\" resulted in a redirect. Set the redirect property to True to allow automatic redirects.".format(self.title)
+    return "\"{0}\" resulted in a redirect. Set the redirect property to True to allow automatic redirects.".format(self.title)
 
 
 class HTTPTimeoutError(WikipediaException):
@@ -77,4 +77,4 @@ class HTTPTimeoutError(WikipediaException):
     self.query = query
 
   def __unicode__(self):
-    return u"Searching for \"{0}\" resulted in a timeout. Try again in a few seconds, and make sure you have rate limiting set to True.".format(self.query)
+    return "Searching for \"{0}\" resulted in a timeout. Try again in a few seconds, and make sure you have rate limiting set to True.".format(self.query)
