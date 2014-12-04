@@ -4,9 +4,13 @@ from base import *
 import datetime
 import sys
 import time
+import os
 
 dbfolder = c_redeclipse.dbhome + "/logs"
-
+try:
+  os.mkdir(dbfolder)
+except FileExistsError:
+  pass
 
 def msg(mp):
         loc = mp.text().find(" :") + len(" :")
@@ -14,19 +18,21 @@ def msg(mp):
         fout = "[" + st + "] " + "<" + mp.ircuser() + "> " + mp.text()[loc:]
         if len(mp.text()[loc:]) > 0:
             cname = main.getchannel()
-            if cname[0] == '#':
-                cname = cname[1:]
-            elif cname == c_net.nick:
+            cname  = cname.replace("#","")
+            if cname == main.ircprofiles[main.currentprofile]["nick"]:
                 cname = main.getuser()
+            with open(dbfolder + "/" + cname + ".channel", "w"):
+              pass
             with open(dbfolder + "/" + cname + ".channel", "a") as f:
                 f.write(fout + "\n")
 
 def output():
         st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-        fout = "[" + st + "] " + "<" + c_net.nick + "> " + main.outputtext
+        fout = "[" + st + "] " + "<" + main.ircprofiles[main.currentprofile]["nick"] + "> " + main.outputtext
         if len(main.outputtext) > 0:
             cname = main.outputchannel
-            if cname[0] == '#':
-                cname = cname[1:]
+            cname = cname.replace("#","")
+            with open(dbfolder + "/" + cname + ".channel", "w"):
+              pass
             with open(dbfolder + "/" + cname + ".channel", "a") as f:
                 f.write(fout + "\n")

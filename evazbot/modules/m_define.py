@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
 from base import *
-import wikipedia
+import evazbot.deps.wikipedia as wikipedia
 from urllib.request import urlopen
 import urllib
 import re
