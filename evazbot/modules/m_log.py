@@ -9,7 +9,7 @@ import os
 dbfolder = c_redeclipse.dbhome + "/logs"
 try:
   os.mkdir(dbfolder)
-except FileExistsError:
+except:
   pass
 
 def msg(mp):
