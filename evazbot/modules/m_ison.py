@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from base import *
-
+#Doesn't work (yet)
 defaultsearch = "ghosts"
 
 

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#Beha's Servers Only!!!
 from base import *
 
 downdelay = 3 * 60
@@ -27,10 +28,6 @@ def msg(mp):
                 main.sendamsg("Shutdown of servers cancelled.")
                 down30 = downmessagetime
                 goingdown = False
-            elif splitargs[0] == "servers":
-                main.sendcmsg("norm    ghosts    norm.trunk")
-                main.sendcmsg("edit    weird")
-                main.sendcmsg("duck    rifle")
             elif splitargs[0] == "help":
                 main.sendcmsg("Use .servers <command>")
                 main.sendcmsg("restartall: Restart all servers and " + c_net.name + ".")
@@ -38,7 +35,6 @@ def msg(mp):
                 time.sleep(0.25)
                 main.sendcmsg(
                     "restart <server> OR start <server>: Restart or Start server, depending on current state.")
-                main.sendcmsg("servers: Show a list of servers.")
                 main.sendcmsg("down: Shutdown servers after a " + str(downdelay / 60) + " minute wait.")
                 main.sendcmsg("cdown: Cancel pending shutdown.")
             else:

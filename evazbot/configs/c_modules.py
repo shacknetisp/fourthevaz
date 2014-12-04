@@ -21,9 +21,14 @@ def init():
     # Format: Name, Module
     module_callbacks = []
     modules = []
-    for line in open(dbfile, "r"):
+    try:
+      for line in open(dbfile, "r"):
         if len(line.strip()) > 0:
             modules.append(line)
+    except FileNotFoundError:
+      modules.append("core")
+    if not "core" in modules:
+      modules.append("core")
 
 
 def helpmodulenames():
