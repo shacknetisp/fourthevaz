@@ -11,11 +11,6 @@ def start():
 
 
 def msg(mp):
-    if mp.acmd("reload", 999):
-        main.sendamsg("Restarting...")
-        monitor.addline("./restart ircbot")
-        return True
-
     if mp.acmd("mreload"):
         reload(c_modules)
         reload(c_wlist)
@@ -79,7 +74,6 @@ def msg(mp):
     
     
 def showhelp():
-    main.sendcmsg(".reload: Relaunch " + c_net.name + ".")
     main.sendcmsg(".mreload: Stop modules & reload default modules.")
     main.sendcmsg(".wreload: Reload whitelists")
     main.sendcmsg(".add <m>: Load & start module <m>. If <m> is running, stop it.")
