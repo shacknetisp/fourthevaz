@@ -66,18 +66,14 @@ def add(i):
     i = i.strip()
     custom = False
     try:
-        newmodule = importlib.import_module("evazbot.modules.m_" + i)
-    except ImportError:
+      newmodule = importlib.import_module("evazbot.modules.m_" + i)
+    except ImportError as e:
         try:
-            newmodule = importlib.import_module("evazbot.modules.custom.mc_" + i)
-            custom = True
+          newmodule = importlib.import_module("mp_" + i)
+          custom = True
         except ImportError as e:
-            try:
-              newmodule = importlib.import_module("mp_" + i)
-              custom = True
-            except ImportError as e:
-              main.sendcmsg("Cannot import module!");
-              raise e
+          main.sendcmsg("Cannot import module!");
+          raise e
     reload(newmodule)
     module_callbacks.append((i, newmodule, custom))
     return newmodule

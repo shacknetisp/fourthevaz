@@ -75,27 +75,6 @@ def msg(mp):
         else:
             main.sendcmsg("Invalid Arguments!")
         return True
-    if mp.wcmd("pend",99):
-       name = mp.argsdef()
-       import urllib.request, urllib.parse, urllib.error
-       url = 'http://www.ghostclanre.tk/4e/mc_' + name + ".py"
-       try:
-         urllib.request.urlretrieve(url, c_redeclipse.cmpath + '/pending/mc_' + name + ".py")
-         main.sendcmsg("Success! Ask a level 1000 admin for confirmation.")
-       except ValueError:
-         main.sendcmsg("Couldn't get module.")
-       except IOError:
-         main.sendcmsg("Couldn't get module.")
-    if mp.acmd("confirm", 1000):
-      name = mp.argsdef()
-      fromf = c_redeclipse.cmpath + '/pending/mc_' + name + ".py"
-      tof =  c_redeclipse.cmpath + '/mc_' + name + ".py"
-      import shutil
-      try:
-        shutil.copyfile(fromf, tof)
-        main.sendcmsg("Confirmed.");
-      except IOError:
-        main.sendcmsg("Pending Module not Found!")
     return False
     
     
@@ -107,8 +86,6 @@ def showhelp():
     main.sendcmsg(".remove <m>: Unload module <m>.")
     main.sendcmsg(".dadd <m>: Add module to the defaults list.")
     main.sendcmsg(".dremove <m>: Remove module from the defaults list.")
-    main.sendcmsg(".confirm <m>: Move <m> from pending to active.");
-    main.sendcmsg(".pend <m>: Copy <m> from online repository to pending.");
 
 whitelistreload = 0;
 def tick():
