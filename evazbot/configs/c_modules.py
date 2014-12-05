@@ -9,6 +9,7 @@ import evazbot.configs.c_locs as c_locs
 
 reload(c_locs)
 
+sys.path.append(c_locs.dbhome+"/modules")
 dbfile = c_locs.dbhome + "/defaultmodules.db.txt"
 custom_offset = 2
 offset = 1
@@ -71,8 +72,12 @@ def add(i):
             newmodule = importlib.import_module("evazbot.modules.custom.mc_" + i)
             custom = True
         except ImportError as e:
-            main.sendcmsg("Cannot import module!");
-            raise e
+            try:
+              newmodule = importlib.import_module("mp_" + i)
+              custom = True
+            except ImportError as e:
+              main.sendcmsg("Cannot import module!");
+              raise e
     reload(newmodule)
     module_callbacks.append((i, newmodule, custom))
     return newmodule
