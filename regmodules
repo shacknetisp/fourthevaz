@@ -2,7 +2,6 @@ ircping
 core
 help
 chat
-servers
 ison
 joinpart
 intoin
@@ -14,11 +13,7 @@ calc
 define
 stats
 ccheck
-clans.ghosts
-clans.alliance
 timec
 tips
-clans.ace
-ranks
 dot
 history
