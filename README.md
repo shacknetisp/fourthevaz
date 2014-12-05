@@ -1,7 +1,9 @@
 fourthevaz
+
+An Eleptor Project
 ==========
 
-IRC bot
+IRC bot for Red Eclipse & Descendants of the same.
 
 To set up, create a profiles.py in ~/.fourthevaz as per evazbot/configs/c_local/profiles.py
 

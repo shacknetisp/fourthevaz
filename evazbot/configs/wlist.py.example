@@ -2,8 +2,7 @@
 from imp import reload
 
 whitelist = [
-    # In Game,#IRC,
-    (99, ("In Game", "IRC", "Anything")),
+    (99, ["nick1","nick2"]),
 ]
 
 adminlist = [
