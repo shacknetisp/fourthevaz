@@ -75,7 +75,6 @@ def msg(mp):
     
 def showhelp():
     main.sendcmsg(".mreload: Stop modules & reload default modules.")
-    main.sendcmsg(".wreload: Reload whitelists")
     main.sendcmsg(".add <m>: Load & start module <m>. If <m> is running, stop it.")
     main.sendcmsg(".remove <m>: Unload module <m>.")
     main.sendcmsg(".dadd <m>: Add module to the defaults list.")
