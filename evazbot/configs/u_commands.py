@@ -101,11 +101,11 @@ def getircuser(message):
     return name
 
 
-def outlist(l, n=6):
+def outlist(l, n=6, delim = "|"):
     text = ""
     addn = 0
     for i in l:
-        text += i + " | "
+        text += i + " "+delim+" "
         addn += 1
         if addn >= n:
             main.sendcmsg(text)
