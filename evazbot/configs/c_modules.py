@@ -14,10 +14,22 @@ custom_offset = 2
 offset = 1
 name_offset = 0
 
+def unique(seq, idfun=None): 
+   # order preserving
+   if idfun is None:
+       def idfun(x): return x
+   seen = {}
+   result = []
+   for item in seq:
+       marker = idfun(item)
+       if marker in seen: continue
+       seen[marker] = 1
+       result.append(item)
+   return result
+
 def needmodule(n):
   global modules
-  if not n in modules:
-      modules.append(n)
+  modules.append(n)
 
 def init():
     global module_callbacks
@@ -28,13 +40,13 @@ def init():
     try:
       for line in open(dbfile, "r"):
         if len(line.strip()) > 0:
-            modules.append(line)
+            modules.append(line.strip())
     except FileNotFoundError:
       modules.append("core")
     needmodule("core")
     needmodule("ircping")
     needmodule("help")
-    
+    modules = unique(modules)
 
 
 def helpmodulenames():

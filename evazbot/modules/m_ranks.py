@@ -1,7 +1,7 @@
 #For Beha's Servers
 from base import *
 import shelve
-dbfile = "/home/server/.redeclipse/master.trunk/records";
+dbfile = "/home/server/.redeclipse/normstats.trunk/records";
 
 def msg(mp):
   try:
@@ -28,5 +28,5 @@ def msg(mp):
     main.sendcmsg("Cannot get data.")
     
 def showhelp():
-  main.sendcmsg(".ranks <type>: Show ranks for <evaz> players with <type>.")
+  main.sendcmsg(".ranks <type>: Show ranks for Eleptor players with <type>.")
   main.sendcmsg("Type can be: fight")
