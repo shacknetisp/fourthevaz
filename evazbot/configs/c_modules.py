@@ -14,6 +14,10 @@ custom_offset = 2
 offset = 1
 name_offset = 0
 
+def needmodule(n):
+  global modules
+  if not n in modules:
+      modules.append(n)
 
 def init():
     global module_callbacks
@@ -27,8 +31,10 @@ def init():
             modules.append(line)
     except FileNotFoundError:
       modules.append("core")
-    if not "core" in modules:
-      modules.append("core")
+    needmodule("core")
+    needmodule("ircping")
+    needmodule("help")
+    
 
 
 def helpmodulenames():

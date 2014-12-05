@@ -45,8 +45,6 @@ def msg(mp):
         splitargs = args.split()
         if len(splitargs) == 1:
             lines = []
-            with open(c_modules.dbfile, "w"):
-              pass
             for line in open(c_modules.dbfile, "r"):
                 if line.split() != splitargs[0].split():
                     lines.append(line)
@@ -69,8 +67,6 @@ def msg(mp):
             except FileNotFoundError:
               main.sendcmsg("Module does not exist!")
               return True
-            with open(c_modules.dbfile, "w") as f:
-                f.writelines(lines)
             r = c_modules.remove(splitargs[0])
             if not r:
                 main.sendcmsg("Module does not exist!");
