@@ -1,0 +1,16 @@
+# -*- coding: utf-8 -*-
+from imp import reload
+
+whitelist = [
+    # In Game,#IRC,
+    (99, ("In Game", "IRC", "Anything")),
+]
+
+adminlist = [
+    (1000, ":nick!~ident@blah.blah.ip.blah"),
+]
+
+names = [
+    (["name1","name2"], "Name"),
+]
+
