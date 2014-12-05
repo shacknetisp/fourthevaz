@@ -20,7 +20,6 @@ def mload(module):
 
 cmd = cload("u_commands")
 c_net = cload("c_net")
-monitor = cload("monitor")
 c_modules = cload("c_modules")
 c_locs = c_redeclipse = cload("c_locs")
 c_wlist = cload("c_wlist")
