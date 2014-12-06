@@ -73,15 +73,16 @@ def ms(r):
     ret = ""
     try:
       choices = list()
-      for ch in range(int(len(inp)/3)):
+      for ch in range(2):
         try: addchoice(choice(inp))
         except: pass
       try: addchoice(inp[0])
       except: pass
       try: addchoice(inp[-1])
       except: pass
-      try: addchoice(choice(data_dict[';start']))
-      except: pass
+      for ch in range(6):
+        try: addchoice(choice(data_dict[';start']))
+        except: pass
       try: addchoice(choice(data_dict.keys())) 
       except: pass
       try: addchoice(choice(data_dict[inp[0]])) 
