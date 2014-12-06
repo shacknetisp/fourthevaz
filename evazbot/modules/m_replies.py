@@ -72,6 +72,8 @@ def msg(mp):
       dict_file.close()
     except FileNotFoundError:
       pass
+    except IOError:
+      pass
     except EOFError:
       pass
     
@@ -104,6 +106,8 @@ def msg(mp):
       data_dict = pickle.load(dict_file)
       dict_file.close()
     except FileNotFoundError:
+      pass
+    except IOError:
       pass
     except EOFError:
       pass
