@@ -70,11 +70,7 @@ def msg(mp):
       dict_file = open(dbfile, 'rb')           
       data_dict = pickle.load(dict_file)
       dict_file.close()
-    except FileNotFoundError:
-      pass
-    except IOError:
-      pass
-    except EOFError:
+    except:
       pass
     
     main.sendcmsg(ms(mp.args()))
@@ -105,11 +101,7 @@ def msg(mp):
       dict_file = open(dbfile, 'rb')           
       data_dict = pickle.load(dict_file)
       dict_file.close()
-    except FileNotFoundError:
-      pass
-    except IOError:
-      pass
-    except EOFError:
+    except:
       pass
     pprint(data_dict)
     return True
