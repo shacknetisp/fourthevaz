@@ -3,83 +3,15 @@ from base import *
 import subprocess
 reload(subprocess)
 import sys
-from pprint import pprint
-from random import choice
-import random
-import string
+import evazbot.configs.wordai as wordai
+reload(wordai)
 import pickle
+wordai.dbfile = c_locs.dbhome + "/replies.db.pkl"
+wordai.load()
 
-dbfile = c_locs.dbhome + "/replies.db.pkl"
-
-data_dict = {}
- 
-def ms(r):
-    exclude = set(string.punctuation)
-    r = ''.join(ch for ch in r if ch not in exclude)
-    inp = r.lower().split()
-    if len(inp):
-      if not ';start' in data_dict:
-        data_dict[';start']=list()
-      if not ';end' in data_dict:
-        data_dict[';end']=list()
-      if not inp[0] in data_dict[';start'] or True:
-        data_dict[';start'].append(inp[0])
-      if not inp[-1] in data_dict[';end'] or True:
-        data_dict[';end'].append(inp[-1])
-    for i in range(len(inp)):
-      if not inp[i] in data_dict:
-        data_dict[inp[i]]=list()
-      try:
-        if not inp[i+1] in data_dict[inp[i]] or True:
-          data_dict[inp[i]].append(inp[i+1])
-      except IndexError:
-        pass
-    ret = ""
-    try:
-      if random.randrange(0,100) < 25:
-        first = choice(inp)
-      elif random.randrange(0,100) < 50:
-        first = inp[0]
-      elif random.randrange(0,100) < 75:
-        first = inp[-1]
-      else:
-        first = choice(data_dict[';start'])
-      if not first in data_dict[';start'] or random.randrange(0,100) < 40:
-        first = choice(data_dict[';start'])
-      ret+=first+" ";
-      nextword = first
-      for numwords in range(100):
-        if nextword in data_dict:
-          cnext = choice(data_dict[nextword])
-          ret+=cnext+" "
-          if nextword in data_dict[';end'] and random.randrange(0,100) < 50:
-            break
-          nextword=cnext
-        else:
-          break
-    except IndexError:
-      pass
-    except KeyError:
-      pass
-    try:
-      return str(str(ret[0]).upper()+ret[1:]).strip()+"."
-    except IndexError:
-      return "?"
 def msg(mp):
-  global data_dict
-  if(mp.wcmd("c")):
-    try:
-      dict_file = open(dbfile, 'rb')           
-      data_dict = pickle.load(dict_file)
-      dict_file.close()
-    except:
-      pass
-    
-    main.sendcmsg(ms(mp.args()))
-    
-    output = open(dbfile, 'wb')
-    pickle.dump(data_dict, output)
-    output.close()
+  if(mp.wcmd("c")):   
+    main.sendcmsg(wordai.process(mp.args()))
     return True
   if mp.wcmd("cfix"):
     if not mp.argbool("w") or not mp.argbool("n"):
@@ -87,25 +19,15 @@ def msg(mp):
       return True
     w=mp.argstr("w").strip()
     n=mp.argstr("n").strip()
-    if n!=w:
-     data_dict[n] = data_dict[w]
-     del data_dict[w]
-    for k in data_dict:
-     for index, item in enumerate(data_dict[k]):
-      if item==w:
-       data_dict[k][index] = n
-    output = open(dbfile, 'wb')
-    pickle.dump(data_dict, output)
-    output.close()
+    try:
+      wordai.replace(w,n)
+      main.sendcmsg("Replaced '"+w+"' with '"+n+"'")
+    except KeyError:
+      main.sendcmsg("'"+w+"' is not in the database.")
     return True
   if mp.wcmd("cprint"):
-    try:
-      dict_file = open(dbfile, 'rb')           
-      data_dict = pickle.load(dict_file)
-      dict_file.close()
-    except:
-      pass
-    pprint(data_dict)
+    wordai.load()
+    print(wordai.getdictstring())
     return True
   return False
 def showhelp():
