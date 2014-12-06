@@ -65,9 +65,16 @@ def getacmd(ircmsg, c, w = 1):
 
 
 def getargs(msg, command):
-    fcstring = "." + command
-    loc = msg.find(fcstring) + len(fcstring) + 1
-    args = msg[loc:]
+    fcstring_i = " :." + command
+    fcstring_g = "> ." + command
+    if msg.find(fcstring_i) != -1:
+      loc = msg.find(fcstring_i) + len(fcstring_i) + 1
+      args = msg[loc:]
+    elif msg.find(fcstring_g) != -1:
+      loc = msg.find(fcstring_g) + len(fcstring_g) + 1
+      args = msg[loc:]
+    else:
+      args=""
     return args
 
 
