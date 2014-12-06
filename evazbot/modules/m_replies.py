@@ -36,12 +36,14 @@ def ms(r):
         pass
     ret = ""
     try:
-      if random.randrange(0,100) < 30:
+      if random.randrange(0,100) < 25:
         first = choice(inp)
-      elif random.randrange(0,100) < 60:
+      elif random.randrange(0,100) < 50:
         first = inp[0]
-      else:
+      elif random.randrange(0,100) < 75:
         first = inp[-1]
+      else:
+        first = choice(data_dict[';start'])
       if not first in data_dict[';start'] or random.randrange(0,100) < 40:
         first = choice(data_dict[';start'])
       ret+=first+" ";
