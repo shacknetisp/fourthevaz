@@ -65,7 +65,7 @@ def ms(r):
       return "?"
 def msg(mp):
   global data_dict
-  if(mp.cmd("c")):
+  if(mp.wcmd("c")):
     try:
       dict_file = open(dbfile, 'rb')           
       data_dict = pickle.load(dict_file)
@@ -79,7 +79,7 @@ def msg(mp):
     pickle.dump(data_dict, output)
     output.close()
     return True
-  if mp.cmd("cfix"):
+  if mp.wcmd("cfix"):
     if not mp.argbool("w") or not mp.argbool("n"):
       main.sendcmsg("Invalid Arguments")
       return True
@@ -96,7 +96,7 @@ def msg(mp):
     pickle.dump(data_dict, output)
     output.close()
     return True
-  if mp.cmd("cprint"):
+  if mp.wcmd("cprint"):
     try:
       dict_file = open(dbfile, 'rb')           
       data_dict = pickle.load(dict_file)
