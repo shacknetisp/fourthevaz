@@ -7,7 +7,7 @@ import pprint
 url="http://redflare.ofthings.net"
 
 def msg(mp):
-  if mp.cmd("ison"):
+  if mp.wcmd("ison"):
     search = mp.args()
     found = {}
     with urlopen(url+"/reports") as u:
