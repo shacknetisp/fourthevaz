@@ -1,19 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-def getncmd(ircmsg,cmd):
-  global currentuser
-  if ( ircmsg.find(":."+cmd) != -1) or (ircmsg.find("> ."+cmd) != -1):
-      return 1
-  return 0
-
-def getcmd(ircmsg,cmd):
-  global currentuser
-  for name in (wlist.whitelist):
-    if ( ircmsg.find(":."+cmd) != -1 and ircmsg.find(name+"!") != -1) or ircmsg.find(name+"> ."+cmd) != -1:
-      currentuser=name
-      return 1
-  return 0
-"""
 from base import *
 
 import shlex
@@ -36,13 +21,23 @@ def getcmd(ircmsg, c):
             return True
     return False
 
-
-def getwcmd(ircmsg, c, w = 1):
-    for name in c_wlist.whitelist:
+def iswlist(ircmsg,w = 1):
+  for name in c_wlist.whitelist:
         for n in name[1]:
             if name[0] >= w or name[0] == 999:
-                if getuser(ircmsg) == n and getcmd(ircmsg,c):
-                    return True
+                if getuser(ircmsg) == n:
+                  return True
+  return False
+
+def isadmin(ircmsg, w = 1):
+  for i in c_wlist.adminlist:
+        if ircmsg.find(i[1]) == 0 and i[0] >= w:
+            return True
+  return False
+
+def getwcmd(ircmsg, c, w = 1):
+    if iswlist(ircmsg, w) and getcmd(ircmsg,c):
+      return True
     if getcmd(ircmsg, c):
         main.sendcmsg("You are not authorized to preform this action.")
     return False
@@ -50,9 +45,8 @@ def getwcmd(ircmsg, c, w = 1):
 
 def getacmd(ircmsg, c, w = 1):
     ok = False
-    for i in c_wlist.adminlist:
-        if ircmsg.find(i[1]) == 0 and i[0] >= w:
-            ok = True
+    if isadmin(ircmsg, w):
+      ok = True
     if ok:
         if getwcmd(ircmsg, c, w):
             return True
@@ -123,10 +117,10 @@ def outlist(l, n=6, delim = "|"):
 
 
 class MParser:
-    def argsdef(self):
+    def argsdef(self, s = '"\''):
       if hasattr(self, "error"):
         raise self.error
-      return self.argsdefv.strip('"\'')
+      return self.argsdefv.strip(s)
 
     def argbool(self, arg):
         if not self.argsn:
@@ -161,6 +155,12 @@ class MParser:
     def wcmd(self, c, w = 1):
         self.basecmd(c)
         return getwcmd(self.message, c, w)
+      
+    def iswlist(self, w = 1):
+        return iswlist(self.message, w)
+      
+    def isadmin(self, w = 1):
+        return isadmin(self.message, w)
 
     def acmd(self, c, w = 1):
         self.basecmd(c)
@@ -200,7 +200,7 @@ class MParser:
 
     def isserver(self):
         name = find_between(self.message, ":", "!")
-        return name.find("snisp") != -1 or name.find("eleptor") != -1
+        return name.find("snisp") != -1 or name.find("eleptor") != -1 or name.find("altre") != -1
 
     def isjp(self, m):
         for i in main.ircprofiles[main.currentprofile]["channels"]:
