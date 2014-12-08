@@ -88,7 +88,7 @@ def ms(r):
       nextword = first
       for numwords in range(100):
         if nextword in data_dict:
-          if nextword in data_dict[';end'] and ( int(random.randrange(0,100)) < (15+numwords) + (( data_dict[';end'].count(nextword) / len(data_dict[';end']) ) *1000) or len(data_dict[nextword])==0):
+          if nextword in data_dict[';end'] and ( int(random.randrange(0,100)) < (5+numwords) + (( data_dict[';end'].count(nextword) / len(data_dict[';end']) ) *1000) or len(data_dict[nextword])==0):
             break
           cnext = choice(data_dict[nextword])
           ret+=cnext+" "
