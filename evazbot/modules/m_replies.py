@@ -11,30 +11,24 @@ wordai.load()
 
 def msg(mp):
   if(mp.wcmd("c")):   
-    main.sendcmsg(wordai.process(mp.args()))
-    return True
-  if mp.wcmd("cfix"):
-    if not mp.argbool("w") or not mp.argbool("n"):
-      main.sendcmsg("Invalid Arguments")
+    if mp.argbool("fix"):
+      if not mp.argbool("w") or not mp.argbool("n"):
+        main.sendcmsg("Invalid Arguments")
+        return True
+      w=mp.argstr("w").strip()
+      n=mp.argstr("n").strip()
+      try:
+        wordai.replace(w,n)
+        main.sendcmsg("Replaced '"+w+"' with '"+n+"'")
+      except KeyError:
+        main.sendcmsg("'"+w+"' is not in the database.")
       return True
-    w=mp.argstr("w").strip()
-    n=mp.argstr("n").strip()
-    try:
-      wordai.replace(w,n)
-      main.sendcmsg("Replaced '"+w+"' with '"+n+"'")
-    except KeyError:
-      main.sendcmsg("'"+w+"' is not in the database.")
-    return True
-  if mp.wcmd("cprint"):
-    print(wordai.getdictstring())
-    return True
-  if mp.acmd("cload"):
-    try:
-      main.sendcmsg(wordai.process(open(mp.args()).read()))
-    except:
-      main.sendcmsg("Cannot open file.")
-    return True
+    elif(mp.argbool("words")):
+      main.sendcmsg("Words: "+str(wordai.getwords()))
+    else:
+      main.sendcmsg(wordai.process(mp.args()))
   return False
 def showhelp():
     main.sendcmsg(".c <text>: Process <text>.")
-    main.sendcmsg(".cfix -w=<word> -n=<newword>: Rename a word.")
+    main.sendcmsg(".c -words: See word count.")
+    main.sendcmsg(".c -fix -w=<word> -n=<newword>: Rename a word.")

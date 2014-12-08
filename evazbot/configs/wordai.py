@@ -88,10 +88,10 @@ def ms(r):
       nextword = first
       for numwords in range(100):
         if nextword in data_dict:
+          if nextword in data_dict[';end'] and ( int(random.randrange(0,100)) < (15+numwords) + (( data_dict[';end'].count(nextword) / len(data_dict[';end']) ) *1000) or len(data_dict[nextword])==0):
+            break
           cnext = choice(data_dict[nextword])
           ret+=cnext+" "
-          if nextword in data_dict[';end'] and (int(random.randrange(0,100)) < 25+int((len(data_dict[';end'])/data_dict[';end'].count(nextword))*100) or len(data_dict[nextword])==0):
-            break
           nextword=cnext
         else:
           break
@@ -130,3 +130,11 @@ def getdictstring():
   if ';record' in data_dict_tmp:
     del data_dict_tmp[';record']
   return pprint.pformat(data_dict_tmp)
+
+def getwords():
+  global data_dict
+  load()
+  data_dict_tmp = data_dict
+  if ';record' in data_dict_tmp:
+    del data_dict_tmp[';record']
+  return len(data_dict_tmp)-2
