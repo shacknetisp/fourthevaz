@@ -21,8 +21,6 @@ def msg(mp):
             cname  = cname.replace("#","")
             if cname == main.ircprofiles[main.currentprofile]["nick"]:
                 cname = main.getuser()
-            with open(dbfolder + "/" + cname + ".channel", "w"):
-              pass
             with open(dbfolder + "/" + cname + ".channel", "a") as f:
                 f.write(fout + "\n")
 
@@ -32,7 +30,5 @@ def output():
         if len(main.outputtext) > 0:
             cname = main.outputchannel
             cname = cname.replace("#","")
-            with open(dbfolder + "/" + cname + ".channel", "w"):
-              pass
             with open(dbfolder + "/" + cname + ".channel", "a") as f:
                 f.write(fout + "\n")
