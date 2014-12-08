@@ -11,6 +11,7 @@ def msg(mp):
     search = mp.args()
     found = {}
     total_names = 0
+    total_servers = 0
     with urlopen(url+"/reports") as u:
       servers = ast.literal_eval(u.read().decode())
       for server in servers.keys():
@@ -21,7 +22,7 @@ def msg(mp):
               found[server]=list()
             found[server].append(name)
             total_names = total_names+1
-      main.sendcmsg("Found "+str(total_names)+".")
+      main.sendcmsg("Found "+str(total_names)+" in "+str(len(found))+" server(s).")
       for s in found:
         out = servers[s]['description']+": "
         for p in found[s]:
