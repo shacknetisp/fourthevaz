@@ -73,21 +73,15 @@ def ms(r):
     ret = ""
     try:
       choices = list()
-      for ch in range(2):
+      for ch in range(4):
         try: addchoice(choice(inp))
         except: pass
       try: addchoice(inp[0])
       except: pass
-      try: addchoice(inp[-1])
-      except: pass
-      for ch in range(6):
+      for ch in range(random.randrange(8,16)):
         try: addchoice(choice(data_dict[';start']))
         except: pass
-      try: addchoice(choice(data_dict.keys())) 
-      except: pass
       try: addchoice(choice(data_dict[inp[0]])) 
-      except: pass
-      try: addchoice(choice(data_dict[inp[-1]])) 
       except: pass
       first = choice(choices)
       ret+=first+" ";
@@ -96,7 +90,7 @@ def ms(r):
         if nextword in data_dict:
           cnext = choice(data_dict[nextword])
           ret+=cnext+" "
-          if nextword in data_dict[';end'] and random.randrange(0,100) < 50:
+          if nextword in data_dict[';end'] and (int(random.randrange(0,100)) < 25+int((len(data_dict[';end'])/data_dict[';end'].count(nextword))*100) or len(data_dict[nextword])==0):
             break
           nextword=cnext
         else:

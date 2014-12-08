@@ -26,8 +26,13 @@ def msg(mp):
       main.sendcmsg("'"+w+"' is not in the database.")
     return True
   if mp.wcmd("cprint"):
-    wordai.load()
     print(wordai.getdictstring())
+    return True
+  if mp.acmd("cload"):
+    try:
+      main.sendcmsg(wordai.process(open(mp.args()).read()))
+    except:
+      main.sendcmsg("Cannot open file.")
     return True
   return False
 def showhelp():
