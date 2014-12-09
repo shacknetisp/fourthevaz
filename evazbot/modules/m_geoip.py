@@ -6,25 +6,28 @@ gi = pygeoip.GeoIP('pygeoip/GeoLiteCity.dat')
 
 def msg(mp):
   if mp.text().find(") has joined the game (") != -1:
-    ip_cands = re.findall(' \((.*?)\) has', mp.text())
-    for ip in ip_cands:
+    ip = re.findall(' \((.*?)\) has', mp.text())[-1]
+    try:
+      r = gi.record_by_addr(ip)
+    except:
       try:
-        r = gi.record_by_addr(ip)
+        r = gi.record_by_name(ip)
       except:
-        try:
-          r = gi.record_by_name(ip)
-        except:
-          continue
-      try:
-        try:
-          index = mp.text().index(" ("+ip)
-        except ValueError:
-          index = len(s)
-        main.sendcmsg(mp.text()[mp.text().index(" :")+2:index]+": "+r['country_name'])
-        return True
-      except TypeError:
-        pass
-    main.sendcmsg("Cannot get information.")
+        r = None
+    try:
+        index = mp.text().index(" ("+ip)
+    except ValueError:
+        index = len(s)
+    try:
+      main.sendcmsg(mp.text()[mp.text().index(" :")+2:index]+": "+r['country_name'])
+      return True
+    except TypeError:
+      pass
+    try:
+      index = mp.text().index(" ("+ip)
+    except ValueError:
+      index = len(s)
+    main.sendcmsg(mp.text()[mp.text().index(" :")+2:index]+": "+"No Country.")
     return True
   if mp.cmd("geoip"):
     ip = mp.argsdef()
