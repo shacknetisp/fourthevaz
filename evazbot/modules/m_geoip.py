@@ -5,7 +5,7 @@ import socket
 gi = pygeoip.GeoIP('pygeoip/GeoLiteCity.dat')
 
 def msg(mp):
-  if mp.text().find(") has joined the game (") != -1:
+  if mp.isserver() and mp.text().find(") has joined the game (") != -1:
     ip = re.findall(' \((.*?)\) has', mp.text())[-1]
     try:
       r = gi.record_by_addr(ip)
