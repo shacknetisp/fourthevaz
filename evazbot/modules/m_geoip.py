@@ -27,7 +27,7 @@ def msg(mp):
       index = mp.text().index(" ("+ip)
     except ValueError:
       index = len(s)
-    main.sendcmsg(mp.text()[mp.text().index(" :")+2:index]+": "+"No Country.")
+    main.sendcmsg(mp.text()[mp.text().index(" :")+2:index]+": "+"Unknown")
     return True
   if mp.cmd("geoip"):
     ip = mp.argsdef()
