@@ -10,10 +10,10 @@ def msg(mp):
     for ip in ip_cands:
       try:
         r = gi.record_by_addr(ip)
-      except OSError:
+      except:
         try:
           r = gi.record_by_name(ip)
-        except socket.gaierror:
+        except:
           continue
       try:
         try:
@@ -30,10 +30,10 @@ def msg(mp):
     ip = mp.argsdef()
     try:
       r = gi.record_by_addr(ip)
-    except OSError:
+    except:
       try:
           r = gi.record_by_name(ip)
-      except socket.gaierror:
+      except:
           r = None
     try:
       main.sendcmsg(r['city']+", "+r['region_code']+", "+r['country_name'])
