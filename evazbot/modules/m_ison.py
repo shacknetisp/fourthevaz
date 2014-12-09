@@ -17,12 +17,16 @@ def msg(mp):
         out.append("Servers: "+str(len(servers)))
         total={
           'names':0,
+          'servers':0,
           }
         for k in servers:
           v = servers[k]
           total['names']=total['names']+int(v['clients'])
+          if int(v['clients'])>0:
+            total['servers']=total['servers']+1
         out.append("Players: "+str(total['names']))
         out.append(str(round(len(servers)/total['names'],1))+"x servers vs players.")
+        out.append("Used Servers: "+str(total['servers']))
         cmd.outlist(out)
       else:
         total_names = 0
