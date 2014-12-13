@@ -2,10 +2,18 @@ from base import *
 import pygeoip
 import re
 import socket
+enable_geoip = False
+try:
+  exec(open(c_locs.dbhome+"/geoip.py").read())
+except:
+  pass;
 gi = pygeoip.GeoIP('pygeoip/GeoLiteCity.dat')
 
+def start():
+  print("GeoIP Server Login: "+str(enable_geoip))
+
 def msg(mp):
-  if mp.isserver() and mp.text().find(") has joined the game (") != -1:
+  if mp.isserver() and mp.text().find(") has joined the game") != -1 and enable_geoip:
     ip = re.findall(' \((.*?)\) has', mp.text())[-1]
     try:
       r = gi.record_by_addr(ip)
