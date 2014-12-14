@@ -1,5 +1,11 @@
 import os
+from os.path import expanduser
+home = expanduser("~")
 
-rehome = os.getenv("HOME") + "/.redeclipse"
-dbhome = os.getenv("HOME") + "/.fourthevaz"
+if os.name=="posix":
+  rehome = home + "/.redeclipse"
+  dbhome = home + "/.fourthevaz"
+elif os.name=="nt":
+  rehome = None
+  dbhome = home + "/fourthevaz"
 cmpath = "evazbot/modules/custom"
