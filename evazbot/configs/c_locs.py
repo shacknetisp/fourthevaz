@@ -6,6 +6,6 @@ if os.name=="posix":
   rehome = home + "/.redeclipse"
   dbhome = home + "/.fourthevaz"
 elif os.name=="nt":
-  rehome = None
+  rehome = home + "/Documents/My Games/Red Eclipse/"
   dbhome = home + "/fourthevaz"
 cmpath = "evazbot/modules/custom"
