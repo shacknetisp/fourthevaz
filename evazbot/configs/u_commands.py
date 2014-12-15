@@ -3,53 +3,61 @@ from base import *
 
 import shlex
 
+
 def getuser(message):
     name = find_between(message, ":", "!")
     if message.find(name) != 1:
         name = "no_name"
-    if name.find("snisp") == 0 or name.find("eleptor") == 0 or name.find("altre") == 0 or name.find("RE-") == 0:
+    if name.find("snisp") == 0 or name.find("eleptor") == 0\
+    or name.find("altre") == 0 or name.find("RE-") == 0:
         name = find_between(message, ":<", "> ")
     return name
 
+
 def getcmd(ircmsg, c):
-    if ircmsg.find("PRIVMSG "+main.getchannel()+" :.") != -1 or ircmsg.find(getuser(ircmsg)+"> .") != -1:
+    if ircmsg.find("PRIVMSG " + main.getchannel() + " :.") != -1\
+    or ircmsg.find(getuser(ircmsg) + "> .") != -1:
         if (ircmsg.find(":." + c + " ") != -1 or (
-                ircmsg.find(":." + c) != -1 and ircmsg.endswith(":." + c)) or ircmsg.find(
+                ircmsg.find(":." + c) != -1
+                and ircmsg.endswith(":." + c)) or ircmsg.find(
                 "> ." + c + " ") != -1 or (
                 ircmsg.find("> ." + c) != -1 and ircmsg.endswith("> ." + c))):
             main.handled = True
             return True
     return False
 
-def iswlist(ircmsg,w = 1):
-  for name in c_wlist.whitelist:
+
+def iswlist(ircmsg, w=1):
+    for name in c_wlist.whitelist:
         for n in name[1]:
             if name[0] >= w or name[0] == 999:
                 if getuser(ircmsg) == n:
-                  return True
-  return False
-
-def isadmin(ircmsg, w = 1):
-  try:
-    for i in c_wlist.adminlist:
-      if main.adminlist[getuser(ircmsg)] == i[1] and i[0] >= w:
-         return True
-  except KeyError:
+                    return True
     return False
-  return False
 
-def getwcmd(ircmsg, c, w = 1):
-    if iswlist(ircmsg, w) and getcmd(ircmsg,c):
-      return True
+
+def isadmin(ircmsg, w=1):
+    try:
+        for i in c_wlist.adminlist:
+            if main.adminlist[getuser(ircmsg)] == i[1] and i[0] >= w:
+                return True
+    except KeyError:
+        return False
+    return False
+
+
+def getwcmd(ircmsg, c, w=1):
+    if iswlist(ircmsg, w) and getcmd(ircmsg, c):
+        return True
     if getcmd(ircmsg, c):
         main.sendcmsg("You are not authorized to preform this action.")
     return False
 
 
-def getacmd(ircmsg, c, w = 1):
+def getacmd(ircmsg, c, w=1):
     ok = False
     if isadmin(ircmsg, w):
-      ok = True
+        ok = True
     if ok:
         if getwcmd(ircmsg, c, w):
             return True
@@ -65,28 +73,28 @@ def getargs(msg, command):
     fcstring_i = " :." + command
     fcstring_g = "> ." + command
     if msg.find(fcstring_i) != -1:
-      loc = msg.find(fcstring_i) + len(fcstring_i) + 1
-      args = msg[loc:]
+        loc = msg.find(fcstring_i) + len(fcstring_i) + 1
+        args = msg[loc:]
     elif msg.find(fcstring_g) != -1:
-      loc = msg.find(fcstring_g) + len(fcstring_g) + 1
-      args = msg[loc:]
+        loc = msg.find(fcstring_g) + len(fcstring_g) + 1
+        args = msg[loc:]
     else:
-      args=""
+        args = ""
     return args
 
 
 def getname(name):
-  try:
-    for i in c_wlist.names:
-        for n in i[0]:
-            if name == n:
-                return i[1]
-    if name.find("@") != -1:
-        return "[" + name[1] + "]" + name[2:]
-    else:
-        return "[" + name[0] + "]" + name[1:]
-  except IndexError:
-    return "no_name"
+    try:
+        for i in c_wlist.names:
+            for n in i[0]:
+                if name == n:
+                    return i[1]
+        if name.find("@") != -1:
+            return "[" + name[1] + "]" + name[2:]
+        else:
+            return "[" + name[0] + "]" + name[1:]
+    except IndexError:
+        return "no_name"
 
 
 def find_between(s, first, last):
@@ -105,11 +113,11 @@ def getircuser(message):
     return name
 
 
-def outlist(l, n=6, delim = "|"):
+def outlist(l, n=6, delim="|"):
     text = ""
     addn = 0
     for i in l:
-        text += i + " "+delim+" "
+        text += i + " " + delim + " "
         addn += 1
         if addn >= n:
             main.sendcmsg(text)
@@ -120,10 +128,10 @@ def outlist(l, n=6, delim = "|"):
 
 
 class MParser:
-    def argsdef(self, s = '"\''):
-      if hasattr(self, "error"):
-        raise self.error
-      return self.argsdefv.strip(s)
+    def argsdef(self, s='"\''):
+        if hasattr(self, "error"):
+            raise self.error
+        return self.argsdefv.strip(s)
 
     def argbool(self, arg):
         if not self.argsn:
@@ -136,7 +144,7 @@ class MParser:
         else:
             return d
 
-    def basecmd(self,c):
+    def basecmd(self, c):
         self.argsn = self._argsn(c)
 
     def text(self):
@@ -155,17 +163,17 @@ class MParser:
         self.basecmd(c)
         return getcmd(self.message, c)
 
-    def wcmd(self, c, w = 1):
+    def wcmd(self, c, w=1):
         self.basecmd(c)
         return getwcmd(self.message, c, w)
-      
-    def iswlist(self, w = 1):
+
+    def iswlist(self, w=1):
         return iswlist(self.message, w)
-      
-    def isadmin(self, w = 1):
+
+    def isadmin(self, w=1):
         return isadmin(self.message, w)
 
-    def acmd(self, c, w = 1):
+    def acmd(self, c, w=1):
         self.basecmd(c)
         return getacmd(self.message, c, w)
 
@@ -179,35 +187,38 @@ class MParser:
         self.argsdefv = ""
         ar = []
         try:
-          ar = shlex.split(self.args(c))
+            ar = shlex.split(self.args(c))
         except ValueError as e:
-          self.error=e
+            self.error = e
         ok = True
         for i in ar:
-          if i[0] == '-' and ok:
-            var = i.split("=")[0][1:]
-            try:
-              val = i.split("=")[1]
-            except:
-              val = ""
-            ret[var] = val
-            lastval = i
-          else:
-            ok = False
+            if i[0] == '-' and ok:
+                var = i.split("=")[0][1:]
+                try:
+                    val = i.split("=")[1]
+                except:
+                    val = ""
+                ret[var] = val
+                lastval = i
+            else:
+                ok = False
         lastval = lastval.strip()
         if lastval:
-          self.argsdefv = self.args(c)[self.args(c).rfind(lastval) + len(lastval) + 1:]
+            self.argsdefv = self.args(c)[
+              self.args(c).rfind(lastval) + len(lastval) + 1:]
         else:
-          self.argsdefv = self.args(c)
+            self.argsdefv = self.args(c)
         return ret
 
     def isserver(self):
         name = find_between(self.message, ":", "!")
-        return name.find("snisp") != -1 or name.find("eleptor") != -1 or name.find("altre") != -1 or name.find("RE-") !=-1
+        return name.find("snisp") != -1 or name.find("eleptor") != -1 or\
+        name.find("altre") != -1 or name.find("RE-") != -1
 
     def isjp(self, m):
         for i in main.ircprofiles[main.currentprofile]["channels"]:
-            if self.message.find(m + " " + i + " :") != -1 or self.message.endswith(m + " " + i):
+            if self.message.find(m + " " + i + " :") != -1 or\
+            self.message.endswith(m + " " + i):
                 return True
         return False
 

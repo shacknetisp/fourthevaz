@@ -9,28 +9,34 @@ import evazbot.configs.c_locs as c_locs
 
 reload(c_locs)
 
-sys.path.append(c_locs.dbhome+"/modules")
+sys.path.append(c_locs.dbhome + "/modules")
 dbfile = c_locs.dbhome + "/defaultmodules.db.txt"
 custom_offset = 2
 offset = 1
 name_offset = 0
+modules = []
+module_callbacks = []
 
-def unique(seq, idfun=None): 
-   # order preserving
-   if idfun is None:
-       def idfun(x): return x
-   seen = {}
-   result = []
-   for item in seq:
-       marker = idfun(item)
-       if marker in seen: continue
-       seen[marker] = 1
-       result.append(item)
-   return result
+
+def unique(seq, idfun=None):
+    if idfun is None:
+        def idfun(x):
+            return x
+    seen = {}
+    result = []
+    for item in seq:
+        marker = idfun(item)
+        if marker in seen:
+            continue
+        seen[marker] = 1
+        result.append(item)
+    return result
+
 
 def needmodule(n):
-  global modules
-  modules.append(n)
+    global modules
+    modules.append(n)
+
 
 def init():
     global module_callbacks
@@ -39,11 +45,11 @@ def init():
     module_callbacks = []
     modules = []
     try:
-      for line in open(dbfile, "r"):
-        if len(line.strip()) > 0:
-            modules.append(line.strip())
-    except FileNotFoundError:
-      modules.append("core")
+        for line in open(dbfile, "r"):
+            if len(line.strip()) > 0:
+                modules.append(line.strip())
+    except IOError:
+        modules.append("core")
     needmodule("core")
     needmodule("ircping")
     needmodule("help")
@@ -67,14 +73,14 @@ def add(i):
     i = i.strip()
     custom = False
     try:
-      newmodule = importlib.import_module("mp_" + i)
-      custom = True
+        newmodule = importlib.import_module("mp_" + i)
+        custom = True
     except ImportError as e:
         try:
-          newmodule = importlib.import_module("evazbot.modules.m_" + i)
+            newmodule = importlib.import_module("evazbot.modules.m_" + i)
         except ImportError as e:
-          main.sendcmsg("Cannot import module!");
-          raise e
+            main.sendcmsg("Cannot import module!")
+            raise e
     reload(newmodule)
     module_callbacks.append((i, newmodule, custom))
     return newmodule
@@ -117,7 +123,7 @@ def load():
         except ImportError:
             traceback.print_exc()
             errorcount += 1
-    print(str(errorcount) + " error(s) while loading!")
+    print((str(errorcount) + " error(s) while loading!"))
 
 
 def reloadall():
@@ -162,9 +168,9 @@ def showhelp(n):
                 i[offset].showhelp()
             except AttributeError:
                 incomplete(n)
-                main.sendcmsg(n+" is not interactive.")
+                main.sendcmsg(n + " is not interactive.")
             except:
                 traceback.print_exc()
             found = True
     if not found:
-     main.sendcmsg(n+" does not exist.")
+        main.sendcmsg(n + " does not exist.")

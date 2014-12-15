@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from base import *
-import sys
 import random
 
 dbfile = c_redeclipse.dbhome + "/quotes.db.txt"

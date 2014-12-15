@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-exec(open("base.py").read())
+from base import *
 
 
 def msg(mp):
@@ -9,6 +9,7 @@ def msg(mp):
                 if mp.text().find("kicked") != -1:
                     main.sendcmsg("Kicked out!")
                 if mp.text().find("banned") != -1:
-                    main.sendcmsg("Ban!? That insolent troublemaker deserved it.")
+                    main.sendcmsg(
+                        "Ban? That insolent troublemaker deserved it.")
                 if mp.text().find("packet overflow") != -1:
                     main.sendcmsg("The lag is here.")

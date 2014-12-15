@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-exec(open("base.py").read())
-modname = "IRC Ping"
+from base import *
+
+
 def ping():
     main.ircwrite("PONG :pingis")
     print("Ping Processed.")

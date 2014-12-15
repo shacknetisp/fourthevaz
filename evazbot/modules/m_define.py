@@ -3,14 +3,13 @@
 from base import *
 import wikipedia
 from urllib.request import urlopen
-import urllib
 import re
 from html.parser import HTMLParser
-import random
 from evazbot.configs.google import search
 
 
 class MLStripper(HTMLParser):
+
     def __init__(self):
         super().__init__()
         self.reset()
@@ -40,9 +39,12 @@ def getwikipedia(word):
 
 
 def getdictionary(word):
-    html = urlopen(
-        "http://www.ibiblio.org/webster/cgi-bin/headword_search.pl?query=" + word.replace(" ", "+")).read().decode()
-    s = re.sub(' +', ' ', cmd.find_between(html, "<def>", "</def>").strip()) + "."
+    html = \
+        urlopen(
+            'http://www.ibiblio.org/webster/cgi-bin/headword_search.pl?query='
+                 + word.replace(' ', '+')).read().decode()
+    s = re.sub(' +', ' ', cmd.find_between(html, '<def>', '</def>'
+               ).strip()) + '.'
     return strip_tags(s)
 
 
@@ -55,51 +57,54 @@ def googleword(word, n=1):
 
 
 def msg(mp):
-    if mp.wcmd("google"):
+    if mp.wcmd('google'):
         word = mp.args().strip()
         if not word:
-            main.sendcmsg("Invalid Arguments!")
-        googleword(mp.argsdef(), int(mp.argstr("n", "1")))
-        if int(mp.argstr("n", "1")) <= 0:
-            main.sendcmsg("Do you really expect results with a maximum of " + str(int(mp.argstr("n", "1"))) + " URLs?")
+            main.sendcmsg('Invalid Arguments!')
+        googleword(mp.argsdef(), int(mp.argstr('n', '1')))
+        if int(mp.argstr('n', '1')) <= 0:
+            main.sendcmsg('Do you really expect results with a maximum of '
+                           + str(int(mp.argstr('n', '1'))) + ' URLs?')
         return True
-    if mp.wcmd("define"):
+    if mp.wcmd('define'):
         word = mp.args().strip()
         if not word:
-            main.sendcmsg("Invalid Arguments!")
+            main.sendcmsg('Invalid Arguments!')
         main.sendcmsg(getdictionary(word))
         return True
-    if mp.wcmd("wiki"):
+    if mp.wcmd('wiki'):
         word = mp.args().strip()
         if not word:
-            main.sendcmsg("Invalid Arguments!")
-        output = ""
+            main.sendcmsg('Invalid Arguments!')
+        output = ''
         try:
             output = getwikipedia(word)
         except wikipedia.exceptions.WikipediaException:
-            output = "Unable to locate definition..."
+            output = 'Unable to locate definition...'
         main.sendcmsg(output)
         return True
-    if mp.wcmd("lookup"):
+    if mp.wcmd('lookup'):
         word = mp.args().strip()
         if not word:
-            main.sendcmsg("Invalid Arguments!")
+            main.sendcmsg('Invalid Arguments!')
         googleword(word)
         try:
-         output = getdictionary(word)
+            output = getdictionary(word)
         except UnicodeEncodeError:
-         output = "."
-        if output == "." or len(output)<1:
+            output = '.'
+        if output == '.' or len(output) < 1:
             try:
                 output = getwikipedia(word)
             except wikipedia.exceptions.WikipediaException:
-                output = "Unable to locate definition..."
+                output = 'Unable to locate definition...'
         main.sendcmsg(output)
         return True
     return False
 
+
 def showhelp():
-    main.sendcmsg(".lookup <word>: Lookup <word>.")
-    main.sendcmsg(".define <word>: Define <word>.")
-    main.sendcmsg(".wiki <words>: Lookup on Wikipedia: <words>.")
-    main.sendcmsg(".google [-n=number] <words to lookup>: Lookup on Google.")
+    main.sendcmsg('.lookup <word>: Lookup <word>.')
+    main.sendcmsg('.define <word>: Define <word>.')
+    main.sendcmsg('.wiki <words>: Lookup on Wikipedia: <words>.')
+    main.sendcmsg('.google [-n=number] <words to lookup>: Lookup on Google.'
+                  )

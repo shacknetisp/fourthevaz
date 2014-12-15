@@ -10,14 +10,14 @@ def msg(mp):
     if mp.wcmd("addtip"):
         args = mp.args("addtip")
         with open(dbfile, "a") as myfile:
-          myfile.write(args+"\n");
-          main.sendcmsg("Tip added: " + args)
+            myfile.write(args + "\n")
+            main.sendcmsg("Tip added: " + args)
         return True
     if mp.cmd("tip"):
         args = mp.args("tip")
         lines = []
         for line in open(dbfile, 'r'):
-           lines.append(line.strip())
+            lines.append(line.strip())
         out = random.choice(lines)
         outfull = str.format('Tip: "{0}"', out)
         main.sendcmsg(outfull)

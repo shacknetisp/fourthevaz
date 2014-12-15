@@ -2,11 +2,8 @@
 import socket
 import random
 import time
-import sys
 from evazbot.configs import c_net
-from evazbot.configs import c_locs
 import select
-from imp import reload
 import re
 
 running = True
@@ -19,13 +16,15 @@ handled = False
 ircsocks = []
 currentprofile = -1
 adminlist = {}
+ircprofiles = []
 
 exec(open("evazbot/configs/c_local/profiles.py").read())
 
 
 def ircwrite(msg):
     global currentprofile
-    ircprofiles[currentprofile]["ircsock"].send(msg.encode('latin-1', 'ignore') + b"\n")
+    ircprofiles[currentprofile]["ircsock"].send(
+        msg.encode('latin-1', 'ignore') + b"\n")
 
 
 def getchannel():
@@ -57,7 +56,7 @@ def sendcmsg(msg):
 def sendamsg(msg):
     global currentprofile
     for i in ircprofiles[currentprofile]["channels"]:
-       sendmsg(i, msg)
+        sendmsg(i, msg)
 
 
 def sendsmsg(chan, msg):
@@ -69,9 +68,9 @@ def sendsmsg(chan, msg):
 
 def joinchan(chan):
     ircwrite("JOIN " + chan)
-    
+
 def whois(n):
-  ircwrite("WHOIS "+n)
+    ircwrite("WHOIS " + n)
 
 
 def ircconnect():
@@ -79,9 +78,12 @@ def ircconnect():
     for i in range(len(ircprofiles)):
         currentprofile = i
         try:
-            ircprofiles[currentprofile]["ircsock"].connect((ircprofiles[currentprofile]["server"], 6667))
-            ircwrite("USER " + ircprofiles[currentprofile]["nick"] + " " + ircprofiles[currentprofile]["nick"]
-                     + " " + ircprofiles[currentprofile]["nick"] + " :" + ircprofiles[currentprofile]["name"])
+            ircprofiles[currentprofile]["ircsock"].connect(
+                (ircprofiles[currentprofile]["server"], 6667))
+            ircwrite("USER " + ircprofiles[currentprofile]["nick"] + " "
+                + ircprofiles[currentprofile]["nick"]
+                     + " " + ircprofiles[currentprofile]["nick"]
+                     + " :" + ircprofiles[currentprofile]["name"])
             ircwrite("NICK " + ircprofiles[currentprofile]["nick"])
             for c in ircprofiles[currentprofile]["channels"]:
                 joinchan(c)
@@ -99,7 +101,8 @@ def dochannel(ircmsg, i):
         channel = i
     if (
             ircmsg.endswith("JOIN " + i)
-            or ircmsg.endswith("PART " + i) or ircmsg.find("PART " + i + " :") != -1
+            or ircmsg.endswith("PART " + i)
+            or ircmsg.find("PART " + i + " :") != -1
             or ircmsg.find("QUIT :") != -1
     ):
         channel = i
@@ -122,16 +125,18 @@ def process(ircmsgp):
         currentuser = cmd.getircuser(ircmsg)
         if ircmsg.find("PING :") == 0:
             c_modules.event("ping")
-        elif ircmsg.find("ERROR :") == 0 and ircmsg.find("Ping timeout :") != -1:
+        elif ircmsg.find("ERROR :") == 0 and\
+        ircmsg.find("Ping timeout :") != -1:
             pass
-        elif ircmsg.find(":" + ircprofiles[currentprofile]["nick"] + "!") == 0 and ircmsg.find("JOIN") != -1:
+        elif ircmsg.find(":" + ircprofiles[currentprofile]["nick"] + "!") == 0\
+        and ircmsg.find("JOIN") != -1:
             c_modules.event("login")
         else:
             global handled
             handled = False
             c_modules.event("text", ircmsg)
             c_modules.event("msg", ircmsg)
-            c_modules.event("afterall",ircmsg)
+            c_modules.event("afterall", ircmsg)
 
 
 def loop():
@@ -153,9 +158,11 @@ def loop():
                 if ircprofiles[r]["ircsock"].fileno() == fd:
                     currentprofile = r
                     try:
-                        ircmsg = ircprofiles[currentprofile]["ircsock"].recv(2048).decode()
-                        regex = re.compile("\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
-                        ircmsg = regex.sub("",ircmsg)
+                        ircmsg = ircprofiles[currentprofile][
+                            "ircsock"].recv(2048).decode()
+                        regex = re.compile(
+                            "\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
+                        ircmsg = regex.sub("", ircmsg)
                     except socket.error as exc:
                         raise exc
                     msgs = ircmsg.split("\r\n")
@@ -167,7 +174,7 @@ def ircmain():
     import evazbot.configs.c_modules as c_modules
     c_modules.init()
     c_modules.load()
-    print("Starting " + c_net.name + "...")
+    print(("Starting " + c_net.name + "..."))
     c_modules.event("start")
     loop()
     c_modules.event("stop")

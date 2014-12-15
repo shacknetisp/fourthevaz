@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from base import *
-import sys
 import random
 import time
 
@@ -12,14 +11,14 @@ def msg(mp):
     if mp.wcmd("addhist"):
         args = mp.args("addhist")
         with open(dbfile, "a") as myfile:
-          myfile.write(now + ": "+args+"\n");
-          main.sendcmsg("History added: " + now + ": " + args)
+            myfile.write(now + ": " + args + "\n")
+            main.sendcmsg("History added: " + now + ": " + args)
         return True
     if mp.cmd("hist"):
         args = mp.args("hist")
         lines = []
         for line in open(dbfile, 'r'):
-           lines.append(line.strip())
+            lines.append(line.strip())
         out = random.choice(lines)
         outfull = str.format('{0}', out)
         main.sendcmsg(outfull)

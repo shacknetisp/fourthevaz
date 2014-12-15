@@ -8,7 +8,8 @@ def msg(mp):
         splitargs = args.split()
         if len(splitargs) == 0:
             main.sendcmsg("Use .help <module> for a specific module.")
-            main.sendcmsg("http://ghostclanre.tk/phpbb3/viewtopic.php?f=16&t=21")
+            main.sendcmsg(
+                "http://ghostclanre.tk/phpbb3/viewtopic.php?f=16&t=21")
             cmd.outlist(c_modules.helpmodulenames())
         elif len(splitargs) == 1:
             c_modules.showhelp(splitargs[0])
@@ -19,4 +20,5 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg(".help <[module]>: View help for <module>. If <module> is omitted, view general help.")
+    main.sendcmsg(".help <[module]>: View help for <module>." +
+    "If <module> is omitted, view general help.")

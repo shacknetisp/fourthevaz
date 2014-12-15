@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import sys
-import time
 from imp import reload
 import evazbot.main as main
+tmp = main
 import importlib
 
 

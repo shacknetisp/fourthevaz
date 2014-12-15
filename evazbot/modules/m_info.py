@@ -4,7 +4,8 @@ from base import *
 
 modname = "Info"
 modcommand = "4e"
-modmessage = c_net.name + " is running. Use ." + c_net.helpcommand + " for help."
+modmessage = c_net.name + " is running. Use ." +\
+    c_net.helpcommand + " for help."
 
 
 def msg(mp):
