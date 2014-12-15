@@ -6,6 +6,7 @@ earcharsl = '<([{!/\\\'"'
 earcharsr = '>)]}!\\/\'"'
 eyechars = '*oO0$^'
 mouthchars = '._-~'
+maxdots = 32
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
@@ -13,17 +14,20 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 
 
 def msg(mp):
-    if mp.cmd('..') or mp.cmd('') or mp.cmd('.'):
-        earchari = random.randrange(int(-(min(len(earcharsl),
-                                    len(earcharsr)) * 0.5)),
-                                    min(len(earcharsl), len(earcharsr)))
-        if earchari >= 0:
-            main.sendcmsg(earcharsl[earchari] + id_generator(1,
-                          eyechars) + id_generator(1, mouthchars)
-                          + id_generator(1, eyechars)
-                          + earcharsr[earchari])
-        else:
-            main.sendcmsg(id_generator(1, eyechars) + id_generator(1,
-                          mouthchars) + id_generator(1, eyechars))
-        return True
+    possible = ""
+    for i in range(maxdots):
+        if mp.cmd(possible):
+            earchari = random.randrange(int(-(min(len(earcharsl),
+                                        len(earcharsr)) * 0.5)),
+                                        min(len(earcharsl), len(earcharsr)))
+            if earchari >= 0:
+                main.sendcmsg(earcharsl[earchari] + id_generator(1,
+                              eyechars) + id_generator(1, mouthchars)
+                              + id_generator(1, eyechars)
+                              + earcharsr[earchari])
+            else:
+                main.sendcmsg(id_generator(1, eyechars) + id_generator(1,
+                              mouthchars) + id_generator(1, eyechars))
+            return True
+        possible += "."
     return False
