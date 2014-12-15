@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from base import *
-import sys
-import random
 import pickle
 
 dbfile = c_redeclipse.dbhome + '/faq.db.pkl'
