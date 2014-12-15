@@ -3,6 +3,10 @@ import evazbot.configs.c_locs as c_locs
 '''
 #Copy the contents of this comment
 #Add somthing like this to profiles.py in your ~/.fourthevaz folder
+#Fourth Evaz should only connect to one IRC network
+#(freenode, slashnet, etc...) at a time, but can have multiple connections.
+#Note that you *can* have several networks, but it might mess up the
+#whitelist and adminlist authentication systems.
 ircprofiles = [
     {
         "ircsock": socket.socket(socket.AF_INET, socket.SOCK_STREAM),
