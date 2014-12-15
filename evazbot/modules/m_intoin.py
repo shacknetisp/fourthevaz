@@ -9,7 +9,6 @@ lagtext = [
 bantext = [
     "Ban? That insolent troublemaker deserved it.",
     "Justice hath been served!",
-    "Observe! The sentence has been carried out.",
     ]
 kicktext = [
     "Kicked out!",
