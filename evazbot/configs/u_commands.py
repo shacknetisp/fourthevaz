@@ -9,7 +9,7 @@ def getuser(message):
     if message.find(name) != 1:
         name = "no_name"
     if name.find("snisp") == 0 or name.find("eleptor") == 0\
-    or name.find("altre") == 0 or name.find("RE-") == 0:
+    or name.find("altre") == 0 or name.find("ACEserv") == 0:
         name = find_between(message, ":<", "> ")
     return name
 
@@ -213,7 +213,7 @@ class MParser:
     def isserver(self):
         name = find_between(self.message, ":", "!")
         return name.find("snisp") != -1 or name.find("eleptor") != -1 or\
-        name.find("altre") != -1 or name.find("RE-") != -1
+        name.find("altre") != -1 or name.find("ACEserv") != -1
 
     def isjp(self, m):
         for i in main.ircprofiles[main.currentprofile]["channels"]:
