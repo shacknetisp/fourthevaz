@@ -5,6 +5,8 @@ whitelist = [
     (99, ["nick1","nick2"]),
 ]
 
+#authname (freenode)
+#nick (slashnet, rizon)
 adminlist = [
     (99, "ircauth"),
 ]
