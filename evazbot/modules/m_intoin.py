@@ -1,5 +1,20 @@
 # -*- coding: utf-8 -*-
 from base import *
+import random
+
+lagtext = [
+    "The lag is here.",
+    "Retrieve the packets!",
+    ]
+bantext = [
+    "Ban? That insolent troublemaker deserved it.",
+    "Justice hath been served!",
+    "Observe! The sentence has been carried out.",
+    ]
+kicktext = [
+    "Kicked out!",
+    "Suddenly, Adieu!",
+]
 
 
 def msg(mp):
@@ -7,9 +22,9 @@ def msg(mp):
         if mp.text().count(main.getchannel() + " :") == 1:
             if mp.text().find("has left the game") != -1:
                 if mp.text().find("kicked") != -1:
-                    main.sendcmsg("Kicked out!")
+                    main.sendcmsg(random.choice(kicktext))
                 if mp.text().find("banned") != -1:
                     main.sendcmsg(
-                        "Ban? That insolent troublemaker deserved it.")
+                        random.choice(bantext))
                 if mp.text().find("packet overflow") != -1:
-                    main.sendcmsg("The lag is here.")
+                    main.sendcmsg(random.choice(lagtext))
