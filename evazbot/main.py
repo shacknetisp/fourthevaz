@@ -147,17 +147,17 @@ def loop():
     global currentprofile
     lasttime = time.time()
     while running:
-        poll = select.poll()
+        sockets = []
         for p in range(len(ircprofiles)):
-            poll.register(ircprofiles[p]["ircsock"], select.POLLIN)
-        ready = poll.poll(0.2)
+            sockets.append(ircprofiles[p]["ircsock"])
+        selectresult, sr2, sr3 = select.select(sockets, [], [], 0.2)
         time.sleep(0.1)
         if time.time() - lasttime >= 1:
             lasttime = time.time()
             c_modules.event("tick")
-        for fd, flag in ready:
+        for socket in selectresult:
             for r in range(len(ircprofiles)):
-                if ircprofiles[r]["ircsock"].fileno() == fd:
+                if ircprofiles[r]["ircsock"] == socket:
                     currentprofile = r
                     try:
                         ircmsg = ircprofiles[currentprofile][
