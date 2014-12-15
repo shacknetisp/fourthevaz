@@ -118,7 +118,8 @@ def process(ircmsgp):
     if len(ircmsg) > 1:
         print(ircmsg)
         channel = "nochannel"
-        if ircmsg.endswith(":+x") or ircmsg.endswith(":+i"):
+        if ircmsg.endswith(":+x") or ircmsg.endswith(":+i") or\
+        ircmsg.endswith(":+ix"):
             for c in ircprofiles[currentprofile]["channels"]:
                 joinchan(c)
         for i in ircprofiles[currentprofile]["channels"]:
