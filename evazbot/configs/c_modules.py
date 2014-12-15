@@ -155,6 +155,7 @@ def event(f, s=""):
 
 def showhelp(n):
     n = n.strip()
+    found = False
     for i in module_callbacks:
         if i[name_offset] == n:
             try:
@@ -164,3 +165,6 @@ def showhelp(n):
                 main.sendcmsg(n+" is not interactive.")
             except:
                 traceback.print_exc()
+            found = True
+    if not found:
+     main.sendcmsg(n+" does not exist.")

@@ -5,6 +5,7 @@ from base import *
 def msg(mp):
   if mp.cmd("login"):
     main.whois(mp.ircuser())
+    main.sendcmsg("Login attempt processed.")
   if mp.text().find("330") != -1 and mp.text().find(":is logged in as") != -1:
     nick = cmd.find_between(mp.text()," ",":is logged in as").split()[2]
     auth = cmd.find_between(mp.text()," ",":is logged in as").split()[3]
