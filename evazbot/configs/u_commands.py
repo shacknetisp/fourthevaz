@@ -39,7 +39,8 @@ def iswlist(ircmsg, w=1):
 def isadmin(ircmsg, w=1):
     try:
         for i in c_wlist.adminlist:
-            if main.adminlist[getuser(ircmsg)] == i[1] and i[0] >= w:
+            if main.ircprofiles[main.currentprofile][
+                "adminlist"][getuser(ircmsg)] == i[1] and i[0] >= w:
                 return True
     except KeyError:
         return False

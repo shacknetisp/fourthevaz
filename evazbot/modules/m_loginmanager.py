@@ -20,7 +20,14 @@ def msg(mp):
                 mp.text(), " ", ":is logged in as").split()[2]
             auth = cmd.find_between(
                 mp.text(), " ", ":is logged in as").split()[3]
-            main.adminlist[nick] = auth
+            main.ircprofiles[main.currentprofile]["adminlist"][nick] = auth
+            print(("Adding " + nick + " as " + auth))
+    if mp.text().find("307") != -1\
+        and (mp.text().find(":is identified for this nick") != -1 or
+        mp.text().find(":is a registered nick") != -1):
+            nick = mp.text().split()[3]
+            auth = nick
+            main.ircprofiles[main.currentprofile]["adminlist"][nick] = auth
             print(("Adding " + nick + " as " + auth))
     if mp.text().find("353 " + main.ircprofiles[
         main.currentprofile]["nick"]) != -1:

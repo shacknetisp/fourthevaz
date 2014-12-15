@@ -2,6 +2,6 @@
 from base import *
 
 
-def ping():
-    main.ircwrite("PONG :pingis")
+def ping(mp):
+    main.ircwrite("PONG " + mp.text()[6:])
     print("Ping Processed.")

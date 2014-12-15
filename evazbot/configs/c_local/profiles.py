@@ -1,5 +1,7 @@
+#Don't copy this line (unless you really want to...):
 import evazbot.configs.c_locs as c_locs
 '''
+#Copy the contents of this comment
 #Add somthing like this to profiles.py in your ~/.fourthevaz folder
 ircprofiles = [
     {
@@ -18,4 +20,5 @@ ircprofiles = [
     },
 ]
 '''
+#Don't copy this line at all:
 exec(open(c_locs.dbhome + "/profiles.py").read())

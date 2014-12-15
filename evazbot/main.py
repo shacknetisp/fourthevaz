@@ -69,6 +69,7 @@ def sendsmsg(chan, msg):
 def joinchan(chan):
     ircwrite("JOIN " + chan)
 
+
 def whois(n):
     ircwrite("WHOIS " + n)
 
@@ -77,16 +78,14 @@ def ircconnect():
     global currentprofile
     for i in range(len(ircprofiles)):
         currentprofile = i
+        ircprofiles[currentprofile]["adminlist"] = dict()
         try:
             ircprofiles[currentprofile]["ircsock"].connect(
                 (ircprofiles[currentprofile]["server"], 6667))
-            ircwrite("USER " + ircprofiles[currentprofile]["nick"] + " "
-                + ircprofiles[currentprofile]["nick"]
-                     + " " + ircprofiles[currentprofile]["nick"]
-                     + " :" + ircprofiles[currentprofile]["name"])
+            ircwrite('USER %s 8 * :%s\r\n' % (
+                ircprofiles[currentprofile]["nick"],
+                ircprofiles[currentprofile]["nick"]))
             ircwrite("NICK " + ircprofiles[currentprofile]["nick"])
-            for c in ircprofiles[currentprofile]["channels"]:
-                joinchan(c)
             time.sleep(0.25)
         except socket.error:
             pass
@@ -119,12 +118,15 @@ def process(ircmsgp):
     if len(ircmsg) > 1:
         print(ircmsg)
         channel = "nochannel"
+        if ircmsg.endswith(":+x") or ircmsg.endswith(":+i"):
+            for c in ircprofiles[currentprofile]["channels"]:
+                joinchan(c)
         for i in ircprofiles[currentprofile]["channels"]:
             dochannel(ircmsg, i)
         dochannel(ircmsg, ircprofiles[currentprofile]["nick"])
         currentuser = cmd.getircuser(ircmsg)
         if ircmsg.find("PING :") == 0:
-            c_modules.event("ping")
+            c_modules.event("ping", ircmsg)
         elif ircmsg.find("ERROR :") == 0 and\
         ircmsg.find("Ping timeout :") != -1:
             pass
@@ -145,7 +147,7 @@ def loop():
     global currentprofile
     lasttime = time.time()
     while running:
-        poll = select.epoll()
+        poll = select.poll()
         for p in range(len(ircprofiles)):
             poll.register(ircprofiles[p]["ircsock"], select.POLLIN)
         ready = poll.poll(0.2)
