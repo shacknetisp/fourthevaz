@@ -5,7 +5,7 @@ from base import *
 def msg(mp):
     if mp.cmd("login"):
         if mp.argbool("check"):
-            if mp.isadmin():
+            if mp.isadmin() and mp.iswlist():
                 main.sendcmsg("You are an admin.")
             elif mp.iswlist():
                 main.sendcmsg("You are whitelisted.")
