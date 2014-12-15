@@ -18,6 +18,7 @@ outputchannel = ""
 handled = False
 ircsocks = []
 currentprofile = -1
+adminlist = {}
 
 exec(open("evazbot/configs/c_local/profiles.py").read())
 
@@ -68,6 +69,9 @@ def sendsmsg(chan, msg):
 
 def joinchan(chan):
     ircwrite("JOIN " + chan)
+    
+def whois(n):
+  ircwrite("WHOIS "+n)
 
 
 def ircconnect():

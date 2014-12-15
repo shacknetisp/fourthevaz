@@ -47,6 +47,7 @@ def init():
     needmodule("core")
     needmodule("ircping")
     needmodule("help")
+    needmodule("loginmanager")
     modules = unique(modules)
 
 

@@ -6,7 +6,7 @@ whitelist = [
 ]
 
 adminlist = [
-    (1000, ":nick!~ident@blah.blah.ip.blah"),
+    (99, "ircauth"),
 ]
 
 names = [

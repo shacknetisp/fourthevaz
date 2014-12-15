@@ -30,9 +30,12 @@ def iswlist(ircmsg,w = 1):
   return False
 
 def isadmin(ircmsg, w = 1):
-  for i in c_wlist.adminlist:
-        if ircmsg.find(i[1]) == 0 and i[0] >= w:
-            return True
+  try:
+    for i in c_wlist.adminlist:
+      if main.adminlist[getuser(ircmsg)] == i[1] and i[0] >= w:
+         return True
+  except KeyError:
+    return False
   return False
 
 def getwcmd(ircmsg, c, w = 1):
