@@ -24,7 +24,9 @@ def msg(mp):
             print(("Adding " + nick + " as " + auth))
     if mp.text().find("307") != -1\
         and (mp.text().find(":is identified for this nick") != -1 or
-        mp.text().find(":is a registered nick") != -1):
+            mp.text().find(":is a registered nick") != -1 or
+            mp.text().find(":has identified for this nick") != -1 or
+            mp.text().find(":has identified for t\nhis nick") != -1):
             nick = mp.text().split()[3]
             auth = nick
             main.ircprofiles[main.currentprofile]["adminlist"][nick] = auth
