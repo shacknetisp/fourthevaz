@@ -41,11 +41,11 @@ def msg(mp):
             out.append(str(len(c_wlist.adminlist)) + ' admin user(s).')
             if tolist:
                 names = []
-                cmd.outlist(wlistnames, 12)
+                cmd.outlist(["Whitelist:"]+wlistnames, 12)
                 names = []
                 for i in c_wlist.adminlist:
                     names.append(cmd.getname(i[1]))
-                cmd.outlist(names, 12)
+                cmd.outlist(["Admins:"]+names, 12)
         if tochannels:
             out.append(str(len(main.ircprofiles[main.currentprofile]['channels'
                        ])) + ' channels.')
