@@ -7,7 +7,7 @@ from base import *
 def msg(mp):
     #if .example is received as a command
     if mp.cmd("example"):
-        #Send a message echoing the arguments.
+        #Send a message echoing the arguments to the current channel/query.
         main.sendcmsg("Example's Arguments: " + mp.args())
         #Command was received
         return True
