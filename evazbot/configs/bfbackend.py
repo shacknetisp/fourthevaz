@@ -17,7 +17,7 @@ def evaluate(code,intextp):
 
   while codeptr < len(code):
     timesrun += 1
-    if timesrun > 10000:
+    if timesrun > 500000:
         main.sendcmsg("Max loop met.")
         return "".join(outputlist)
     command = code[codeptr]
@@ -43,7 +43,7 @@ def evaluate(code,intextp):
             cells[cellptr] = ord(intext[0])
             intext = intext[1:]
         except IndexError:
-            cells[cellptr] = ord(chr(0))
+            cells[cellptr] = -1
 
     codeptr += 1
   return "".join(outputlist)
