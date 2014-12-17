@@ -1,24 +1,25 @@
-'''#!/usr/bin/python
+#!/usr/bin/python3
 #
-# Brainfuck Interpreter
+# Brainf**k Interpreter
 # Copyright 2011 Sebastian Kaspari
 #
-# Usage: ./brainfuck.py [FILE]
 
+from base import *
 
-def execute(filename):
-  f = open(filename, "r")
-  evaluate(f.read())
-  f.close()
-
-
-def evaluate(code):
-  code     = cleanup(list(code))
+def evaluate(code,intextp):
+  intext = intextp
+  code     = list(cleanup(list(code)))
   bracemap = buildbracemap(code)
 
   cells, codeptr, cellptr, outputlist = [0], 0, 0, []
 
+  timesrun = 0
+
   while codeptr < len(code):
+    timesrun += 1
+    if timesrun > 10000:
+        main.sendcmsg("Max loop met.")
+        return "".join(outputlist)
     command = code[codeptr]
 
     if command == ">":
@@ -37,7 +38,12 @@ def evaluate(code):
     if command == "[" and cells[cellptr] == 0: codeptr = bracemap[codeptr]
     if command == "]" and cells[cellptr] != 0: codeptr = bracemap[codeptr]
     if command == ".": outputlist.append(chr(cells[cellptr]))
-    if command == ",": cells[cellptr] = ord(getch.getch())
+    if command == ",":
+        try:
+            cells[cellptr] = ord(intext[0])
+            intext = intext[1:]
+        except IndexError:
+            cells[cellptr] = ord(chr(0))
 
     codeptr += 1
   return "".join(outputlist)
@@ -56,6 +62,5 @@ def buildbracemap(code):
       bracemap[start] = position
       bracemap[position] = start
   return bracemap
-'''
 
 
