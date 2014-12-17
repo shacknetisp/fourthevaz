@@ -1,25 +1,12 @@
 # -*- coding: utf-8 -*-
-import sys
-
-sys.path.insert(0, 'evazbot')
-sys.path.insert(0, 'evazbot/modules')
-sys.path.insert(0, 'evazbot/configs')
-import main
-
-modname = "IRC Ping"
+#This will import all essential Fourth Evaz components
+from base import *
 
 
-def start():
-    print(modname + " has started.")
+def msg(mp):
+    if mp.cmd("example"):
+        main.sendcmsg("Example's Arguments: " + mp.args())
 
 
-def stop():
-    print(modname + " has stopped")
-
-
-def text(message):
-    print(modname + " has recieved")
-
-
-def ping():
-    print(modname + " has pinged.")
+def showhelp():
+    main.sendcmsg(".example <arguments>: Return the arguments.")
