@@ -1,23 +1,31 @@
 from base import *
-import subprocess
-reload(subprocess)
+import urllib.request
+import urllib.parse
+calccmd = "calc"
 
 
 def msg(mp):
     if mp.cmd('calc'):
         arg = mp.argsdef()
         if arg.find('read') == -1 or arg.find('help') == -1:
-            p = subprocess.Popen("calc -- '" + arg + "'", shell=True,
+            p = subprocess.Popen(calccmd + " -- '" + arg + "'", shell=True,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
             (out, err) = p.communicate()
             main.sendcmsg(out.decode().strip())
-            main.sendcmsg(err.decode().strip())
         else:
             main.sendcmsg(
                 'Detected potentially harmful argument.' +
                 'Use math expressions only!'
                           )
+        if (len(out.decode()) == 0 and len(err.decode()) == 0)\
+        or err.decode().find(calccmd + ": not found") != -1:
+            out = urllib.request.urlopen(
+                    "https://www.calcatraz.com/calculator/api?c=" +
+                    urllib.parse.quote_plus(arg)).read().decode().strip()
+            if out == "answer" or out == "":
+                out = "invalid"
+            main.sendcmsg(out)
         return True
     return False
 
