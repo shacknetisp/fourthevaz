@@ -33,7 +33,8 @@ def msg(mp):
             print(("Adding " + nick + " as " + auth))
     if mp.text().find("353 " + main.ircprofiles[
         main.currentprofile]["nick"]) != -1:
-        for i in mp.text().split():
+        for i in mp.text()[mp.text().index(":" + main.ircprofiles[
+        main.currentprofile]["nick"]):].split():
             main.whois(i.strip("@"))
 
 
