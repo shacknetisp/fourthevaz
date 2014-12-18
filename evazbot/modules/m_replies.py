@@ -41,7 +41,7 @@ def msg(mp):
             main.sendcmsg('Words: ' + str(wordai.getwords()))
         else:
             main.sendcmsg(wordai.process(mp.args()))
-    elif mp.wcmd('cg'):
+    elif mp.cmd('cg'):
         wordaicg.dbfile = c_locs.dbhome + '/replies.cg.db.pkl'
         wordaicg.load()
         if mp.argbool('fix'):
