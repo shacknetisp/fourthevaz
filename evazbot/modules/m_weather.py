@@ -18,7 +18,7 @@ def msg(mp):
             mp.argsdef()
             jsonobj = urlopen(jsonurl)
             jsonobj = jsonobj.read()
-            data = loads(jsonobj)
+            data = loads(jsonobj.decode())
             if data["cod"] == 200:
                 if outputcel:
                     main.sendcmsg(str(data["main"]["temp"] - 273.15))
