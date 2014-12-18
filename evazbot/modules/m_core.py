@@ -23,7 +23,7 @@ def msg(mp):
         if len(splitargs) == 1:
             r = c_modules.remove(splitargs[0])
             if not r:
-                main.sendcmsg("Couldn't remove module!");
+                main.sendcmsg("Couldn't remove module!")
         else:
             main.sendcmsg("Invalid Arguments!")
         return True
@@ -56,31 +56,34 @@ def msg(mp):
         if len(splitargs) == 1:
             lines = []
             try:
-              for line in open(c_modules.dbfile, "r"):
-                if line.split() != splitargs[0].split():
-                    lines.append(line)
+                for line in open(c_modules.dbfile, "r"):
+                    if line.split() != splitargs[0].split():
+                        lines.append(line)
             except FileNotFoundError:
-              main.sendcmsg("Module does not exist!")
-              return True
+                main.sendcmsg("Module does not exist!")
+                return True
             r = c_modules.remove(splitargs[0])
             if not r:
-                main.sendcmsg("Module does not exist!");
+                main.sendcmsg("Module does not exist!")
             else:
                 c_modules.reloadall()
         else:
             main.sendcmsg("Invalid Arguments!")
         return True
     return False
-    
-    
+
+
 def showhelp():
     main.sendcmsg(".mreload: Stop modules & reload default modules.")
-    main.sendcmsg(".add <m>: Load & start module <m>. If <m> is running, stop it.")
+    main.sendcmsg(
+        ".add <m>: Load & start module <m>. If <m> is running, stop it.")
     main.sendcmsg(".remove <m>: Unload module <m>.")
     main.sendcmsg(".dadd <m>: Add module to the defaults list.")
     main.sendcmsg(".dremove <m>: Remove module from the defaults list.")
 
-whitelistreload = 0;
+whitelistreload = 0
+
+
 def tick():
     global whitelistreload
     whitelistreload += 1
