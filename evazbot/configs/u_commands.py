@@ -15,15 +15,18 @@ def getuser(message):
 
 
 def getcmd(ircmsg, c):
-    if ircmsg.find("PRIVMSG " + main.getchannel() + " :.") != -1\
-    or ircmsg.find(getuser(ircmsg) + "> .") != -1:
-        if (ircmsg.find(":." + c + " ") != -1 or (
-                ircmsg.find(":." + c) != -1
-                and ircmsg.endswith(":." + c)) or ircmsg.find(
-                "> ." + c + " ") != -1 or (
-                ircmsg.find("> ." + c) != -1 and ircmsg.endswith("> ." + c))):
-            main.handled = True
-            return True
+
+    if len(getuser(ircmsg).strip()) > 0:
+        if ircmsg.find("PRIVMSG " + main.getchannel() + " :.") != -1\
+        or ircmsg.find(getuser(ircmsg) + "> .") != -1:
+            if (ircmsg.find(":." + c + " ") != -1 or (
+                    ircmsg.find(":." + c) != -1
+                    and ircmsg.endswith(":." + c)) or ircmsg.find(
+                    "> ." + c + " ") != -1 or (
+                    ircmsg.find("> ." + c) != -1 and
+                    ircmsg.endswith("> ." + c))):
+                main.handled = True
+                return True
     return False
 
 
