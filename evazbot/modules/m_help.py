@@ -17,7 +17,7 @@ def msg(mp):
             else:
                 main.sendcmsg("Invalid Arguments")
         else:
-            main.sendcmsg("No access, contact Beha. ##4etesting on freenode.")
+            main.sendcmsg("No access, contact an admin.")
         return True
     return False
 
