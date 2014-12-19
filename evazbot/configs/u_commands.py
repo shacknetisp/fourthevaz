@@ -1,21 +1,27 @@
 # -*- coding: utf-8 -*-
 from base import *
-
 import shlex
+
+
+def isservername(name):
+    if(name.find("snisp") == 0 or
+    name.find("eleptor") == 0 or
+    name.find("altre") == 0 or
+    name.find("ACEserv") == 0):
+        return True
+    return False
 
 
 def getuser(message):
     name = find_between(message, ":", "!")
     if message.find(name) != 1:
         name = "no_name"
-    if name.find("snisp") == 0 or name.find("eleptor") == 0\
-    or name.find("altre") == 0 or name.find("ACEserv") == 0:
+    if isservername(name):
         name = find_between(message, ":<", "> ")
     return name
 
 
 def getcmd(ircmsg, c):
-
     if len(getuser(ircmsg).strip()) > 0:
         if ircmsg.find("PRIVMSG " + main.getchannel() + " :.") != -1\
         or ircmsg.find(getuser(ircmsg) + "> .") != -1:
@@ -225,8 +231,7 @@ class MParser:
 
     def isserver(self):
         name = find_between(self.message, ":", "!")
-        return name.find("snisp") != -1 or name.find("eleptor") != -1 or\
-        name.find("altre") != -1 or name.find("ACEserv") != -1
+        return isservername(name)
 
     def isjp(self, m):
         for i in main.ircprofiles[main.currentprofile]["channels"]:
