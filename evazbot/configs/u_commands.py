@@ -33,6 +33,8 @@ def getcmd(ircmsg, c):
                     ircmsg.endswith("> ." + c))):
                 main.handled = True
                 return True
+    else:
+        main.wasserver = True
     return False
 
 

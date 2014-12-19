@@ -3,7 +3,7 @@ from base import *
 
 
 def afterall(mp):
-    if not main.handled:
+    if not main.handled and not main.wasserver:
         if mp.text().find('PRIVMSG ' + main.getchannel() + ' :.') != -1 \
             or mp.text().find(mp.user() + '> .') != -1:
             main.sendcmsg('Unrecognized Command!')

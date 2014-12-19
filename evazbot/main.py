@@ -13,6 +13,7 @@ currentuser = ""
 outputtext = ""
 outputchannel = ""
 handled = False
+wasserver = False
 ircsocks = []
 currentprofile = -1
 adminlist = {}
@@ -137,7 +138,9 @@ def process(ircmsgp):
             c_modules.event("login")
         else:
             global handled
+            global wasserver
             handled = False
+            wasserver = False
             c_modules.event("text", ircmsg)
             c_modules.event("msg", ircmsg)
             c_modules.event("afterall", ircmsg)
