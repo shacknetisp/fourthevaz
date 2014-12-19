@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from base import *
+import pickle
 dbfile = c_locs.dbhome + "/wlist.db.pkl"
 
 
@@ -27,7 +28,8 @@ def msg(mp):
         except:
             level = 0
         main.cwlist[mp.argsdef()] = level
-        main.sendcmsg(mp.argsdef() + " is now at level " + str(level))
+        main.sendcmsg(cmd.getname(mp.argsdef()) +
+        " is now at level " + str(level))
         save()
     if mp.cmd("login"):
         if mp.argbool("check"):
