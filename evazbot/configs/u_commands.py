@@ -27,7 +27,16 @@ def getcmd(ircmsg, c):
     return False
 
 
+def getcwlist(u):
+    try:
+        return main.cwlist[u]
+    except KeyError:
+        return 0
+
+
 def iswlist(ircmsg, w=1):
+    if getcwlist(getuser(ircmsg)) >= w:
+        return True
     for name in c_wlist.whitelist:
         for n in name[1]:
             if name[0] >= w or name[0] == 999:

@@ -17,6 +17,7 @@ ircsocks = []
 currentprofile = -1
 adminlist = {}
 ircprofiles = []
+cwlist = {}
 
 exec(open("evazbot/configs/c_local/profiles.py").read())
 

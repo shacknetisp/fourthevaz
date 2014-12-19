@@ -36,6 +36,9 @@ def msg(mp):
                         if n and not found:
                             found = True
                             wlistnames.append(cmd.getname(n))
+            for i in list(main.cwlist.keys()):
+                if cmd.getname(i) not in wlistnames and main.cwlist[i] > 0:
+                    wlistnames.append(cmd.getname(i))
             out.append(str(int(len(wlistnames)))
                        + ' whitelisted user(s).')
             out.append(str(len(c_wlist.adminlist)) + ' admin user(s).')

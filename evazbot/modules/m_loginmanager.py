@@ -1,8 +1,34 @@
 # -*- coding: utf-8 -*-
 from base import *
+dbfile = c_locs.dbhome + "/wlist.db.pkl"
+
+
+def load():
+    try:
+        dict_file = open(dbfile, 'rb')
+        main.cwlist = pickle.load(dict_file)
+        dict_file.close()
+    except:
+        pass
+
+
+def save():
+    output = open(dbfile, 'wb')
+    pickle.dump(main.cwlist, output)
+    output.close()
+
+load()
 
 
 def msg(mp):
+    if mp.cmd("wlist"):
+        try:
+            level = int(mp.argstr("set"))
+        except:
+            level = 0
+        main.cwlist[mp.argsdef()] = level
+        main.sendcmsg(mp.argsdef() + " is now at level " + str(level))
+        save()
     if mp.cmd("login"):
         if mp.argbool("check"):
             if mp.isadmin() and mp.iswlist():
@@ -41,3 +67,5 @@ def msg(mp):
 def showhelp():
     main.sendcmsg(".login [-check]: Login to this bot as admin.")
     main.sendcmsg("-check: Check if you are logged in as admin.")
+    main.sendcmsg(".wlist -set=<level> nick:" +
+    "Add a nick to the whitelist, -set defaults to 0.")
