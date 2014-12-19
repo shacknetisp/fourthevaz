@@ -21,7 +21,7 @@ load()
 
 
 def msg(mp):
-    if mp.cmd("wlist"):
+    if mp.wcmd("wlist",99):
         try:
             level = int(mp.argstr("set"))
         except:
