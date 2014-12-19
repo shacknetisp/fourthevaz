@@ -21,7 +21,7 @@ load()
 
 
 def msg(mp):
-    if mp.wcmd("wlist",99):
+    if mp.wcmd("wlist", 99):
         try:
             level = int(mp.argstr("set"))
         except:
@@ -31,12 +31,31 @@ def msg(mp):
         save()
     if mp.cmd("login"):
         if mp.argbool("check"):
-            if mp.isadmin() and mp.iswlist():
-                main.sendcmsg("You are an admin.")
-            elif mp.iswlist():
-                main.sendcmsg("You are whitelisted.")
-            else:
-                main.sendcmsg("You have no authentication.")
+            nick = mp.argsdef().strip()
+            if len(nick) == 0:
+                nick = mp.user()
+            wlistlevelc = 0
+            wlistlevelmc = 0
+            for name in c_wlist.whitelist:
+                for n in name[1]:
+                    if nick == n:
+                        wlistlevelc = name[0]
+            try:
+                wlistlevelmc = main.cwlist[nick]
+            except KeyError:
+                pass
+            wlistlevel = max(wlistlevelc, wlistlevelmc)
+            main.sendcmsg(cmd.getname(nick) + ": Whitelist " + str(wlistlevel))
+            adminlevel = 0
+            try:
+                for i in c_wlist.adminlist:
+                    if main.ircprofiles[main.currentprofile][
+                        "adminlist"][nick] == i[1]:
+                            adminlevel = i[0]
+            except KeyError:
+                adminlevel = 0
+            main.sendcmsg(cmd.getname(nick) + ": Admin " + str(adminlevel))
+
         else:
             main.whois(mp.ircuser())
             main.sendcmsg("Login attempt processed.")
@@ -66,6 +85,7 @@ def msg(mp):
 
 def showhelp():
     main.sendcmsg(".login [-check]: Login to this bot as admin.")
-    main.sendcmsg("-check: Check if you are logged in as admin.")
+    main.sendcmsg(
+        "-check [<nick>]: Check if you/<nick> are logged in as admin.")
     main.sendcmsg(".wlist -set=<level> nick:" +
     "Add a nick to the whitelist, -set defaults to 0.")

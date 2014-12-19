@@ -29,26 +29,11 @@ def msg(mp):
                     names.append(i[c_modules.name_offset])
                 cmd.outlist(['Modules'] + names)
         if tousers:
-            wlistnames = []
-            for i in c_wlist.whitelist:
-                    found = False
-                    for n in i[1]:
-                        if n and not found:
-                            found = True
-                            wlistnames.append(cmd.getname(n))
-            for i in list(main.cwlist.keys()):
-                if cmd.getname(i) not in wlistnames and main.cwlist[i] > 0:
-                    wlistnames.append(cmd.getname(i))
-            out.append(str(int(len(wlistnames)))
-                       + ' whitelisted user(s).')
+            if tolist and not (tochannels or tomodules):
+                out.append("Invalid option: -list")
+            out.append(str(len(c_wlist.whitelist) + len(main.cwlist)) +
+            ' whitelist nick(s).')
             out.append(str(len(c_wlist.adminlist)) + ' admin user(s).')
-            if tolist:
-                names = []
-                cmd.outlist(["Whitelist:"] + wlistnames, 8)
-                names = []
-                for i in c_wlist.adminlist:
-                    names.append(cmd.getname(i[1]))
-                cmd.outlist(["Admins:"] + names, 8)
         if tochannels:
             out.append(str(len(main.ircprofiles[main.currentprofile]['channels'
                        ])) + ' channels.')
