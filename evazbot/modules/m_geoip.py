@@ -42,7 +42,7 @@ def msg(mp):
         main.sendcmsg(mp.text()[mp.text().index(' :') + 2:index] + ': '
                       + 'Unknown')
         return True
-    if mp.cmd('geoip'):
+    if mp.wcmd('geoip', 10):
         ip = mp.argsdef()
         try:
             r = gi.record_by_addr(ip)
