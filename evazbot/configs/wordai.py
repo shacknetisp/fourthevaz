@@ -149,6 +149,7 @@ def replace(w, n):
 
 
 def getdictstring():
+    global data_dict
     load()
     data_dict_tmp = copy.deepcopy(data_dict)
     if ';record' in data_dict_tmp:
@@ -157,6 +158,7 @@ def getdictstring():
 
 
 def getwords():
+    global data_dict
     load()
     data_dict_tmp = copy.deepcopy(data_dict)
     if ';record' in data_dict_tmp:
