@@ -24,7 +24,6 @@ from random import choice
 import copy
 import random
 import string
-import pickle
 import pprint
 import ast
 
@@ -39,7 +38,6 @@ class wordai:
             self.data_dict = ast.literal_eval(dict_file.read().decode())
             dict_file.close()
         except:
-            main.sendcmsg("Error loading dictionary.")
             self.data_dict = {}
             pass
 
