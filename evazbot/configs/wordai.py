@@ -28,20 +28,18 @@ import pickle
 import pprint
 import ast
 
+
 class wordai:
     dbfile = ''
     data_dict = {}
 
-
     def load(self):
         try:
             dict_file = open(self.dbfile, 'rb')
-            try:
-                self.data_dict = pickle.load(dict_file)
-            except:
-                self.data_dict = ast.literal_eval(dict_file.read().decode())
+            self.data_dict = ast.literal_eval(dict_file.read().decode())
             dict_file.close()
         except:
+            main.sendcmsg("Error loading dictionary.")
             self.data_dict = {}
             pass
 
