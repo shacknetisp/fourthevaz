@@ -150,7 +150,7 @@ def replace(w, n):
 def getdictstring():
     global data_dict
     load()
-    data_dict_tmp = data_dict
+    data_dict_tmp = list(data_dict)
     if ';record' in data_dict_tmp:
         del data_dict_tmp[';record']
     return pprint.pformat(data_dict_tmp)
@@ -159,7 +159,7 @@ def getdictstring():
 def getwords():
     global data_dict
     load()
-    data_dict_tmp = data_dict
+    data_dict_tmp = list(data_dict)
     if ';record' in data_dict_tmp:
         del data_dict_tmp[';record']
     return len(data_dict_tmp) - 2
