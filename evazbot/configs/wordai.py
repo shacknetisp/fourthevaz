@@ -74,7 +74,7 @@ class wordai:
                 pass
         ret = ''
         try:
-            choices = list()
+            self.choices = list()
             for ch in range(4):
                 try:
                     self.addchoice(choice(inp))
