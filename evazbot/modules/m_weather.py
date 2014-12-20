@@ -6,35 +6,40 @@ from decimal import *
 import pygeoip
 gi = pygeoip.GeoIP('pygeoip/GeoLiteCity.dat')
 
+
 class weatherinfo:
     data = {}
 
     def getinfo(self, number):
         data = self.data
+        name = data["name"]
+        if len(name) == 0:
+            name = self.dname
         #checks what the request wants
         if number == "currenttemp":
             if self.outputtemp == "kel":
                 return "It is " +\
-                str(data["main"]["temp"]) + " kel in " + data["name"]
+                str(data["main"]["temp"]) + " kel in " + name
             elif self.outputtemp == "cel":
                 temp = Decimal(str(data["main"]["temp"])) - Decimal('273.15')
-                return "It is " + str(temp) + " cel in " + data["name"]
+                return "It is " + str(temp) + " cel in " + name
             elif self.outputtemp == "far":
                 temp = Decimal(str(data["main"]["temp"])) - Decimal('273.15')
                 temp = Decimal(str(temp)) * Decimal('1.8') + Decimal('32.0')
-                return "It is " + str(temp) + " far in " + data["name"]
+                return "It is " + str(temp) + " far in " + name
             else:
                 raise ValueError(
                     "Invalid Temperature Style: " + self.outputtemp)
         elif number == "currentwindspeed":
             return "The Wind is Blowing at " +\
-            str(data["wind"]["speed"]) + " m/s in " + data["name"]
+            str(data["wind"]["speed"]) + " m/s in " + name
 
-    def __init__(self, url, style):
+    def __init__(self, url, style, altname):
         jsonobj = urlopen(url)
         jsonobj = jsonobj.read()
         self.data = loads(jsonobj.decode())
         self.outputtemp = style
+        self.dname = altname
 
 
 def msg(mp):
@@ -86,7 +91,7 @@ def msg(mp):
                 jsonurl = \
                 'http://api.openweathermap.org/data/2.5/weather?id=' + \
                 argument
-            wxinfo = weatherinfo(jsonurl, tempstyle)
+            wxinfo = weatherinfo(jsonurl, tempstyle, argument)
             data = wxinfo.data
             if data["cod"] == 200:
                 if returnwind:
