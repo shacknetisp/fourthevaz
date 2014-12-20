@@ -7,8 +7,6 @@ from decimal import *
 
 class weatherinfo:
     data = {}
-    outputtemp = "kel"
-
     def getinfo(self, number):
         data = self.data
         #checks what the request wants
@@ -25,7 +23,7 @@ class weatherinfo:
                 return "It is " + str(temp) + " in " + data["name"]
         elif number == "currentwindspeed":
             return "The Wind is Blowing at " +\
-            str(data["wind"]["speed"]) + " m/s"
+            str(data["wind"]["speed"]) + " m/s" + " in " + data["name"]
 
     def __init__(self, url, style="kel"):
         jsonobj = urlopen(url)
