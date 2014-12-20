@@ -196,7 +196,7 @@ def loop_select():
                     currentprofile = r
                     try:
                         ircmsg = ircprofiles[currentprofile][
-                            "ircsock"].recv(2048).decode()
+                            "ircsock"].recv(4096).decode()
                         regex = re.compile(
                             "\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
                         ircmsg = regex.sub("", ircmsg)
