@@ -66,8 +66,8 @@ def msg(mp):
                     main.sendcmsg(wxinfo.getinfo("currenttemp"))
             elif data["cod"] == "404":
                 main.sendcmsg(data["cod"] + ":" + data["message"])
-        elif urllid:
-            jsonurl = 'http://api.openweathermap.org/data/2.5/weather?q=' + \
+        elif urlid:
+            jsonurl = 'http://api.openweathermap.org/data/2.5/weather?id=' + \
             mp.argsdef()
             wxinfo = weatherinfo(jsonurl)
             data = wxinfo.data
