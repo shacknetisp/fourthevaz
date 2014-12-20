@@ -227,9 +227,9 @@ class MParser:
         if lastval:
             self.argsdefv = self.args(c)[
               self.args(c).rfind(lastval) + len(lastval):]
+            self.argsdefv = self.argsdefv[self.argsdefv.find('" ') + 2:]
         else:
             self.argsdefv = self.args(c)
-        self.argsdefv = self.argsdefv[self.argsdefv.find('" ') + 2:]
         return ret
 
     def isserver(self):
