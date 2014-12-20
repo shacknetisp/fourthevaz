@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from base import *
-import subprocess
-reload(subprocess)
 import evazbot.configs.wordai as wordai
 reload(wordai)
 
