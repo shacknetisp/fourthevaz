@@ -39,7 +39,7 @@ class weatherinfo:
 
 def msg(mp):
     if mp.cmd('weather'):
-        tempstyle = "kel"
+        tempstyle = "cel"
         if mp.argbool('cel'):
             tempstyle = "cel"
         elif mp.argbool('kel'):
@@ -120,6 +120,7 @@ def showhelp():
         "<city name/id>:" +
         " Get weather from http://openweathermap.org")
     main.sendcmsg("-temp, -wind: Get temperature, wind.")
-    main.sendcmsg("-cel, -kel, -far: Use celsius, kelvin, farenheit.")
+    main.sendcmsg(
+        "-cel, -kel, -far: Use celsius, kelvin, farenheit, -cel is default.")
     main.sendcmsg(
         "-name, -id, -geoip: Use city name or ID or GeoIP, -name is default.")
