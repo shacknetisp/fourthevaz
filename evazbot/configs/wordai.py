@@ -25,7 +25,7 @@ import copy
 import random
 import string
 import pprint
-import ast
+import pickle
 
 
 class wordai:
@@ -33,17 +33,16 @@ class wordai:
     data_dict = {}
 
     def load(self):
+        dict_file = open(self.dbfile, 'rb')
         try:
-            dict_file = open(self.dbfile, 'rb')
-            self.data_dict = ast.literal_eval(dict_file.read().decode())
-            dict_file.close()
+            self.data_dict = pickle.load(dict_file)
         except:
-            self.data_dict = {}
             pass
+        dict_file.close()
 
     def save(self):
-        output = open(self.dbfile, 'w')
-        output.write(pprint.pformat(self.data_dict))
+        output = open(self.dbfile, 'wb')
+        pickle.dump(self.data_dict, output)
         output.close()
 
     choices = list()
