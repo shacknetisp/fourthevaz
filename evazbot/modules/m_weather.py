@@ -3,11 +3,11 @@ from base import *
 from json import loads
 from urllib.request import urlopen
 from decimal import *
-
+import pygeoip
+gi = pygeoip.GeoIP('pygeoip/GeoLiteCity.dat')
 
 class weatherinfo:
     data = {}
-    outputtemp = 'kel'
 
     def getinfo(self, number):
         data = self.data
@@ -22,19 +22,15 @@ class weatherinfo:
             elif self.outputtemp == "far":
                 temp = Decimal(str(data["main"]["temp"])) - Decimal('273.15')
                 temp = Decimal(str(temp)) * Decimal('1.8') + Decimal('32.0')
-<<<<<<< HEAD
                 return "It is " + str(temp) + " far in " + data["name"]
             else:
                 raise ValueError(
                     "Invalid Temperature Style: " + self.outputtemp)
-=======
-                return "It is " + str(temp) + " in " + data["name"]
->>>>>>> 5a4b684e657ab7cbcec29a5b496aa761cca6caef
         elif number == "currentwindspeed":
             return "The Wind is Blowing at " +\
             str(data["wind"]["speed"]) + " m/s in " + data["name"]
 
-    def __init__(self, url, style="kel"):
+    def __init__(self, url, style):
         jsonobj = urlopen(url)
         jsonobj = jsonobj.read()
         self.data = loads(jsonobj.decode())
@@ -53,43 +49,54 @@ def msg(mp):
         returnwind = mp.argbool('wind')
         urlid = mp.argbool('id')
         urlcity = mp.argbool('name')
+        usegeoip = mp.argbool('geoip')
+        argument = mp.argsdef()
+        if usegeoip:
+            ip = mp.argsdef()
+            urlid = False
+            urlcity = True
+            try:
+                r = gi.record_by_addr(ip)
+            except:
+                try:
+                    r = gi.record_by_name(ip)
+                except:
+                    r = None
+            try:
+                argument = r['city'] + ', ' + r['region_code'] + ', '\
+                        + r['country_code']
+                main.sendcmsg("Using: " + argument)
+            except TypeError:
+                main.sendcmsg('Cannot get GeoIP information.')
+                return True
+        if not urlid:
+            urlcity = True
         returntemp = mp.argbool('temp')
         #funtion that gets the info to be displayed
 
         if not returntemp and not returnwind:
             main.sendcmsg("Specify what information you want.")
-
-        if (urlcity and urlid) or (returnwind and returntemp):
-            main.sendcmsg("You can't have both!")
-        elif urlcity:
+            return True
+        if (urlcity and urlid):
+            main.sendcmsg("You can't have both -name and -id!")
+        else:
             jsonurl = 'http://api.openweathermap.org/data/2.5/weather?q=' + \
-            mp.argsdef()
+            argument
+            if urlid:
+                jsonurl = \
+                'http://api.openweathermap.org/data/2.5/weather?id=' + \
+                argument
             wxinfo = weatherinfo(jsonurl, tempstyle)
             data = wxinfo.data
             if data["cod"] == 200:
                 if returnwind:
                     main.sendcmsg(wxinfo.getinfo("currentwindspeed"))
-                elif returntemp:
-                    main.sendcmsg(wxinfo.getinfo("currenttemp"))
-            elif data["cod"] == "404":
-                main.sendcmsg(data["cod"] + ":" + data["message"])
-        elif urlid:
-            jsonurl = 'http://api.openweathermap.org/data/2.5/weather?id=' + \
-            mp.argsdef()
-            wxinfo = weatherinfo(jsonurl)
-            data = wxinfo.data
-            if data["cod"] == 200:
-                if returnwind:
-                    main.sendcmsg(wxinfo.getinfo("currentwindspeed"))
-                elif returntemp:
+                if returntemp:
                     main.sendcmsg(wxinfo.getinfo("currenttemp"))
             elif data["cod"] == "404":
                 main.sendcmsg(data["cod"] + ":" + data["message"])
 
-<<<<<<< HEAD
 '''
-=======
->>>>>>> 5a4b684e657ab7cbcec29a5b496aa761cca6caef
 def showhelp():
     main.sendcmsg(
         'Weather is a module that returns many usefull weather information.'
@@ -114,4 +121,5 @@ def showhelp():
         " Get weather from http://openweathermap.org")
     main.sendcmsg("-temp, -wind: Get temperature, wind.")
     main.sendcmsg("-cel, -kel, -far: Use celsius, kelvin, farenheit.")
-    main.sendcmsg("-name, id: Use city name or ID, -name is default.")
+    main.sendcmsg(
+        "-name, -id, -geoip: Use city name or ID or GeoIP, -name is default.")
