@@ -7,7 +7,6 @@ from decimal import *
 
 class weatherinfo:
     data = {}
-    outputtemp = "kel"
 
     def getinfo(self, number):
         data = self.data
@@ -23,11 +22,14 @@ class weatherinfo:
                 temp = Decimal(str(data["main"]["temp"])) - Decimal('273.15')
                 temp = Decimal(str(temp)) * Decimal('1.8') + Decimal('32.0')
                 return "It is " + str(temp) + " in " + data["name"]
+            else:
+                raise ValueError(
+                    "Invalid Temperature Style: " + self.outputtemp)
         elif number == "currentwindspeed":
             return "The Wind is Blowing at " +\
             str(data["wind"]["speed"]) + " m/s"
 
-    def __init__(self, url, style="kel"):
+    def __init__(self, url, style):
         jsonobj = urlopen(url)
         jsonobj = jsonobj.read()
         self.data = loads(jsonobj.decode())
@@ -46,38 +48,33 @@ def msg(mp):
         returnwind = mp.argbool('wind')
         urlid = mp.argbool('id')
         urlcity = mp.argbool('name')
+        if not urlid:
+            urlcity = True
         returntemp = mp.argbool('temp')
         #funtion that gets the info to be displayed
 
         if not returntemp and not returnwind:
             main.sendcmsg("Specify what information you want.")
-
-        if (urlcity and urlid) or (returnwind and returntemp):
-            main.sendcmsg("You can't have both!")
-        elif urlcity:
+            return True
+        if (urlcity and urlid):
+            main.sendcmsg("You can't have both -name and -id!")
+        else:
             jsonurl = 'http://api.openweathermap.org/data/2.5/weather?q=' + \
             mp.argsdef()
+            if urlid:
+                jsonurl = \
+                'http://api.openweathermap.org/data/2.5/weather?id=' + \
+                mp.argsdef()
             wxinfo = weatherinfo(jsonurl, tempstyle)
             data = wxinfo.data
             if data["cod"] == 200:
                 if returnwind:
                     main.sendcmsg(wxinfo.getinfo("currentwindspeed"))
-                elif returntemp:
+                if returntemp:
                     main.sendcmsg(wxinfo.getinfo("currenttemp"))
             elif data["cod"] == "404":
                 main.sendcmsg(data["cod"] + ":" + data["message"])
-        elif urlid:
-            jsonurl = 'http://api.openweathermap.org/data/2.5/weather?id=' + \
-            mp.argsdef()
-            wxinfo = weatherinfo(jsonurl)
-            data = wxinfo.data
-            if data["cod"] == 200:
-                if returnwind:
-                    main.sendcmsg(wxinfo.getinfo("currentwindspeed"))
-                elif returntemp:
-                    main.sendcmsg(wxinfo.getinfo("currenttemp"))
-            elif data["cod"] == "404":
-                main.sendcmsg(data["cod"] + ":" + data["message"])
+
 
 def showhelp():
     main.sendcmsg(
