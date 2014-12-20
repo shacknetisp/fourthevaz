@@ -3,6 +3,8 @@
 from base import *
 import evazbot.configs.wordai as wordai
 reload(wordai)
+cdb = wordai.wordai(c_locs.dbhome + '/replies.db.pkl')
+cgdb = wordai.wordai(c_locs.dbhome + '/replies.cg.db.pkl')
 
 
 def getmessage(msg, iss):
@@ -21,8 +23,7 @@ def getmessage(msg, iss):
 
 def msg(mp):
     if mp.wcmd('c'):
-        wordai.dbfile = c_locs.dbhome + '/replies.db.pkl'
-        wordai.load()
+        cdb.load()
         if mp.argbool('fix'):
             if not mp.argbool('w') or not mp.argbool('n'):
                 main.sendcmsg('Invalid Arguments')
@@ -30,18 +31,17 @@ def msg(mp):
             w = mp.argstr('w').strip()
             n = mp.argstr('n').strip()
             try:
-                wordai.replace(w, n)
+                cdb.replace(w, n)
                 main.sendcmsg("Replaced '" + w + "' with '" + n + "'")
             except KeyError:
                 main.sendcmsg("'" + w + "' is not in the database.")
             return True
         elif mp.argbool('words'):
-            main.sendcmsg('Words: ' + str(wordai.getwords()))
+            main.sendcmsg('Words: ' + str(cdb.getwords()))
         else:
-            main.sendcmsg(wordai.process(mp.args()))
+            main.sendcmsg(cdb.process(mp.args()))
     elif mp.cmd('cg'):
-        wordai.dbfile = c_locs.dbhome + '/replies.cg.db.pkl'
-        wordai.load()
+        cgdb.load()
         if mp.argbool('fix'):
             if not mp.argbool('w') or not mp.argbool('n'):
                 main.sendcmsg('Invalid Arguments')
@@ -49,19 +49,18 @@ def msg(mp):
             w = mp.argstr('w').strip()
             n = mp.argstr('n').strip()
             try:
-                wordai.replace(w, n)
+                cgdb.replace(w, n)
                 main.sendcmsg("Replaced '" + w + "' with '" + n + "'")
             except KeyError:
                 main.sendcmsg("'" + w + "' is not in the database.")
             return True
         elif mp.argbool('words'):
-            main.sendcmsg('Words: ' + str(wordai.getwords()))
+            main.sendcmsg('Words: ' + str(cgdb.getwords()))
         else:
-            main.sendcmsg(wordai.process(mp.args()))
+            main.sendcmsg(cgdb.process(mp.args()))
     else:
-        wordai.dbfile = c_locs.dbhome + '/replies.cg.db.pkl'
-        wordai.load()
-        wordai.process(getmessage(mp.text(), mp.isserver()))
+        cgdb.load()
+        cgdb.process(getmessage(mp.text(), mp.isserver()))
     return False
 
 
