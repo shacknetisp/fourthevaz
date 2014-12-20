@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from base import *
-import urllib.request
-import os
 
 modname = "Core"
 
