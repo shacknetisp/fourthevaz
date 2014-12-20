@@ -26,6 +26,7 @@ import random
 import string
 import pickle
 import pprint
+import ast
 
 dbfile = ''
 
@@ -36,16 +37,19 @@ def load():
     global data_dict
     try:
         dict_file = open(dbfile, 'rb')
-        data_dict = pickle.load(dict_file)
+        try:
+            data_dict = pickle.load(dict_file)
+        except:
+            data_dict = ast.literal_eval(dict_file.read().decode())
         dict_file.close()
     except:
+        data_dict = {}
         pass
 
 
 def save():
-    global data_dict
-    output = open(dbfile, 'wb')
-    pickle.dump(data_dict, output)
+    output = open(dbfile, 'w')
+    output.write(pprint.pformat(data_dict))
     output.close()
 
 
@@ -127,7 +131,6 @@ def ms(r):
 
 
 def process(mp):
-    global data_dict
     load()
     out = ms(mp)
     save()
@@ -135,7 +138,6 @@ def process(mp):
 
 
 def replace(w, n):
-    global data_dict
     if n != w:
         data_dict[n] = data_dict[w]
         del data_dict[w]
@@ -143,13 +145,10 @@ def replace(w, n):
         for (index, item) in enumerate(data_dict[k]):
             if item == w:
                 data_dict[k][index] = n
-    output = open(dbfile, 'wb')
-    pickle.dump(data_dict, output)
-    output.close()
+    save()
 
 
 def getdictstring():
-    global data_dict
     load()
     data_dict_tmp = copy.deepcopy(data_dict)
     if ';record' in data_dict_tmp:
@@ -158,7 +157,6 @@ def getdictstring():
 
 
 def getwords():
-    global data_dict
     load()
     data_dict_tmp = copy.deepcopy(data_dict)
     if ';record' in data_dict_tmp:
