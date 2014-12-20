@@ -81,6 +81,7 @@ def ircconnect():
     for i in range(len(ircprofiles)):
         currentprofile = i
         ircprofiles[currentprofile]["adminlist"] = dict()
+        ircprofiles[currentprofile]["joined"] = False
         try:
             ircprofiles[currentprofile]["ircsock"].connect(
                 (ircprofiles[currentprofile]["server"], 6667))
@@ -122,6 +123,7 @@ def process(ircmsgp):
         channel = "nochannel"
         if ircmsg.endswith(":+x") or ircmsg.endswith(":+i") or\
         ircmsg.endswith(":+ix"):
+            ircprofiles[currentprofile]["joined"] = True
             for c in ircprofiles[currentprofile]["channels"]:
                 joinchan(c)
         for i in ircprofiles[currentprofile]["channels"]:

@@ -58,7 +58,7 @@ def msg(mp):
             main.sendcmsg('Words: ' + str(cgdb.getwords()))
         else:
             main.sendcmsg(cgdb.process(mp.args()))
-    else:
+    elif main.ircprofiles[main.currentprofile]["joined"]:
         cgdb.load()
         cgdb.process(getmessage(mp.text(), mp.isserver()))
     return False
