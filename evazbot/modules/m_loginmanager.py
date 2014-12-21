@@ -26,7 +26,8 @@ def msg(mp):
         try:
             level = int(mp.argstr("set"))
         except:
-            level = 0
+            main.sendcmsg("No argument!")
+            return True
         main.cwlist[mp.argsdef()] = level
         main.sendcmsg(cmd.getname(mp.argsdef()) +
         " is now at level " + str(level))
