@@ -13,26 +13,27 @@ class weatherinfo:
     def getinfo(self, number):
         data = self.data
         name = data["name"]
+        cname = data["sys"]["country"]
         if len(name) == 0:
             name = self.dname
         #checks what the request wants
         if number == "currenttemp":
             if self.outputtemp == "kel":
                 return "It is " +\
-                str(data["main"]["temp"]) + " Kelvin in " + name
+                str(data["main"]["temp"]) + " Kelvin in " + name + ", " + cname
             elif self.outputtemp == "cel":
                 temp = Decimal(str(data["main"]["temp"])) - Decimal('273.15')
-                return "It is " + str(temp) + " Celcius in " + name
+                return "It is " + str(temp) + " Celcius in " + name + ", " + cname
             elif self.outputtemp == "far":
                 temp = Decimal(str(data["main"]["temp"])) - Decimal('273.15')
                 temp = Decimal(str(temp)) * Decimal('1.8') + Decimal('32.0')
-                return "It is " + str(temp) + " Farenheit in " + name
+                return "It is " + str(temp) + " Farenheit in " + name + + ", " + cname
             else:
                 raise ValueError(
                     "Invalid Temperature Style: " + self.outputtemp)
         elif number == "currentwindspeed":
             return "The Wind is Blowing at " +\
-            str(data["wind"]["speed"]) + " m/s in " + name
+            str(data["wind"]["speed"]) + " m/s in " + name + ", " + cname
 
     def __init__(self, url, style, altname):
         jsonobj = urlopen(url)
