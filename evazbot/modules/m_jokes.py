@@ -90,16 +90,16 @@ def msg(mp):
 
 def showhelp():
     main.sendcmsg('.joke [-c=category] <target>: Recall a random joke, '
-                  + 'with the target being <target>, " +\
-                  "and the dbfile being <category>.'
+                  + 'with the target being <target>, ' +
+                  'and the dbfile being <category>.'
                   )
     main.sendcmsg(
         '.addjoke [-c=<category>] <joke>: Add <the joke> to <category>. '
-                  + '#target# will be replaced with the target of .joke," +\
-                  "#caller# will be replaced with the caller of the joke.'
+                  + '#target# will be replaced with the target of .joke,' +
+                  '#caller# will be replaced with the caller of the joke.'
                   )
     main.sendcmsg('.sortjokes: Clean the DB.')
     main.sendcmsg(
-        '.jokecats: List all categories," +\
-        "with number of #target# and regular lines.'
+        '.jokecats: List all categories, ' +
+        'with number of #target# and regular lines.'
                   )
