@@ -104,11 +104,11 @@ def getargs(msg, command):
     return args
 
 
-def getname(name, usenames=True):
+def getname(name):
     try:
         for i in c_wlist.names:
             for n in i[0]:
-                if name == n and usenames:
+                if name == n:
                     return i[1]
         if name.find("@") != -1:
             return "[" + name[1] + "]" + name[2:]

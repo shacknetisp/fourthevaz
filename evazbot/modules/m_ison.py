@@ -12,11 +12,7 @@ def msg(mp):
         search = mp.args()
         found = {}
         with urlopen(url + '/reports') as u:
-            urldata = u.read().decode()
-            if hasattr(c_wlist, "replacements"):
-                for i in c_wlist.replacements:
-                    urldata = urldata.replace(i, cmd.getname(i, False))
-            servers = ast.literal_eval(urldata)
+            servers = ast.literal_eval(u.read().decode())
             if mp.argbool('stats'):
                 out = []
                 out.append('Servers: ' + str(len(servers)))
