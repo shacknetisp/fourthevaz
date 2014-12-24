@@ -21,33 +21,47 @@ def save():
 load()
 
 
+def getwlistlevel(nick):
+    wlistlevelc = 0
+    wlistlevelmc = 0
+    for name in c_wlist.whitelist:
+        for n in name[1]:
+            if nick == n:
+                wlistlevelc = name[0]
+    try:
+        wlistlevelmc = main.cwlist[nick]
+    except KeyError:
+        pass
+    return max(wlistlevelc, wlistlevelmc)
+
+
 def msg(mp):
-    if mp.wcmd("wlist", 99):
+    if mp.cmd("wlist"):
         try:
             level = int(mp.argstr("set"))
         except:
             main.sendcmsg("No argument!")
             return True
-        main.cwlist[mp.argsdef()] = level
-        main.sendcmsg(cmd.getname(mp.argsdef()) +
-        " is now at level " + str(level))
+        if mp.argsdef() == mp.user():
+            main.sendcmsg("You cannot set yourself.")
+            return True
+        if mp.iswlist(level + 1) and (getwlistlevel(mp.argsdef()) <
+        getwlistlevel(mp.user())):
+            main.cwlist[mp.argsdef()] = level
+            main.sendcmsg(cmd.getname(mp.argsdef()) +
+            " is now at level " + str(level))
+        else:
+            main.sendcmsg("You can only set: 0 to " +
+            str(getwlistlevel(mp.user()) - 1))
+            main.sendcmsg("The level of your target is: " +
+            str(getwlistlevel(mp.argsdef())))
         save()
     if mp.cmd("login"):
         if mp.argbool("check"):
             nick = mp.argsdef().strip()
             if len(nick) == 0:
                 nick = mp.user()
-            wlistlevelc = 0
-            wlistlevelmc = 0
-            for name in c_wlist.whitelist:
-                for n in name[1]:
-                    if nick == n:
-                        wlistlevelc = name[0]
-            try:
-                wlistlevelmc = main.cwlist[nick]
-            except KeyError:
-                pass
-            wlistlevel = max(wlistlevelc, wlistlevelmc)
+            wlistlevel = getwlistlevel(nick)
             main.sendcmsg(cmd.getname(nick) + ": Whitelist " + str(wlistlevel))
             adminlevel = 0
             try:
