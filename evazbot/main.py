@@ -126,6 +126,7 @@ def process(ircmsgp):
             ircprofiles[currentprofile]["joined"] = True
             for c in ircprofiles[currentprofile]["channels"]:
                 joinchan(c)
+            c_modules.event("joined")
         for i in ircprofiles[currentprofile]["channels"]:
             dochannel(ircmsg, i)
         dochannel(ircmsg, ircprofiles[currentprofile]["nick"])

@@ -23,6 +23,7 @@ ircprofiles = [
         "name": "Ivan",
     },
 ]
+password="mypasswordforircauth"
 '''
 #Don't copy this line at all:
 exec(open(c_locs.dbhome + "/profiles.py").read())
