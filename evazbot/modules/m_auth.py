@@ -16,9 +16,14 @@ def joined():
     identify(True)
     return False
 
+lastauthuser = ""
+
 
 def msg(mp):
+    global lastauthuser
+    usedcmd = False
     if mp.acmd("ircregister"):
+        usedcmd = True
         try:
             password = main.password
             print(("Registering for password: " + password))
@@ -29,13 +34,17 @@ def msg(mp):
                 password + " " + mp.argsdef())
         except:
             main.sendcmsg("Unable to register, no password set.")
-        return True
     elif mp.acmd("ircverify"):
+        usedcmd = True
         main.sendmsg("nickserv", "VERIFY REGISTER " + main.ircprofiles[
         main.currentprofile]["nick"] + " " + mp.argsdef())
-        return False
     elif mp.acmd("ircauth"):
+        usedcmd = True
         identify()
+    if usedcmd:
+        lastauthuser = mp.ircuser()
+    if len(lastauthuser) > 0 and mp.ircuser().lower() == "nickserv":
+        main.sendmsg(lastauthuser, mp.text().strip())
     return False
 
 
