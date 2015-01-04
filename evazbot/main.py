@@ -5,6 +5,7 @@ import time
 from evazbot.configs import c_net
 import select
 import re
+from collections import deque
 
 running = True
 channel = "nochannel"
@@ -19,14 +20,15 @@ currentprofile = -1
 adminlist = {}
 ircprofiles = []
 cwlist = {}
+outputbuffer = deque()
 
 exec(open("evazbot/configs/c_local/profiles.py").read())
 
 
 def ircwrite(msg):
     global currentprofile
-    ircprofiles[currentprofile]["ircsock"].send(
-        msg.encode('latin-1', 'ignore') + b"\n")
+    outputbuffer.append((ircprofiles[currentprofile]["ircsock"],
+        msg.encode('utf-8', 'ignore') + b"\n"))
 
 
 def getchannel():
@@ -177,6 +179,10 @@ def loop_select():
                     msgs = ircmsg.split("\r\n")
                     for i in msgs:
                         process(i)
+        for osock, output in outputbuffer:
+            osock.send(output)
+            time.sleep(0.2)
+        outputbuffer.clear()
 
 
 def ircmain():
