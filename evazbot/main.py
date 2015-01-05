@@ -179,9 +179,11 @@ def loop_select():
                     msgs = ircmsg.split("\r\n")
                     for i in msgs:
                         process(i)
+        linessent = 0
         for osock, output in outputbuffer:
             osock.send(output)
-            time.sleep(0.2)
+            linessent += 1
+            time.sleep(0.025 * linessent)
         outputbuffer.clear()
 
 
