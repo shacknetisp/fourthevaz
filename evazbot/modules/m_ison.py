@@ -27,8 +27,9 @@ def msg(mp):
                     if int(v['clients']) > 0:
                         total['servers'] = total['servers'] + 1
                 out.append('Players: ' + str(total['names']))
-                out.append(str(round(len(servers) / total['names'], 1))
-                           + 'x servers vs players.')
+                if total['names'] > 0:
+                    out.append(str(round(len(servers) / total['names'], 1))
+                        + 'x servers vs players.')
                 out.append('Used Servers: ' + str(total['servers']))
                 cmd.outlist(out)
             else:
