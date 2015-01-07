@@ -7,13 +7,23 @@ earcharsr = '>)]}!\\/\'"'
 eyechars = '*oO0$^'
 mouthchars = '._-~'
 maxdots = 32
+##mconfig/dot.py
+##options:
+#earcharsl     += '#'
+#earcharsr     += '#'
+#eyechars      += 'i'
+#mouthchars    += '|'
+#maxdots = 64 #uses just a bit more CPU
+exec(c_locs.mconfig("dot"))
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
+
 def sendout(text):
-  main.sendcmsg(text)
+    main.sendcmsg(text)
+
 
 def msg(mp):
     possible = ""

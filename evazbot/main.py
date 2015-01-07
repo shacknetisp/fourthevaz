@@ -202,6 +202,7 @@ def safemkdir(d):
 def ircmain():
     import evazbot.configs.c_locs as c_locs
     safemkdir(c_locs.dbhome)
+    safemkdir(c_locs.mconfigpath)
     import evazbot.configs.c_modules as c_modules
     c_modules.init()
     c_modules.load()

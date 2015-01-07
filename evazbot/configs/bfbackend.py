@@ -6,6 +6,14 @@
 
 from base import *
 
+maxloop = 500000
+
+##mconfig/brainf.py
+##options:
+#maxloop = 500000 #set maximum loop
+exec(c_locs.mconfig("brainf"))
+
+
 def evaluate(code,intextp):
   intext = intextp
   code     = list(cleanup(list(code)))
@@ -17,7 +25,7 @@ def evaluate(code,intextp):
 
   while codeptr < len(code):
     timesrun += 1
-    if timesrun > 500000:
+    if timesrun > maxloop:
         main.sendcmsg("Max loop met.")
         return "".join(outputlist)
     command = code[codeptr]

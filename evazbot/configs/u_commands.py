@@ -2,12 +2,23 @@
 from base import *
 import shlex
 
+servernames = []
+
+##mconfig/ucmd.py
+##options:
+#servernames.append('myreserver')
+
+
+def umconfig(m):
+    try:
+        return open(mconfigpath + "/" + m + ".py").read()
+    except:
+        return ""
+exec(umconfig("ucmd"))
+
 
 def isservername(name):
-    if(name.find("snisp") == 0 or
-    name.find("eleptor") == 0 or
-    name.find("altre") == 0 or
-    name.find("ACEserv") == 0):
+    if name in servernames:
         return True
     return False
 

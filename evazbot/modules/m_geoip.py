@@ -3,10 +3,10 @@ from base import *
 import pygeoip
 import re
 enable_geoip = False
-try:
-    exec(open(c_locs.dbhome + '/geoip.py').read())
-except:
-    pass
+##mconfig/geoip.py
+##options:
+#enable_geoip = True #Give country when someone connects to a server
+exec(c_locs.mconfig("geoip"))
 gi = pygeoip.GeoIP('pygeoip/GeoLiteCity.dat')
 
 

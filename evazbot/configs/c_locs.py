@@ -9,3 +9,11 @@ elif os.name == "nt":
     rehome = home + "/Documents/My Games/Red Eclipse/"
     dbhome = home + "/fourthevaz"
 cmpath = "evazbot/modules/custom"
+mconfigpath = dbhome + "/mconfig"
+
+
+def mconfig(m):
+    try:
+        return open(mconfigpath + "/" + m + ".py").read()
+    except:
+        return ""

@@ -3,6 +3,10 @@ import urllib.request
 import urllib.parse
 import subprocess
 calccmd = "calc"
+##mconfig/calc.py
+##options:
+#calccmd = "mycalculator" #calculator command, must use stdin and stdout
+exec(c_locs.mconfig("calc"))
 
 
 def msg(mp):
