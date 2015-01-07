@@ -191,7 +191,17 @@ def loop_select():
         outputbuffer.clear()
 
 
+def safemkdir(d):
+    import os
+    try:
+        os.mkdir(d)
+    except:
+        pass
+
+
 def ircmain():
+    import evazbot.configs.c_locs as c_locs
+    safemkdir(c_locs.dbhome)
     import evazbot.configs.c_modules as c_modules
     c_modules.init()
     c_modules.load()
