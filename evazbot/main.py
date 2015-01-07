@@ -164,9 +164,11 @@ def loop_select():
         if time.time() - lasttime >= 1:
             lasttime = time.time()
             c_modules.event("tick")
+        got = False
         for socket in selectresult:
             for r in range(len(ircprofiles)):
                 if ircprofiles[r]["ircsock"] == socket:
+                    got = True
                     currentprofile = r
                     try:
                         ircmsg = ircprofiles[currentprofile][
@@ -179,6 +181,8 @@ def loop_select():
                     msgs = ircmsg.split("\r\n")
                     for i in msgs:
                         process(i)
+        if not got:
+            time.sleep(0.2)
         linessent = 0
         for osock, output in outputbuffer:
             osock.send(output)
