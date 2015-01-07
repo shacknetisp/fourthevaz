@@ -10,9 +10,10 @@ servernames = []
 
 
 def umconfig(m):
+    import evazbot.configs.c_locs as c_locs
     try:
-        return open(mconfigpath + "/" + m + ".py").read()
-    except:
+        return open(c_locs.mconfigpath + "/" + m + ".py").read()
+    except FileNotFoundError:
         return ""
 exec(umconfig("ucmd"))
 
