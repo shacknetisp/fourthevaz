@@ -16,6 +16,7 @@ def msg(mp):
         tochannels = mp.argbool('channels')
         nothing = not tomodules and not tousers and not tochannels
         if tomodules:
+            out.append("Module set: " + main.moduleset)
             m_totalstr = str(len(c_modules.module_callbacks))
             out.append(str(len(c_modules.modules)) + '/' + m_totalstr
                        + ' default/all modules.')
