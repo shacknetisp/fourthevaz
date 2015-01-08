@@ -12,12 +12,6 @@ def msg(mp):
     if mp.cmd(modcommand) or mp.cmd("info"):
         main.sendcmsg(modmessage)
         return True
-    elif mp.text().find("\x01VERSION\x01") != -1:
-        main.sendcmsg("\x01" +
-        "VERSION " +
-        "Fourth Evaz IRC Bot.",
-        "NOTICE")
-        return True
     return False
 
 
