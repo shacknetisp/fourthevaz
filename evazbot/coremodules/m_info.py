@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
 from base import *
-import platform
-import sys
 
 modname = "Info"
 modcommand = "4e"
@@ -17,8 +15,7 @@ def msg(mp):
     elif mp.text().find("\x01VERSION\x01") != -1:
         main.sendcmsg("\x01" +
         "VERSION " +
-        "Platform: " + platform.platform() + " | " +
-        "Python: " + sys.version,
+        "Fourth Evaz IRC Bot.",
         "NOTICE")
         return True
     return False
