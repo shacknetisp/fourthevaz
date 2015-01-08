@@ -7,9 +7,12 @@ def msg(mp):
     if mp.cmd('stats'):
         out = []
         custom_count = 0
+        default_count = 0
         for i in c_modules.module_callbacks:
             if i[c_modules.custom_offset]:
                 custom_count += 1
+            else:
+                default_count += 1
         tolist = mp.argbool('list')
         tomodules = mp.argbool('modules')
         tousers = mp.argbool('users')
@@ -18,8 +21,8 @@ def msg(mp):
         if tomodules:
             out.append("Module set: " + main.moduleset)
             m_totalstr = str(len(c_modules.module_callbacks))
-            out.append(str(len(c_modules.modules)) + '/' + m_totalstr
-                       + ' default/all modules.')
+            out.append(str(default_count) + '/' + m_totalstr
+                       + ' set/all modules.')
             out.append(str(custom_count) + '/' + m_totalstr
                        + ' custom/all modules.')
             out.append(str(len(c_modules.helpmodulenames()))
