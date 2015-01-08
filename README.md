@@ -9,7 +9,7 @@ To set up, create a profiles.py in ~/.fourthevaz as per evazbot/configs/c_local/
 
 Also create a wlist.py in ~/.fourthevaz as per evazbot/configs/wlist.example.py
 
-Copy regmodules to defaultmodules.db.txt in ~/.fourthevaz
+Copy evazbot/default/regmodules to defaultmodules.db.txt in ~/.fourthevaz
 
 You are ready!
 
