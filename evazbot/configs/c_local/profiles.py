@@ -24,6 +24,8 @@ ircprofiles = [
     },
 ]
 password="mypasswordforircauth"
+moduleset="default" #change the moduleset
 '''
-#Don't copy this line at all:
+#Don't copy these lines at all:
+moduleset = "default"
 exec(open(c_locs.dbhome + "/profiles.py").read())

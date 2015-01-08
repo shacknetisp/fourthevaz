@@ -54,6 +54,7 @@ def init():
     needmodule("ircping")
     needmodule("help")
     needmodule("loginmanager")
+    needmodule("auth")
     modules = unique(modules)
 
 
@@ -77,10 +78,15 @@ def add(i):
         custom = True
     except ImportError as e:
         try:
-            newmodule = importlib.import_module("evazbot.modules.m_" + i)
+            newmodule = importlib.import_module(
+                "evazbot." + main.moduleset + ".m_" + i)
         except ImportError as e:
-            main.sendcmsg("Cannot import module!")
-            raise e
+            try:
+                newmodule = importlib.import_module(
+                    "evazbot.coremodules.m_" + i)
+            except ImportError as e:
+                main.sendcmsg("Cannot import module!")
+                raise e
     reload(newmodule)
     module_callbacks.append((i, newmodule, custom))
     return newmodule
