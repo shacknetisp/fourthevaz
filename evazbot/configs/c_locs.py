@@ -2,7 +2,6 @@ import os
 import sys
 overridehome = ""
 if len(sys.argv) > 1:
-    print("Using custom dbhome.")
     overridehome = sys.argv[1]
 from os.path import expanduser
 home = expanduser("~")

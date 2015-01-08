@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from base import *
-bfbackend = cload("bfbackend")
+bfbackend = mload("m_bf.backend")
 intext = ""
 
 

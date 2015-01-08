@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from imp import reload
 import evazbot.main as main
-tmp = main
 import importlib
 
 
@@ -12,13 +11,13 @@ def cload(module):
 
 
 def mload(module):
-    m = importlib.import_module("evazbot.modules." + module)
+    m = importlib.import_module("evazbot." + main.moduleset + "." + module)
     reload(m)
     return m
 
-
+c_locs = c_redeclipse = cload("c_locs")
+c_locs.lmoduleset = main.moduleset
 cmd = cload("u_commands")
 c_net = cload("c_net")
 c_modules = cload("c_modules")
-c_locs = c_redeclipse = cload("c_locs")
 c_wlist = cload("c_wlist")

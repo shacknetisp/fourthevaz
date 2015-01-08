@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
 from base import *
+import platform
+import sys
 
 modname = "Info"
 modcommand = "4e"
@@ -11,6 +13,13 @@ modmessage = c_net.name + " is running. Use ." +\
 def msg(mp):
     if mp.cmd(modcommand) or mp.cmd("info"):
         main.sendcmsg(modmessage)
+        return True
+    elif mp.text().find("\x01VERSION\x01") != -1:
+        main.sendcmsg("\x01" +
+        "VERSION " +
+        "Platform: " + platform.platform() + " | " +
+        "Python: " + sys.version,
+        "NOTICE")
         return True
     return False
 

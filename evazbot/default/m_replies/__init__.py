@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from base import *
-import evazbot.configs.wordai as wordai
-reload(wordai)
+wordai = mload("m_replies.wordai")
 cdb = wordai.wordai(c_locs.dbhome + '/replies.db.pkl')
 cgdb = wordai.wordai(c_locs.dbhome + '/replies.cg.db.pkl')
 

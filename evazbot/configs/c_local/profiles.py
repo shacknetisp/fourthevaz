@@ -1,5 +1,3 @@
-#Don't copy this line (unless you really want to...):
-import evazbot.configs.c_locs as c_locs
 '''
 #Copy the contents of this comment
 #Add somthing like this to profiles.py in your ~/.fourthevaz folder
@@ -27,5 +25,6 @@ password="mypasswordforircauth"
 moduleset="default" #change the moduleset
 '''
 #Don't copy these lines at all:
+import evazbot.configs.c_locs as c_locs
 moduleset = "default"
 exec(open(c_locs.dbhome + "/profiles.py").read())

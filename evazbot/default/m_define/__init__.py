@@ -5,7 +5,7 @@ import wikipedia
 from urllib.request import urlopen
 import re
 from html.parser import HTMLParser
-from evazbot.configs.google import search
+search = mload("m_define.google").search
 
 
 class MLStripper(HTMLParser):

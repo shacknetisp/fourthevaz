@@ -55,6 +55,7 @@ def init():
     needmodule("help")
     needmodule("loginmanager")
     needmodule("auth")
+    needmodule("info")
     modules = unique(modules)
 
 

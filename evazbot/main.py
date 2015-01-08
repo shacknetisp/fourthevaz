@@ -39,7 +39,7 @@ def getuser():
     return currentuser
 
 
-def sendmsg(chan, msg):
+def sendmsg(chan, msg, t="PRIVMSG"):
     import evazbot.configs.c_modules as c_modules
     global outputtext
     global outputchannel
@@ -47,14 +47,14 @@ def sendmsg(chan, msg):
     outputchannel = chan
     c_modules.event("output")
     time.sleep(0.025)
-    ircwrite("PRIVMSG " + chan + " :" + msg)
+    ircwrite(t + " " + chan + " :" + msg)
 
 
-def sendcmsg(msg):
+def sendcmsg(msg, t="PRIVMSG"):
     if channel == ircprofiles[currentprofile]["nick"]:
-        sendmsg(getuser(), msg)
+        sendmsg(getuser(), msg, t)
     else:
-        sendmsg(channel, msg)
+        sendmsg(channel, msg, t)
 
 
 def sendamsg(msg):
@@ -94,9 +94,6 @@ def ircconnect():
             time.sleep(0.25)
         except socket.error:
             pass
-
-
-ircconnect()
 
 
 def dochannel(ircmsg, i):
@@ -201,11 +198,13 @@ def safemkdir(d):
 
 def ircmain():
     import evazbot.configs.c_locs as c_locs
+    print(("Database home is: " + c_locs.dbhome))
     safemkdir(c_locs.dbhome)
     safemkdir(c_locs.mconfigpath)
     import evazbot.configs.c_modules as c_modules
     c_modules.init()
     c_modules.load()
+    ircconnect()
     print(("Starting " + c_net.name + "..."))
     c_modules.event("start")
     loop_select()
