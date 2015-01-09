@@ -2,6 +2,8 @@
 from imp import reload
 import evazbot.main as main
 import importlib
+import os
+import errno
 
 
 def cload(module):
@@ -14,6 +16,16 @@ def mload(module):
     m = importlib.import_module("evazbot." + main.moduleset + "." + module)
     reload(m)
     return m
+
+
+def mkpath(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
 
 c_locs = c_redeclipse = cload("c_locs")
 c_locs.lmoduleset = main.moduleset

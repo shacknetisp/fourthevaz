@@ -3,13 +3,9 @@
 from base import *
 import datetime
 import time
-import os
 
-dbfolder = c_redeclipse.dbhome + '/logs'
-try:
-    os.mkdir(dbfolder)
-except:
-    pass
+dbfolder = c_redeclipse.dbhome + '/logs/' + c_wlist.wname()
+mkpath(dbfolder)
 
 
 def msg(mp):

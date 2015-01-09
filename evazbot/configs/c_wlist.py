@@ -14,3 +14,17 @@ def getcwlist():
     return main.cwlist[w]
 
 
+def dbwhome():
+    return (c_locs.dbhome + "/" +
+    main.ircprofiles[main.currentprofile]['whitelist'])
+
+
+def wname():
+    return (main.ircprofiles[main.currentprofile]['whitelist'])
+
+
+def wfile(f):
+    return (f + "." +
+    main.ircprofiles[main.currentprofile]['whitelist'])
+
+

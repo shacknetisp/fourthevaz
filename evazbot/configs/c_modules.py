@@ -37,6 +37,17 @@ def needmodule(n):
     global modules
     modules.append(n)
 
+needed = [
+    "core",
+    "ircping",
+    "help",
+    "loginmanager",
+    "auth",
+    "info",
+    "stats",
+    "log",
+]
+
 
 def init():
     global module_callbacks
@@ -50,12 +61,8 @@ def init():
                 modules.append(line.strip())
     except IOError:
         modules.append("core")
-    needmodule("core")
-    needmodule("ircping")
-    needmodule("help")
-    needmodule("loginmanager")
-    needmodule("auth")
-    needmodule("info")
+    for i in needed:
+        needmodule(i)
     modules = unique(modules)
 
 
