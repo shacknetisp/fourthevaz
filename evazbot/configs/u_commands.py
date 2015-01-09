@@ -210,6 +210,13 @@ class MParser:
         self.basecmd(c)
         return getacmd(self.message, c, w)
 
+    def code(self, i):
+        try:
+            c = self.text().split(' ')[1]
+        except:
+            c = ""
+        return c == i
+
     def args(self, c=""):
         return self.argsv
 

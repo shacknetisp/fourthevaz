@@ -16,7 +16,7 @@ def joined():
     identify(True)
     return False
 
-lastauthuser = ""
+lastauthuser = {}
 
 
 def msg(mp):
@@ -42,9 +42,13 @@ def msg(mp):
         usedcmd = True
         identify()
     if usedcmd:
-        lastauthuser = mp.ircuser()
-    if len(lastauthuser) > 0 and mp.ircuser().lower() == "nickserv":
-        main.sendmsg(lastauthuser, mp.text().strip())
+        lastauthuser[main.currentprofile] = mp.ircuser()
+    try:
+        if (len(lastauthuser[main.currentprofile]) > 0 and
+        mp.ircuser().lower() == "nickserv"):
+            main.sendmsg(lastauthuser[main.currentprofile], mp.text().strip())
+    except KeyError:
+        pass
     return False
 
 

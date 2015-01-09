@@ -76,7 +76,7 @@ def msg(mp):
         else:
             main.whois(mp.ircuser())
             main.sendcmsg("Login attempt processed.")
-    if mp.text().find("330") != -1\
+    if mp.code("330")\
         and mp.text().find(":is logged in as") != -1:
             nick = cmd.find_between(
                 mp.text(), " ", ":is logged in as").split()[2]
@@ -84,7 +84,7 @@ def msg(mp):
                 mp.text(), " ", ":is logged in as").split()[3]
             main.ircprofiles[main.currentprofile]["adminlist"][nick] = auth
             print(("Adding " + nick + " as " + auth))
-    if mp.text().find("307") != -1\
+    elif mp.code("307")\
         and (mp.text().find(":is identified for this nick") != -1 or
             mp.text().find(":is a registered nick") != -1 or
             mp.text().find(":has identified for this nick") != -1 or
@@ -93,6 +93,13 @@ def msg(mp):
             auth = nick
             main.ircprofiles[main.currentprofile]["adminlist"][nick] = auth
             print(("Adding " + nick + " as " + auth))
+    elif mp.code("311") and 'noauth' in c_wlist.profiles[
+        main.ircprofiles[
+            main.currentprofile]['whitelist']] and c_wlist.getw('noauth'):
+        nick = mp.text().split()[3]
+        auth = nick
+        main.ircprofiles[main.currentprofile]["adminlist"][nick] = auth
+        print(("Adding " + nick + " as " + auth + " with noauth"))
     if mp.text().find("353 " + main.ircprofiles[
         main.currentprofile]["nick"]) != -1:
         for i in mp.text()[mp.text().index(":" + main.ircprofiles[
