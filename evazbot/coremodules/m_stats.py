@@ -57,4 +57,4 @@ def msg(mp):
 def showhelp():
     main.sendcmsg(
         '.stats [-modules] [-users] [-channels] [-list]: Statistics of '
-                   + c_net.name + '.')
+                   + main.botname() + '.')

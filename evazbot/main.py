@@ -25,6 +25,11 @@ outputbuffer = deque()
 exec(open("evazbot/configs/c_local/profiles.py").read())
 
 
+def botname():
+    global currentprofile
+    return ircprofiles[currentprofile]["name"]
+
+
 def ircwrite(msg):
     global currentprofile
     outputbuffer.append((ircprofiles[currentprofile]["ircsock"],
@@ -87,9 +92,9 @@ def ircconnect():
         try:
             ircprofiles[currentprofile]["ircsock"].connect(
                 (ircprofiles[currentprofile]["server"], 6667))
-            ircwrite('USER %s 8 * :%s\r\n' % (
+            ircwrite('USER %s 8 * :%s' % (
                 ircprofiles[currentprofile]["nick"],
-                ircprofiles[currentprofile]["nick"]))
+                botname()))
             ircwrite("NICK " + ircprofiles[currentprofile]["nick"])
             time.sleep(0.25)
         except socket.error:
