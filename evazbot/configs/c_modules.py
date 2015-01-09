@@ -46,6 +46,7 @@ needed = [
     "info",
     "stats",
     "log",
+    "ctcp",
 ]
 
 
