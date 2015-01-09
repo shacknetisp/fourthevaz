@@ -33,8 +33,8 @@ def msg(mp):
                     names.append(i[c_modules.name_offset])
                 cmd.outlist(['Modules'] + names)
         if tousers:
-            if tolist and not (tochannels or tomodules):
-                out.append("Invalid option: -list")
+            out.append("Whitelist: " +
+            main.ircprofiles[main.currentprofile]['whitelist'])
             out.append(str(len(c_wlist.getw("whitelist")) +
             len(c_wlist.getcwlist())) +
             ' whitelist nick(s).')
