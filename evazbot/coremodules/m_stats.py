@@ -35,7 +35,8 @@ def msg(mp):
         if tousers:
             if tolist and not (tochannels or tomodules):
                 out.append("Invalid option: -list")
-            out.append(str(len(c_wlist.getw("whitelist")) + len(main.cwlist)) +
+            out.append(str(len(c_wlist.getw("whitelist")) +
+            len(c_wlist.getcwlist())) +
             ' whitelist nick(s).')
             out.append(str(len(c_wlist.getw("adminlist"))) + ' admin user(s).')
         if tochannels:

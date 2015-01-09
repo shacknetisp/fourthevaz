@@ -7,3 +7,10 @@ def getw(l):
     return profiles[main.ircprofiles[main.currentprofile]['whitelist']][l]
 
 
+def getcwlist():
+    w = main.ircprofiles[main.currentprofile]['whitelist']
+    if w not in main.cwlist:
+        main.cwlist[w] = {}
+    return main.cwlist[w]
+
+

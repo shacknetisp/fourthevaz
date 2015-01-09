@@ -29,7 +29,7 @@ def getwlistlevel(nick):
             if nick == n:
                 wlistlevelc = name[0]
     try:
-        wlistlevelmc = main.cwlist[nick]
+        wlistlevelmc = c_wlist.getcwlist()[nick]
     except KeyError:
         pass
     return max(wlistlevelc, wlistlevelmc)
@@ -47,7 +47,7 @@ def msg(mp):
             return True
         if mp.iswlist(level + 1) and (getwlistlevel(mp.argsdef()) <
         getwlistlevel(mp.user())):
-            main.cwlist[mp.argsdef()] = level
+            c_wlist.getcwlist()[mp.argsdef()] = level
             main.sendcmsg(cmd.getname(mp.argsdef()) +
             " is now at level " + str(level))
         else:

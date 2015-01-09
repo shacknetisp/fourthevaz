@@ -52,7 +52,7 @@ def getcmd(ircmsg, c):
 
 def getcwlist(u):
     try:
-        return main.cwlist[u]
+        return c_wlist.getcwlist()[u]
     except KeyError:
         return 0
 
