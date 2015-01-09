@@ -12,6 +12,7 @@ ircprofiles = [
         "channels": ["#channel1", "#channel2"],
         "nick": "fourthevaz",
         "name": "Fourth Evaz",
+        "whitelist": "freenode"
     },
     {
         "ircsock": socket.socket(socket.AF_INET, socket.SOCK_STREAM),
@@ -19,6 +20,7 @@ ircprofiles = [
         "channels": ["#channel3"],
         "nick": "Ivanbot",
         "name": "Ivan",
+        "whitelist": "freenode",
     },
 ]
 password="mypasswordforircauth"

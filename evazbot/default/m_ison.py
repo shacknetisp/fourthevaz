@@ -8,10 +8,13 @@ redflares = {
     'ison': 'http://redflare.ofthings.net'
 }
 
+replacements = []
+
 ##mconfig/ison.py
 ##lines of the following:
 #redflares['ison2']="http://redflare.ofthings.net"
 ##this will cause the command .ison2 to use that url
+#replacements = ['name1', 'name2']
 exec(c_locs.mconfig("ison"))
 
 
@@ -23,9 +26,8 @@ def msg(mp):
             found = {}
             with urlopen(v + '/reports') as u:
                 urldata = u.read().decode()
-                if hasattr(c_wlist, "replacements"):
-                    for i in c_wlist.replacements:
-                        urldata = urldata.replace(i, cmd.getname(i, False))
+                for i in replacements:
+                    urldata = urldata.replace(i, cmd.getname(i, False))
                 servers = ast.literal_eval(urldata)
                 if mp.argbool('stats'):
                     out = []

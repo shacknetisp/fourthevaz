@@ -3,3 +3,7 @@ from base import *
 exec(open(c_locs.dbhome + "/wlist.py").read())
 
 
+def getw(l):
+    return profiles[main.ircprofiles[main.currentprofile]['whitelist']][l]
+
+

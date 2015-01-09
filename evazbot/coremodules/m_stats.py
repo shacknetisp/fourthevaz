@@ -35,9 +35,9 @@ def msg(mp):
         if tousers:
             if tolist and not (tochannels or tomodules):
                 out.append("Invalid option: -list")
-            out.append(str(len(c_wlist.whitelist) + len(main.cwlist)) +
+            out.append(str(len(c_wlist.getw("whitelist")) + len(main.cwlist)) +
             ' whitelist nick(s).')
-            out.append(str(len(c_wlist.adminlist)) + ' admin user(s).')
+            out.append(str(len(c_wlist.getw("adminlist"))) + ' admin user(s).')
         if tochannels:
             out.append(str(len(main.ircprofiles[main.currentprofile]['channels'
                        ])) + ' channels.')

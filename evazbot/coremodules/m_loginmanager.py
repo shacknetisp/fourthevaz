@@ -24,7 +24,7 @@ load()
 def getwlistlevel(nick):
     wlistlevelc = 0
     wlistlevelmc = 0
-    for name in c_wlist.whitelist:
+    for name in c_wlist.getw("whitelist"):
         for n in name[1]:
             if nick == n:
                 wlistlevelc = name[0]
@@ -65,7 +65,7 @@ def msg(mp):
             main.sendcmsg(cmd.getname(nick) + ": Whitelist " + str(wlistlevel))
             adminlevel = 0
             try:
-                for i in c_wlist.adminlist:
+                for i in c_wlist.getw("adminlist"):
                     if main.ircprofiles[main.currentprofile][
                         "adminlist"][nick] == i[1]:
                             adminlevel = i[0]
