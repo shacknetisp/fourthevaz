@@ -10,6 +10,9 @@ cprefix = '.'
 #servernames.append('myreserver')
 #cprefix = '~'
 
+if cprefix.isalnum():
+    raise ValueError('cprefix cannot be alphanumeric')
+
 
 def umconfig(m):
     import evazbot.configs.c_locs as c_locs
