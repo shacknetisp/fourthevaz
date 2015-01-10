@@ -68,6 +68,19 @@ def msg(mp):
         else:
             main.sendcmsg("Invalid Arguments!")
         return True
+
+    if mp.acmd("join", 99):
+        channel = mp.argsdef()
+        main.ircprofiles[main.currentprofile]['channels'].append(channel)
+        main.joinchan(channel)
+        main.sendcmsg('Attempted to join channel ' + channel)
+        return True
+
+    if mp.acmd("part", 99):
+        channel = mp.argsdef()
+        main.ircwrite('PART ' + channel)
+        main.sendcmsg('Attempted to part channel ' + channel)
+        return True
     return False
 
 
@@ -78,6 +91,8 @@ def showhelp():
     main.sendcmsg(".remove <m>: Unload module <m>.")
     main.sendcmsg(".dadd <m>: Add module to the defaults list.")
     main.sendcmsg(".dremove <m>: Remove module from the defaults list.")
+    main.sendcmsg(".join #channel")
+    main.sendcmsg(".part #channel")
 
 whitelistreload = 0
 

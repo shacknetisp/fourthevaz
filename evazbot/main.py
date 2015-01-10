@@ -51,7 +51,6 @@ def sendmsg(chan, msg, t="PRIVMSG"):
     outputtext = msg
     outputchannel = chan
     c_modules.event("output")
-    time.sleep(0.025)
     ircwrite(t + " " + chan + " :" + msg)
 
 
@@ -83,22 +82,27 @@ def whois(n):
     ircwrite("WHOIS " + n)
 
 
+def pconnect():
+    global currentprofile
+    ircprofiles[currentprofile]["adminlist"] = dict()
+    ircprofiles[currentprofile]["joined"] = False
+    try:
+        ircprofiles[currentprofile]["ircsock"].connect(
+            (ircprofiles[currentprofile]["server"], 6667))
+        ircwrite('USER %s 8 * :%s' % (
+            ircprofiles[currentprofile]["nick"],
+            botname()))
+        ircwrite("NICK " + ircprofiles[currentprofile]["nick"])
+        time.sleep(0.25)
+    except socket.error:
+        pass
+
+
 def ircconnect():
     global currentprofile
     for i in range(len(ircprofiles)):
         currentprofile = i
-        ircprofiles[currentprofile]["adminlist"] = dict()
-        ircprofiles[currentprofile]["joined"] = False
-        try:
-            ircprofiles[currentprofile]["ircsock"].connect(
-                (ircprofiles[currentprofile]["server"], 6667))
-            ircwrite('USER %s 8 * :%s' % (
-                ircprofiles[currentprofile]["nick"],
-                botname()))
-            ircwrite("NICK " + ircprofiles[currentprofile]["nick"])
-            time.sleep(0.25)
-        except socket.error:
-            pass
+        pconnect()
 
 
 def dochannel(ircmsg, i):
@@ -137,9 +141,9 @@ def process(ircmsgp):
         currentuser = cmd.getircuser(ircmsg)
         if ircmsg.find("PING :") == 0:
             c_modules.event("ping", ircmsg)
-        elif ircmsg.find("ERROR :") == 0 and\
-        ircmsg.find("Ping timeout :") != -1:
-            pass
+        elif ircmsg.find("ERROR :") == 0:
+            ircprofiles[currentprofile]["ircsock"].close()
+            pconnect()
         elif ircmsg.find(":" + ircprofiles[currentprofile]["nick"] + "!") == 0\
         and ircmsg.find("JOIN") != -1:
             c_modules.event("login")
@@ -148,7 +152,6 @@ def process(ircmsgp):
             global wasserver
             handled = False
             wasserver = False
-            c_modules.event("text", ircmsg)
             c_modules.event("msg", ircmsg)
             c_modules.event("afterall", ircmsg)
 
@@ -157,8 +160,6 @@ def loop_select():
     import evazbot.configs.c_modules as c_modules
     global channel
     global currentprofile
-    global lastoutput
-    global last10output
     lasttime = time.time()
     while running:
         sockets = []
@@ -194,9 +195,9 @@ def loop_select():
                 osock.send(output)
                 linessent += 1
                 time.sleep(0.025 * linessent)
-                if linessent > 3:
+                if linessent > 5:
                     time.sleep(0.075 * linessent)
-                if linessent > 6:
+                if linessent > 10:
                     break
         except IndexError:
             pass
