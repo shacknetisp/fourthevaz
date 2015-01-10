@@ -22,7 +22,7 @@ ircprofiles = []
 cwlist = {}
 outputbuffer = deque()
 
-exec(open("evazbot/configs/c_local/profiles.py").read())
+exec(open("evazbot/configs/profiles.py").read())
 
 
 def botname():
