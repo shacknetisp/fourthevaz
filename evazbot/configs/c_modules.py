@@ -10,7 +10,7 @@ import evazbot.configs.c_locs as c_locs
 reload(c_locs)
 
 sys.path.append(c_locs.dbhome + "/modules")
-dbfile = c_locs.dbhome + "/defaultmodules.db.txt"
+dbfile = c_locs.dbhome + "/automodules." + main.moduleset + ".db.txt"
 custom_offset = 2
 offset = 1
 name_offset = 0
