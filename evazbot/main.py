@@ -61,6 +61,11 @@ def sendcmsg(msg, t="PRIVMSG"):
         sendmsg(channel, msg, t)
 
 
+def sendhmsg(msg):
+    import evazbot.configs.u_commands as cmd
+    sendcmsg(cmd.cprefix + msg)
+
+
 def sendamsg(msg):
     global currentprofile
     for i in ircprofiles[currentprofile]["channels"]:
