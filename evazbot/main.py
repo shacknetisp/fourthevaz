@@ -157,6 +157,8 @@ def loop_select():
     import evazbot.configs.c_modules as c_modules
     global channel
     global currentprofile
+    global lastoutput
+    global last10output
     lasttime = time.time()
     while running:
         sockets = []
@@ -186,19 +188,24 @@ def loop_select():
         if not got:
             time.sleep(0.2)
         linessent = 0
-        for osock, output in outputbuffer:
-            osock.send(output)
-            linessent += 1
-            time.sleep(0.025 * linessent)
-        outputbuffer.clear()
+        try:
+            while outputbuffer:
+                osock, output = outputbuffer.popleft()
+                osock.send(output)
+                linessent += 1
+                time.sleep(0.025 * linessent)
+                if linessent > 3:
+                    time.sleep(0.075 * linessent)
+                if linessent > 6:
+                    break
+        except IndexError:
+            pass
 
 
 def safemkdir(d):
     import os
-    try:
+    if not os.path.isdir(d):
         os.mkdir(d)
-    except:
-        pass
 
 
 def ircmain():
