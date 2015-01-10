@@ -37,14 +37,14 @@ def getuser(message):
 
 def getcmd(ircmsg, c, mark=cprefix):
     if len(getuser(ircmsg).strip()) > 0:
-        if ircmsg.find("PRIVMSG " + main.getchannel() + " :" + cprefix) != -1\
-        or ircmsg.find(getuser(ircmsg) + "> " + cprefix) != -1:
-            if (ircmsg.find(":" + cprefix + c + " ") != -1 or (
-                    ircmsg.find(":" + cprefix + c) != -1
-                    and ircmsg.endswith(":" + cprefix + c)) or ircmsg.find(
-                    "> " + cprefix + c + " ") != -1 or (
-                    ircmsg.find("> " + cprefix + c) != -1 and
-                    ircmsg.endswith("> " + cprefix + c))):
+        if ircmsg.find("PRIVMSG " + main.getchannel() + " :" + mark) != -1\
+        or ircmsg.find(getuser(ircmsg) + "> " + mark) != -1:
+            if (ircmsg.find(":" + mark + c + " ") != -1 or (
+                    ircmsg.find(":" + mark + c) != -1
+                    and ircmsg.endswith(":" + mark + c)) or ircmsg.find(
+                    "> " + mark + c + " ") != -1 or (
+                    ircmsg.find("> " + mark + c) != -1 and
+                    ircmsg.endswith("> " + mark + c))):
                 main.handled = True
                 return True
     else:
