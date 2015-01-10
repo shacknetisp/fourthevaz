@@ -14,7 +14,9 @@ ircprofiles = [
         #the real name to use
         "name": "Fourth Evaz",
         #the whitelist section to use, see wlist.py
-        "whitelist": "freenode"
+        "whitelist": "freenode",
+	#optional command prefix, defaults to '.'
+	"prefix": "~",
     },
     #another profile
     {
