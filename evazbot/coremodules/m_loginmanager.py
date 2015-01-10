@@ -104,7 +104,9 @@ def msg(mp):
         main.currentprofile]["nick"]) != -1:
         for i in mp.text()[mp.text().index(":" + main.ircprofiles[
         main.currentprofile]["nick"]):].split():
-            main.whois(i.strip("@"))
+            n = i.strip('@')
+            if getwlistlevel(n) > 0:
+                main.whois(n)
 
 
 def showhelp():
