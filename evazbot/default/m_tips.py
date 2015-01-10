@@ -35,6 +35,6 @@ def msg(mp):
 
 def showhelp():
     main.sendcmsg(
-        cmd.cprefix + "tip: Recall random tip..")
-    main.sendcmsg(cmd.cprefix + "addtip <the tip>: Add <the tip>.")
-    main.sendcmsg(cmd.cprefix + "sorttips: Clean the tip DB.")
+        cmd.cprefix() + "tip: Recall random tip..")
+    main.sendcmsg(cmd.cprefix() + "addtip <the tip>: Add <the tip>.")
+    main.sendcmsg(cmd.cprefix() + "sorttips: Clean the tip DB.")

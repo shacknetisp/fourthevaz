@@ -65,7 +65,7 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg(cmd.cprefix + 'c <text>: Process <text>.')
-    main.sendcmsg(cmd.cprefix + 'c -words: See word count.')
-    main.sendcmsg(cmd.cprefix + 'c -fix -w=<word> -n=<newword>: Rename a word.')
-    main.sendcmsg(cmd.cprefix + 'cg instead of .c will use the all-text system.')
+    main.sendcmsg(cmd.cprefix() + 'c <text>: Process <text>.')
+    main.sendcmsg(cmd.cprefix() + 'c -words: See word count.')
+    main.sendcmsg(cmd.cprefix() + 'c -fix -w=<word> -n=<newword>: Rename a word.')
+    main.sendcmsg(cmd.cprefix() + 'cg instead of .c will use the all-text system.')

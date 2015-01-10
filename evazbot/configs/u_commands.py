@@ -3,15 +3,17 @@ from base import *
 import shlex
 
 servernames = []
-cprefix = '.'
+
+
+def cprefix():
+    out = main.ircprofiles[main.currentprofile]["prefix"]
+    if out.isalnum():
+        raise ValueError('command prefix cannot be alphanumeric')
+    return out
 
 ##mconfig/ucmd.py
 ##options:
 #servernames.append('myreserver')
-#cprefix = '~'
-
-if cprefix.isalnum():
-    raise ValueError('cprefix cannot be alphanumeric')
 
 
 def umconfig(m):
@@ -38,7 +40,7 @@ def getuser(message):
     return name
 
 
-def getcmd(ircmsg, c, mark=cprefix):
+def getcmd(ircmsg, c, mark=cprefix()):
     if len(getuser(ircmsg).strip()) > 0:
         if ircmsg.find("PRIVMSG " + main.getchannel() + " :" + mark) != -1\
         or ircmsg.find(getuser(ircmsg) + "> " + mark) != -1:
@@ -108,8 +110,8 @@ def getacmd(ircmsg, c, w=1):
 
 
 def getargs(msg, command):
-    fcstring_i = " :" + cprefix + command
-    fcstring_g = "> " + cprefix + command
+    fcstring_i = " :" + cprefix() + command
+    fcstring_g = "> " + cprefix() + command
     if msg.find(fcstring_i) != -1:
         loc = msg.find(fcstring_i) + len(fcstring_i) + 1
         args = msg[loc:]

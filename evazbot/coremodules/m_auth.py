@@ -55,8 +55,8 @@ def msg(mp):
 def showhelp():
     main.sendcmsg("You must define a password in profiles.py.")
     main.sendcmsg(
-        cmd.cprefix +
+        cmd.cprefix() +
         "ircregister <email>: Register this bot's current nick to <email>")
-    main.sendcmsg(cmd.cprefix +
+    main.sendcmsg(cmd.cprefix() +
     "ircverify <verify code>: Verify registration.")
-    main.sendcmsg(cmd.cprefix + "ircauth: Authenticate to Nickserv.")
+    main.sendcmsg(cmd.cprefix() + "ircauth: Authenticate to Nickserv.")

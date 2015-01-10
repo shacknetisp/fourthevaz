@@ -31,14 +31,14 @@ def msg(mp):
         return True
 
     if mp.acmd('chathelp'):
-        main.sendmsg(mp.user(), cmd.cprefix + 'say <channel> <message>')
+        main.sendmsg(mp.user(), cmd.cprefix() + 'say <channel> <message>')
         return True
     return False
 
 
 def showhelp():
     time.sleep(0.25)
-    main.sendcmsg(cmd.cprefix + "chat <channel> <message>: " +
+    main.sendcmsg(cmd.cprefix() + "chat <channel> <message>: " +
      "Send <message> to <channel>. <channel> can be 'all'."
                   )
-    main.sendcmsg(cmd.cprefix + "chathelp: Admin's guide for this module.")
+    main.sendcmsg(cmd.cprefix() + "chathelp: Admin's guide for this module.")

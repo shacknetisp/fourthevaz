@@ -85,17 +85,17 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg(cmd.cprefix +
+    main.sendcmsg(cmd.cprefix() +
     "mreload: Stop modules & reload default modules.")
     main.sendcmsg(
-        cmd.cprefix +
+        cmd.cprefix() +
         "add <m>: Load & start module <m>. If <m> is running, stop it.")
-    main.sendcmsg(cmd.cprefix + "remove <m>: Unload module <m>.")
-    main.sendcmsg(cmd.cprefix + "dadd <m>: Add module to the defaults list.")
-    main.sendcmsg(cmd.cprefix +
+    main.sendcmsg(cmd.cprefix() + "remove <m>: Unload module <m>.")
+    main.sendcmsg(cmd.cprefix() + "dadd <m>: Add module to the defaults list.")
+    main.sendcmsg(cmd.cprefix() +
     "dremove <m>: Remove module from the defaults list.")
-    main.sendcmsg(cmd.cprefix + "join #channel")
-    main.sendcmsg(cmd.cprefix + "part #channel")
+    main.sendcmsg(cmd.cprefix() + "join #channel")
+    main.sendcmsg(cmd.cprefix() + "part #channel")
 
 whitelistreload = 0
 

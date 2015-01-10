@@ -14,4 +14,4 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg(cmd.cprefix + "fortune: Get a random fortune.")
+    main.sendcmsg(cmd.cprefix() + "fortune: Get a random fortune.")

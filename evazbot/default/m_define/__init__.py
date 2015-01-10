@@ -103,9 +103,9 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg(cmd.cprefix + 'lookup <word>: Lookup <word>.')
-    main.sendcmsg(cmd.cprefix + 'define <word>: Define <word>.')
-    main.sendcmsg(cmd.cprefix + 'wiki <words>: Lookup on Wikipedia: <words>.')
-    main.sendcmsg(cmd.cprefix +
+    main.sendcmsg(cmd.cprefix() + 'lookup <word>: Lookup <word>.')
+    main.sendcmsg(cmd.cprefix() + 'define <word>: Define <word>.')
+    main.sendcmsg(cmd.cprefix() + 'wiki <words>: Lookup on Wikipedia: <words>.')
+    main.sendcmsg(cmd.cprefix() +
     'google [-n=number] <words to lookup>: Lookup on Google.'
                   )

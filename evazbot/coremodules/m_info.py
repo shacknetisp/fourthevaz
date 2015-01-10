@@ -7,8 +7,8 @@ modcommand = "4e"
 
 
 def msg(mp):
-    modmessage = main.botname() + " is running. Use ." +\
-    c_net.helpcommand + " for help."
+    modmessage = main.botname() + " is running. Use " +\
+    cmd.cprefix() + "help for help."
     if mp.cmd(modcommand) or mp.cmd("info"):
         main.sendcmsg(modmessage)
         return True
@@ -16,5 +16,5 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg(cmd.cprefix + "4e OR " +
-    cmd.cprefix + "info: Confirm operation of " + c_net.name + ".")
+    main.sendcmsg(cmd.cprefix() + "4e OR " +
+    cmd.cprefix() + "info: Confirm operation of " + c_net.name + ".")

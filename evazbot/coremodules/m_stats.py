@@ -56,6 +56,6 @@ def msg(mp):
 
 def showhelp():
     main.sendcmsg(
-        cmd.cprefix +
+        cmd.cprefix() +
         'stats [-modules] [-users] [-channels] [-list]: Statistics of '
                    + main.botname() + '.')

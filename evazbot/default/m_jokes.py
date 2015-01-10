@@ -89,19 +89,19 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg(cmd.cprefix +
+    main.sendcmsg(cmd.cprefix() +
     'joke [-c=category] <target>: Recall a random joke, '
                   + 'with the target being <target>, ' +
                   'and the dbfile being <category>.'
                   )
     main.sendcmsg(
-        cmd.cprefix +
+        cmd.cprefix() +
         'addjoke [-c=<category>] <joke>: Add <the joke> to <category>. '
                   + '#target# will be replaced with the target of .joke,' +
                   '#caller# will be replaced with the caller of the joke.'
                   )
-    main.sendcmsg(cmd.cprefix + 'sortjokes: Clean the DB.')
+    main.sendcmsg(cmd.cprefix() + 'sortjokes: Clean the DB.')
     main.sendcmsg(
-        cmd.cprefix + 'jokecats: List all categories, ' +
+        cmd.cprefix() + 'jokecats: List all categories, ' +
         'with number of #target# and regular lines.'
                   )

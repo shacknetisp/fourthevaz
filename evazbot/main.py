@@ -23,6 +23,9 @@ cwlist = {}
 outputbuffer = deque()
 
 exec(open("evazbot/configs/profiles.py").read())
+for i in range(len(ircprofiles)):
+    if 'prefix' not in ircprofiles[i]:
+        ircprofiles[i]['prefix'] = '.'
 
 
 def botname():
@@ -63,7 +66,7 @@ def sendcmsg(msg, t="PRIVMSG"):
 
 def sendhmsg(msg):
     import evazbot.configs.u_commands as cmd
-    sendcmsg(cmd.cprefix + msg)
+    sendcmsg(cmd.cprefix() + msg)
 
 
 def sendamsg(msg):
