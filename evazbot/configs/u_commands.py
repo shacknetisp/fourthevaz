@@ -3,10 +3,12 @@ from base import *
 import shlex
 
 servernames = []
+cprefix = '.'
 
 ##mconfig/ucmd.py
 ##options:
 #servernames.append('myreserver')
+#cprefix = '~'
 
 
 def umconfig(m):
@@ -33,16 +35,16 @@ def getuser(message):
     return name
 
 
-def getcmd(ircmsg, c):
+def getcmd(ircmsg, c, mark=cprefix):
     if len(getuser(ircmsg).strip()) > 0:
-        if ircmsg.find("PRIVMSG " + main.getchannel() + " :.") != -1\
-        or ircmsg.find(getuser(ircmsg) + "> .") != -1:
-            if (ircmsg.find(":." + c + " ") != -1 or (
-                    ircmsg.find(":." + c) != -1
-                    and ircmsg.endswith(":." + c)) or ircmsg.find(
-                    "> ." + c + " ") != -1 or (
-                    ircmsg.find("> ." + c) != -1 and
-                    ircmsg.endswith("> ." + c))):
+        if ircmsg.find("PRIVMSG " + main.getchannel() + " :" + cprefix) != -1\
+        or ircmsg.find(getuser(ircmsg) + "> " + cprefix) != -1:
+            if (ircmsg.find(":" + cprefix + c + " ") != -1 or (
+                    ircmsg.find(":" + cprefix + c) != -1
+                    and ircmsg.endswith(":" + cprefix + c)) or ircmsg.find(
+                    "> " + cprefix + c + " ") != -1 or (
+                    ircmsg.find("> " + cprefix + c) != -1 and
+                    ircmsg.endswith("> " + cprefix + c))):
                 main.handled = True
                 return True
     else:
@@ -103,8 +105,8 @@ def getacmd(ircmsg, c, w=1):
 
 
 def getargs(msg, command):
-    fcstring_i = " :." + command
-    fcstring_g = "> ." + command
+    fcstring_i = " :" + cprefix + command
+    fcstring_g = "> " + cprefix + command
     if msg.find(fcstring_i) != -1:
         loc = msg.find(fcstring_i) + len(fcstring_i) + 1
         args = msg[loc:]
@@ -113,6 +115,7 @@ def getargs(msg, command):
         args = msg[loc:]
     else:
         args = ""
+    return args
     return args
 
 

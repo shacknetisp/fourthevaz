@@ -16,4 +16,5 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg(".4e OR .info: Confirm operation of " + c_net.name + ".")
+    main.sendcmsg(cmd.cprefix + "4e OR " +
+    cmd.cprefix + "info: Confirm operation of " + c_net.name + ".")

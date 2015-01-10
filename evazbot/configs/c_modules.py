@@ -47,6 +47,7 @@ needed = [
     "stats",
     "log",
     "ctcp",
+    "ccheck",
 ]
 
 

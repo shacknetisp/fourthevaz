@@ -125,7 +125,7 @@ def showhelp():
 
 def showhelp():
     main.sendcmsg(
-        ".weather [-temp] [-wind] [-cel -kel -far] [-name -id]" +
+        cmd.cprefix + "weather [-temp] [-wind] [-cel -kel -far] [-name -id]" +
         "<city name/id>:" +
         " Get weather from http://openweathermap.org")
     main.sendcmsg("-temp, -wind: Get temperature, wind.")

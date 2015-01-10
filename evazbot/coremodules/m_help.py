@@ -8,7 +8,8 @@ def msg(mp):
         splitargs = args.split()
         if mp.iswlist():
             if len(splitargs) == 0:
-                main.sendcmsg("Use .help <module> for a specific module.")
+                main.sendcmsg("Use " +
+                cmd.cprefix + "help <module> for a specific module.")
                 cmd.outlist(c_modules.helpmodulenames())
             elif len(splitargs) == 1:
                 c_modules.showhelp(splitargs[0])
@@ -21,5 +22,5 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg(".help <[module]>: View help for <module>." +
+    main.sendcmsg(cmd.cprefix + "help <[module]>: View help for <module>." +
     "If <module> is omitted, view general help.")

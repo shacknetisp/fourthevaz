@@ -110,8 +110,8 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg(".login [-check]: Login to this bot as admin.")
+    main.sendcmsg(cmd.cprefix + "login [-check]: Login to this bot as admin.")
     main.sendcmsg(
         "-check [<nick>]: Check if you/<nick> are logged in as admin.")
-    main.sendcmsg(".wlist -set=<level> nick:" +
+    main.sendcmsg(cmd.cprefix + "wlist -set=<level> nick:" +
     "Add a nick to the whitelist, -set defaults to 0.")

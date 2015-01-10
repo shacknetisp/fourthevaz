@@ -66,8 +66,9 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg(".ison [-stats] <name>: Find players from a RedFlare.")
-    main.sendcmsg(".ison may be another command, list below:")
+    main.sendcmsg(cmd.cprefix +
+    "ison [-stats] <name>: Find players from a RedFlare.")
+    main.sendcmsg(cmd.cprefix + "ison may be another command, list below:")
     for k in list(redflares.keys()):
         v = redflares[k]
-        main.sendcmsg("." + k + ": " + v)
+        main.sendcmsg(cmd.cprefix + k + ": " + v)

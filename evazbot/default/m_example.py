@@ -22,4 +22,4 @@ def msg(mp):
 #The ".help example" event
 def showhelp():
     #Send a basic help message
-    main.sendcmsg(".example <arguments>: Return the arguments.")
+    main.sendcmsg(cmd.cprefix + "example <arguments>: Return the arguments.")

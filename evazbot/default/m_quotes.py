@@ -40,7 +40,8 @@ def msg(mp):
 
 def showhelp():
     main.sendcmsg(
-        ".quote <[start]>: Recall a random quote, match the beginning with " +
+        cmd.cprefix +
+        "quote <[start]>: Recall a random quote, match the beginning with " +
         "'<start' (literal '<' and 'start' represents the search pattern).")
-    main.sendcmsg(".addquote <the quote>: Add <the quote>.")
-    main.sendcmsg(".sortquotes: Clean the quote DB.")
+    main.sendcmsg(cmd.cprefix + "addquote <the quote>: Add <the quote>.")
+    main.sendcmsg(cmd.cprefix + 'sortquotes: Clean the quote DB.')

@@ -61,5 +61,6 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg('.geoip <ip>: Find location information from IP address.'
+    main.sendcmsg(cmd.cprefix +
+    'geoip <ip>: Find location information from IP address.'
                   )

@@ -37,5 +37,5 @@ def msg(mp):
 
 def showhelp():
     main.sendcmsg(
-        '.calc <mathematical expression>: Calculate a math expression.'
+        cmd.cprefix + 'calc <mathematical expression>: Calculate a math expression.'
                   )

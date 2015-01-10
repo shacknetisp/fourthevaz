@@ -61,7 +61,7 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg('.faq <name>')
-    main.sendcmsg('.faq -list=<prefix>')
-    main.sendcmsg('.faq -add=<name> <content>')
-    main.sendcmsg('.faq -remove=<name>')
+    main.sendcmsg(cmd.cprefix + 'faq <name>')
+    main.sendcmsg(cmd.cprefix + 'faq -list=<prefix>')
+    main.sendcmsg(cmd.cprefix + 'faq -add=<name> <content>')
+    main.sendcmsg(cmd.cprefix + 'faq -remove=<name>')

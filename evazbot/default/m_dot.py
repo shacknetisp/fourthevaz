@@ -28,7 +28,7 @@ def sendout(text):
 def msg(mp):
     possible = ""
     for i in range(maxdots):
-        if mp.cmd(possible):
+        if cmd.getcmd(mp.text(), possible, '.'):
             earchari = random.randrange(int(-(min(len(earcharsl),
                                         len(earcharsr)) * 0.5)),
                                         min(len(earcharsl), len(earcharsr)))

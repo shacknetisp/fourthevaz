@@ -20,5 +20,7 @@ def msg(mp):
 
 def showhelp():
     main.sendcmsg(
-        ".bf <code>: Run Brainf**k code according to stdin of .bfinput")
-    main.sendcmsg(".bfinput <input>: Set .bf input for the next .bf call.")
+        cmd.cprefix +
+        "bf <code>: Run Brainf**k code according to stdin of .bfinput")
+    main.sendcmsg(cmd.cprefix +
+    "bfinput <input>: Set .bf input for the next .bf call.")

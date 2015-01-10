@@ -37,6 +37,6 @@ def msg(mp):
 
 def showhelp():
     main.sendcmsg(
-        ".hist: Recall random history bit.")
-    main.sendcmsg(".addhist <history>: Add <history> to the DB.")
-    main.sendcmsg(".sorthist: Clean the history DB.")
+        cmd.cprefix + "hist: Recall random history bit.")
+    main.sendcmsg(cmd.cprefix + "addhist <history>: Add <history> to the DB.")
+    main.sendcmsg(cmd.cprefix + "sorthist: Clean the history DB.")

@@ -30,7 +30,7 @@ def msg(mp):
 
 
 def showhelp():
-    main.sendcmsg('.time utc: Get current UTC time.')
-    main.sendcmsg('.time until [-dmy] <d/m/y H:M>:" +\
+    main.sendcmsg(cmd.cprefix + 'time utc: Get current UTC time.')
+    main.sendcmsg(cmd.cprefix + 'time until [-dmy] <d/m/y H:M>:" +\
     "Get hours and minutes until <date> utc. Default is -mdy.'
                   )

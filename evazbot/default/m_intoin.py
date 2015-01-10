@@ -18,6 +18,13 @@ kicktext = [
     "Try again!",
 ]
 
+##mconfig/intoin.py
+##options:
+#lagtext.append('lag out message')
+#bantext.append('ban message')
+#kicktext.append('kick message')
+exec(c_locs.mconfig("intoin"))
+
 
 def msg(mp):
     if mp.isserver() or mp.cmd("intoin"):
