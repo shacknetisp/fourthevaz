@@ -26,6 +26,17 @@ exec(open("evazbot/configs/profiles.py").read())
 for i in range(len(ircprofiles)):
     if 'prefix' not in ircprofiles[i]:
         ircprofiles[i]['prefix'] = '.'
+    ircprofiles[i]['nicklist'] = {}
+
+
+def nlistcheck(n):
+    if not n in ircprofiles[currentprofile]["nicklist"]:
+        ircprofiles[currentprofile]["nicklist"][n] = []
+
+
+def nlistadd(n, ch):
+    nlistcheck(n)
+    ircprofiles[currentprofile]["nicklist"][n].append(ch)
 
 
 def botname():
@@ -54,7 +65,9 @@ def sendmsg(chan, msg, t="PRIVMSG"):
     outputtext = msg
     outputchannel = chan
     c_modules.event("output")
-    ircwrite(t + " " + chan + " :" + msg)
+    out = t + " " + chan + " :" + msg
+    ircwrite(out)
+    print(out)
 
 
 def sendcmsg(msg, t="PRIVMSG"):
@@ -115,6 +128,8 @@ def ircconnect():
 
 def dochannel(ircmsg, i):
     global channel
+    global currentprofile
+    from evazbot.configs import u_commands as cmd
     if ircmsg.find("PRIVMSG " + i + " :") != -1:
         channel = i
     if (
@@ -124,6 +139,13 @@ def dochannel(ircmsg, i):
             or ircmsg.find("QUIT :") != -1
     ):
         channel = i
+    try:
+        if ircmsg.split()[1] == 'QUIT':
+            if i in ircprofiles[
+                currentprofile]['nicklist'][cmd.getircuser(ircmsg)]:
+                channel = i
+    except IndexError:
+        pass
 
 
 def process(ircmsgp):

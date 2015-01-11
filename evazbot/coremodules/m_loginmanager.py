@@ -100,11 +100,12 @@ def msg(mp):
         auth = nick
         main.ircprofiles[main.currentprofile]["adminlist"][nick] = auth
         print(("Adding " + nick + " as " + auth + " with noauth"))
-    if mp.text().find("353 " + main.ircprofiles[
-        main.currentprofile]["nick"]) != -1:
+    if mp.code("353"):
         for i in mp.text()[mp.text().index(":" + main.ircprofiles[
         main.currentprofile]["nick"]):].split():
-            n = i.strip('@')
+            n = i.strip('@+:')
+            ch = mp.text().split()[4]
+            main.nlistadd(n, ch)
             if getwlistlevel(n) > 0:
                 main.whois(n)
 

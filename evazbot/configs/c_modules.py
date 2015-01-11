@@ -48,6 +48,7 @@ needed = [
     "log",
     "ctcp",
     "ccheck",
+    "joinpart",
 ]
 
 
