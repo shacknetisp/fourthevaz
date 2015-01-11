@@ -35,18 +35,18 @@ def getwlistlevel(nick):
     return max(wlistlevelc, wlistlevelmc)
 
 
-def msg(mp):
-    if mp.cmd("wlist"):
+def msg(mp, ct):
+    if ct.cmd("wlist"):
         try:
-            level = int(mp.argstr("set"))
+            level = int(ct.args.get("set"))
         except:
             main.sendcmsg("No argument!")
             return True
-        if mp.argsdef() == mp.user():
-            main.sendcmsg("You cannot set yourself.")
+        if ct.args.getdef() == ct.user():
+            ct.msg("You cannot set yourself.")
             return True
-        if mp.iswlist(level + 1) and (getwlistlevel(mp.argsdef()) <
-        getwlistlevel(mp.user())):
+        if ct.islogin(level + 1) and (getwlistlevel(mp.argsdef()) <
+        getwlistlevel(ct.user())):
             c_wlist.getcwlist()[mp.argsdef()] = level
             main.sendcmsg(cmd.getname(mp.argsdef()) +
             " is now at level " + str(level))
@@ -56,13 +56,13 @@ def msg(mp):
             main.sendcmsg("The level of your target is: " +
             str(getwlistlevel(mp.argsdef())))
         save()
-    if mp.cmd("login"):
-        if mp.argbool("check"):
-            nick = mp.argsdef().strip()
+    if ct.cmd("login"):
+        if ct.args.getbool("check"):
+            nick = ct.args.getdef().strip()
             if len(nick) == 0:
-                nick = mp.user()
+                nick = ct.user()
             wlistlevel = getwlistlevel(nick)
-            main.sendcmsg(cmd.getname(nick) + ": Whitelist " + str(wlistlevel))
+            ct.msg(cmd.getname(nick) + ": Whitelist " + str(wlistlevel))
             adminlevel = 0
             try:
                 for i in c_wlist.getw("adminlist"):
@@ -71,40 +71,36 @@ def msg(mp):
                             adminlevel = i[0]
             except KeyError:
                 adminlevel = 0
-            main.sendcmsg(cmd.getname(nick) + ": Admin " + str(adminlevel))
-
+            ct.msg(cmd.getname(nick) + ": Admin " + str(adminlevel))
         else:
-            main.whois(mp.ircuser())
-            main.sendcmsg("Login attempt processed.")
-    if mp.code("330")\
+            ct.commands.whois(ct.ircuser())
+            ct.msg("Login attempt processed.")
+
+    if ct.code("330")\
         and mp.text().find(":is logged in as") != -1:
-            nick = cmd.find_between(
-                mp.text(), " ", ":is logged in as").split()[2]
-            auth = cmd.find_between(
-                mp.text(), " ", ":is logged in as").split()[3]
-            main.ircprofiles[main.currentprofile]["adminlist"][nick] = auth
+            nick = ct.getsplit(3)
+            auth = ct.getsplit(4)
+            ct.profile.setauth(nick, auth)
             print(("Adding " + nick + " as " + auth))
-    elif mp.code("307")\
+    elif ct.code("307")\
         and (mp.text().find(":is identified for this nick") != -1 or
             mp.text().find(":is a registered nick") != -1 or
             mp.text().find(":has identified for this nick") != -1 or
             mp.text().find(":has identified for t\nhis nick") != -1):
-            nick = mp.text().split()[3]
+            nick = ct.getsplit(3)
             auth = nick
-            main.ircprofiles[main.currentprofile]["adminlist"][nick] = auth
+            ct.profile.setauth(nick, auth)
             print(("Adding " + nick + " as " + auth))
-    elif mp.code("311") and 'noauth' in c_wlist.profiles[
-        main.ircprofiles[
-            main.currentprofile]['whitelist']] and c_wlist.getw('noauth'):
-        nick = mp.text().split()[3]
+    elif ct.code("311") and ct.profile.noauth():
+        nick = ct.getsplit(3)
         auth = nick
-        main.ircprofiles[main.currentprofile]["adminlist"][nick] = auth
+        ct.profile.setauth(nick, auth)
         print(("Adding " + nick + " as " + auth + " with noauth"))
-    if mp.code("353"):
-        for i in mp.text()[mp.text().index(":" + main.ircprofiles[
-        main.currentprofile]["nick"]):].split():
+
+    if ct.code("353"):
+        for i in ct.nameslist():
             n = i.strip('@+:')
-            ch = mp.text().split()[4]
+            ch = ct.getsplit(4)
             main.nlistadd(n, ch)
             if getwlistlevel(n) > 0:
                 main.whois(n)

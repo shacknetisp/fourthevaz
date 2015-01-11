@@ -160,14 +160,17 @@ def reloadall():
 
 def event(f, s=""):
     import evazbot.configs.u_commands as cmd
-
+    import evazbot.irc as irc
     reload(cmd)
     for i in module_callbacks:
         try:
             function = getattr(i[offset], f)
             asp = inspect.getargspec(function)
+            mp = cmd.MParser(s)
             if len(asp.args) == 1:
-                function(cmd.MParser(s))
+                function(mp)
+            elif len(asp.args) == 2:
+                function(mp, irc.getcontext(mp))
             else:
                 function()
         except AttributeError:

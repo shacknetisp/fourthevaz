@@ -8,7 +8,7 @@ def start():
     c_wlist.load()
 
 
-def msg(mp):
+def msg(mp, ct):
     if mp.acmd("mreload"):
         reload(c_modules)
         reload(c_wlist)
@@ -34,41 +34,34 @@ def msg(mp):
             main.sendcmsg("Invalid Arguments!")
         return True
     if mp.acmd("dadd", 99):
-        args = mp.args()
-        splitargs = args.split()
-        if len(splitargs) == 1:
-            lines = []
-            for line in open(c_modules.dbfile, "r"):
-                if line.split() != splitargs[0].split():
-                    lines.append(line)
-            lines.append(splitargs[0])
-            lines.append("\n")
-            with open(c_modules.dbfile, "w") as f:
-                f.writelines(lines)
-            c_modules.astart(splitargs[0])
-            c_modules.reloadall()
-        return True
+        module = ct.args.getdef()
+        c_modules.astart(module)
+        dmodules = []
+        with open(c_modules.dbfile, 'r') as f:
+            for line in f.readlines():
+                if len(line.strip()) > 0:
+                    dmodules.append(line.strip())
+        if module not in dmodules:
+            dmodules.append(module)
+        dmodules2 = []
+        for i in dmodules:
+            dmodules2.append(i + '\n')
+        with open(c_modules.dbfile, 'w') as f:
+            f.writelines(dmodules2)
     if mp.acmd("dremove", 99):
-        args = mp.args()
-        splitargs = args.split()
-        if len(splitargs) == 1:
-            lines = []
-            try:
-                for line in open(c_modules.dbfile, "r"):
-                    if line.split() != splitargs[0].split():
-                        lines.append(line)
-            except FileNotFoundError:
-                main.sendcmsg("Module does not exist!")
-                return True
-            r = c_modules.remove(splitargs[0])
-            if not r:
-                main.sendcmsg("Module does not exist!")
-            else:
-                c_modules.reloadall()
-        else:
-            main.sendcmsg("Invalid Arguments!")
-        return True
-
+        module = ct.args.getdef()
+        c_modules.remove(module)
+        dmodules = []
+        with open(c_modules.dbfile, 'r') as f:
+            for line in f.readlines():
+                if len(line.strip()) > 0:
+                    dmodules.append(line.strip())
+        dmodules = list(filter((module).__ne__, dmodules))
+        dmodules2 = []
+        for i in dmodules:
+            dmodules2.append(i + '\n')
+        with open(c_modules.dbfile, 'w') as f:
+            f.writelines(dmodules2)
     if mp.acmd("join", 99):
         channel = mp.argsdef()
         main.ircprofiles[main.currentprofile]['channels'].append(channel)
