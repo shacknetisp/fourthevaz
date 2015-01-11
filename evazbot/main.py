@@ -6,6 +6,7 @@ from evazbot.configs import c_net
 import select
 import re
 from collections import deque
+import sys
 
 running = True
 channel = "nochannel"
@@ -21,6 +22,8 @@ adminlist = {}
 ircprofiles = []
 cwlist = {}
 outputbuffer = deque()
+
+sys.path.append('deps')
 
 exec(open("evazbot/configs/profiles.py").read())
 for i in range(len(ircprofiles)):

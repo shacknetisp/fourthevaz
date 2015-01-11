@@ -4,7 +4,7 @@ from json import loads
 from urllib.request import urlopen
 from decimal import *
 import pygeoip
-gi = pygeoip.GeoIP('pygeoip/GeoLiteCity.dat')
+gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
 
 
 class weatherinfo:

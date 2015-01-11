@@ -7,7 +7,7 @@ enable_geoip = False
 ##options:
 #enable_geoip = True #Give country when someone connects to a server
 exec(c_locs.mconfig("geoip"))
-gi = pygeoip.GeoIP('pygeoip/GeoLiteCity.dat')
+gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
 
 
 def start():
