@@ -232,7 +232,7 @@ def loop_select():
                 linessent += 1
                 time.sleep(0.025 * linessent)
                 if linessent > 5:
-                    time.sleep(0.075 * linessent)
+                    time.sleep(0.05 * linessent)
                 if linessent > 10:
                     break
         except IndexError:

@@ -81,7 +81,10 @@ class irccontext:
         return self.mp.ircuser()
 
     def getsplit(self, i):
-        return self.mp.text().split()[i]
+        try:
+            return self.mp.text().split()[i]
+        except IndexError:
+            return ''
 
     def code(self, c):
         return self.mindex.code() == c

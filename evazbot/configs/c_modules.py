@@ -160,8 +160,6 @@ def event(f, s=""):
             f == 'getafter' or
             f == 'ping'):
                 function(irc.getcontext(mp))
-            elif len(asp.args) == 1 and f == 'showhelp':
-                function(main.sendhmsg)
             elif len(asp.args) == 2:
                 function(mp, irc.getcontext(mp))
             else:
@@ -178,7 +176,12 @@ def showhelp(n):
     for i in module_callbacks:
         if i[name_offset] == n:
             try:
-                i[offset].showhelp()
+                function = getattr(i[offset], 'showhelp')
+                asp = inspect.getargspec(function)
+                if len(asp.args) == 0:
+                    i[offset].showhelp()
+                else:
+                    i[offset].showhelp(main.sendhmsg)
             except AttributeError:
                 incomplete(n)
                 main.sendcmsg(n + " is not interactive.")
