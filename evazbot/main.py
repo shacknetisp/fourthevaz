@@ -65,12 +65,13 @@ def sendmsg(chan, msg, t="PRIVMSG"):
     import evazbot.configs.c_modules as c_modules
     global outputtext
     global outputchannel
-    outputtext = msg
-    outputchannel = chan
-    c_modules.event("output")
-    out = t + " " + chan + " :" + msg
-    ircwrite(out)
-    print(out)
+    for i in msg.split('\n'):
+        outputtext = i
+        outputchannel = chan
+        c_modules.event("output")
+        out = t + " " + chan + " :" + i
+        ircwrite(out)
+        print(out)
 
 
 def sendcmsg(msg, t="PRIVMSG"):
@@ -186,7 +187,9 @@ def process(ircmsgp):
             handled = False
             wasserver = False
             c_modules.event("msg", ircmsg)
+            c_modules.event("get", ircmsg)
             c_modules.event("afterall", ircmsg)
+            c_modules.event("getafter", ircmsg)
 
 
 def loop_select():

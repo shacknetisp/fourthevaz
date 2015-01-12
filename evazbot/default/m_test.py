@@ -2,6 +2,6 @@
 from base import *
 
 
-def msg(mp, ct):
+def get(ct):
     if(ct.cmd('test')):
         ct.msg('test recieved')

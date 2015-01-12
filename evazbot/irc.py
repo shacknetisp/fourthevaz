@@ -86,6 +86,9 @@ class irccontext:
     def code(self, c):
         return self.mindex.code() == c
 
+    def text(self):
+        return self.mp.text()
+
     def nameslist(self):
         return self.mp.text()[self.mp.text().index(":" + main.ircprofiles[
         main.currentprofile]["nick"]):].split()
@@ -95,6 +98,28 @@ class irccontext:
             if self.mp.isadmin(a):
                 return True
         return False
+
+    def getwlevel(self, nick):
+        wlistlevelc = 0
+        wlistlevelmc = 0
+        for name in c_wlist.getw("whitelist"):
+            for n in name[1]:
+                if nick == n:
+                    wlistlevelc = name[0]
+        try:
+            wlistlevelmc = c_wlist.getcwlist()[nick]
+        except KeyError:
+            pass
+        return max(wlistlevelc, wlistlevelmc)
+
+    def getalevel(self, nick):
+        try:
+            for i in c_wlist.getw("adminlist"):
+                if main.ircprofiles[main.currentprofile][
+                    "adminlist"][nick] == i[1]:
+                        return i[0]
+        except KeyError:
+            return 0
 
 
 def getcontext(mp):

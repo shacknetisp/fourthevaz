@@ -65,6 +65,8 @@ def getcwlist(u):
 
 
 def iswlist(ircmsg, w=1):
+    if w == 0:
+        return True
     if getcwlist(getuser(ircmsg)) >= w:
         return True
     for name in c_wlist.getw("whitelist"):
@@ -76,6 +78,8 @@ def iswlist(ircmsg, w=1):
 
 
 def isadmin(ircmsg, w=1):
+    if w == 0:
+        return True
     try:
         for i in c_wlist.getw("adminlist"):
             if main.ircprofiles[main.currentprofile][

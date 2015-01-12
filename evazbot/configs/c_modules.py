@@ -37,22 +37,9 @@ def needmodule(n):
     global modules
     modules.append(n)
 
-needed = [
-    "core",
-    "ircping",
-    "help",
-    "loginmanager",
-    "auth",
-    "info",
-    "stats",
-    "log",
-    "ctcp",
-    "ccheck",
-    "joinpart",
-]
-
 
 def init():
+    import evazbot.coremodules.c_corelist as corelist
     global module_callbacks
     global modules
     # Format: Name, Module
@@ -64,7 +51,7 @@ def init():
                 modules.append(line.strip())
     except IOError:
         modules.append("core")
-    for i in needed:
+    for i in corelist.needed:
         needmodule(i)
     modules = unique(modules)
 
@@ -167,8 +154,14 @@ def event(f, s=""):
             function = getattr(i[offset], f)
             asp = inspect.getargspec(function)
             mp = cmd.MParser(s)
-            if len(asp.args) == 1:
+            if len(asp.args) == 1 and (f == 'msg' or f == 'afterall'):
                 function(mp)
+            elif len(asp.args) == 1 and (f == 'get' or
+            f == 'getafter' or
+            f == 'ping'):
+                function(irc.getcontext(mp))
+            elif len(asp.args) == 1 and f == 'showhelp':
+                function(main.sendhmsg)
             elif len(asp.args) == 2:
                 function(mp, irc.getcontext(mp))
             else:
