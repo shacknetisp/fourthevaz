@@ -24,7 +24,10 @@ def calcstats(k, v):
     now = datetime.datetime.utcnow()
     rf = redflare.redflare(v, replacements)
     statdb = c_vars.variablestore(c_locs.dbhome + '/ison.' + k + '.db')
-    statdb.load()
+    try:
+        statdb.load()
+    except:
+        pass
     s = rf.get_stats()
     if 'times' not in statdb.data_dict:
         statdb.data_dict['times'] = 0
