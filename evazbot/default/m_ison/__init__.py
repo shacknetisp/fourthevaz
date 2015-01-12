@@ -174,6 +174,7 @@ def msg(mp):
                             round(n / sorted_servers[0][1], 2)))
                         if maxp <= 0:
                             break
+                main.sendcmsg('---End Results---') 
             else:
                 o = rf.find_name(search)
                 main.sendcmsg('Found ' + str(o.totaln) + ' in '
