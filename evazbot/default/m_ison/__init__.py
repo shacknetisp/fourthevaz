@@ -131,7 +131,7 @@ def msg(mp):
                         maxp -= 1
                         main.sendcmsg(
                             calendar.day_name[int(p)] + ': ' + str(
-                                round(n / sorted_months[0][1], 1)))
+                                round(n / sorted_months[0][1], 2)))
                         if maxp <= 0:
                             break
                 if mp.argbool('hours'):
@@ -143,7 +143,7 @@ def msg(mp):
                     for p, n in sorted_hours:
                         maxp -= 1
                         main.sendcmsg(p + ' UTC: ' + str(
-                            round(n / sorted_hours[0][1], 1)))
+                            round(n / sorted_hours[0][1], 2)))
                         if maxp <= 0:
                             break
                 if mp.argbool('players'):
@@ -155,7 +155,7 @@ def msg(mp):
                     for p, n in sorted_players:
                         maxp -= 1
                         main.sendcmsg(p + ': ' + str(
-                            round(n / sorted_players[0][1], 1)))
+                            round(n / sorted_players[0][1], 2)))
                         if maxp <= 0:
                             break
                 if mp.argbool('servers'):
@@ -167,7 +167,7 @@ def msg(mp):
                     for p, n in sorted_servers:
                         maxp -= 1
                         main.sendcmsg(p + ': ' + str(
-                            round(n / sorted_servers[0][1], 1)))
+                            round(n / sorted_servers[0][1], 2)))
                         if maxp <= 0:
                             break
             elif mp.argbool('calc'):
