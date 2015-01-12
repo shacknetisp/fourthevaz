@@ -187,7 +187,7 @@ lastcalc = 0
 
 def tick():
     global lastcalc
-    if time.time() - lastcalc > 60:
+    if time.time() - lastcalc > 600:
         for k in list(redflares.keys()):
             v = redflares[k]
             calcstats(k, v)
