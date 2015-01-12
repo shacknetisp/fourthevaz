@@ -116,6 +116,7 @@ def msg(mp):
                             mtservers[mon] = 0
                         for k, v in list(mservers.items()):
                             mtservers[mon] += v
+                outall = ['Results']
                 top = int(mp.argstr('top', '4'))
                 if top > 10:
                     top = 10
@@ -131,7 +132,7 @@ def msg(mp):
                           int(p)].lower() == mp.argsdef().lower() or len(
                               mp.argsdef().lower()) == 0:
                         maxp -= 1
-                        main.sendcmsg(
+                        outall.append(
                             calendar.day_name[int(p)] + ': ' + str(
                                 round(n / sorted_months[0][1], 2)))
                         if maxp <= 0:
@@ -146,7 +147,7 @@ def msg(mp):
                       if p.lower() == mp.argsdef().lower() or len(
                           mp.argsdef().lower()) == 0:
                         maxp -= 1
-                        main.sendcmsg(p + ' UTC: ' + str(
+                        outall.append(p + ' UTC: ' + str(
                             round(n / sorted_hours[0][1], 2)))
                         if maxp <= 0:
                             break
@@ -159,7 +160,7 @@ def msg(mp):
                     for p, n in sorted_players:
                       if p.lower().find(mp.argsdef().lower()) != -1:
                         maxp -= 1
-                        main.sendcmsg(p + ': ' + str(
+                        outall.append(p + ': ' + str(
                             round(n / sorted_players[0][1], 2)))
                         if maxp <= 0:
                             break
@@ -172,11 +173,11 @@ def msg(mp):
                     for p, n in sorted_servers:
                       if p.lower().find(mp.argsdef().lower()) != -1:
                         maxp -= 1
-                        main.sendcmsg(p + ': ' + str(
+                        outall.append(p + ': ' + str(
                             round(n / sorted_servers[0][1], 2)))
                         if maxp <= 0:
                             break
-                main.sendcmsg('---End Results---')
+                cmd.outlist(outall)
             else:
                 o = rf.find_name(search)
                 main.sendcmsg('Found ' + str(o.totaln) + ' in '
