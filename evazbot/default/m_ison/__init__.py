@@ -116,7 +116,6 @@ def msg(mp):
                             mtservers[mon] = 0
                         for k, v in list(mservers.items()):
                             mtservers[mon] += v
-
                 top = int(mp.argstr('top', '4'))
                 if top > 10:
                     top = 10
@@ -128,7 +127,9 @@ def msg(mp):
                             key=lambda k_v: (-k_v[1], k_v[0]))
                     maxp = top
                     for p, n in sorted_months:
-                      if calendar.day_name[int(p)].lower() == mp.argsdef().lower() or len(mp.argsdef().lower()) == 0:
+                      if calendar.day_name[
+                          int(p)].lower() == mp.argsdef().lower() or len(
+                              mp.argsdef().lower()) == 0:
                         maxp -= 1
                         main.sendcmsg(
                             calendar.day_name[int(p)] + ': ' + str(
@@ -142,7 +143,8 @@ def msg(mp):
                             key=lambda k_v: (-k_v[1], k_v[0]))
                     maxp = top
                     for p, n in sorted_hours:
-                      if p.lower() == mp.argsdef().lower() or len(mp.argsdef().lower()) == 0:
+                      if p.lower() == mp.argsdef().lower() or len(
+                          mp.argsdef().lower()) == 0:
                         maxp -= 1
                         main.sendcmsg(p + ' UTC: ' + str(
                             round(n / sorted_hours[0][1], 2)))
@@ -174,7 +176,7 @@ def msg(mp):
                             round(n / sorted_servers[0][1], 2)))
                         if maxp <= 0:
                             break
-                main.sendcmsg('---End Results---') 
+                main.sendcmsg('---End Results---')
             else:
                 o = rf.find_name(search)
                 main.sendcmsg('Found ' + str(o.totaln) + ' in '
@@ -193,7 +195,7 @@ lastcalc = 0
 
 def tick():
     global lastcalc
-    if time.time() - lastcalc > 600:
+    if time.time() - lastcalc > 180:
         for k in list(redflares.keys()):
             v = redflares[k]
             calcstats(k, v)
