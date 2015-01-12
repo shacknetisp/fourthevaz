@@ -125,9 +125,10 @@ def msg(mp):
                     sorted_months = sorted(
                         list(
                             mtservers.items()),
-                            key=lambda k_v: (-k_v[1], k_v[0])[:4])
+                            key=lambda k_v: (-k_v[1], k_v[0]))
                     maxp = top
                     for p, n in sorted_months:
+                      if calendar.day_name[int(p)].lower() == mp.argsdef().lower() or len(mp.argsdef().lower()) == 0:
                         maxp -= 1
                         main.sendcmsg(
                             calendar.day_name[int(p)] + ': ' + str(
@@ -138,9 +139,10 @@ def msg(mp):
                     sorted_hours = sorted(
                         list(
                             htservers.items()),
-                            key=lambda k_v: (-k_v[1], k_v[0])[:4])
+                            key=lambda k_v: (-k_v[1], k_v[0]))
                     maxp = top
                     for p, n in sorted_hours:
+                      if p.lower() == mp.argsdef().lower() or len(mp.argsdef().lower()) == 0:
                         maxp -= 1
                         main.sendcmsg(p + ' UTC: ' + str(
                             round(n / sorted_hours[0][1], 2)))
@@ -150,9 +152,10 @@ def msg(mp):
                     sorted_players = sorted(
                         list(
                             allplayers.items()),
-                            key=lambda k_v: (-k_v[1], k_v[0])[:4])
+                            key=lambda k_v: (-k_v[1], k_v[0]))
                     maxp = top
                     for p, n in sorted_players:
+                      if p.lower().find(mp.argsdef().lower()) != -1:
                         maxp -= 1
                         main.sendcmsg(p + ': ' + str(
                             round(n / sorted_players[0][1], 2)))
@@ -162,16 +165,15 @@ def msg(mp):
                     sorted_servers = sorted(
                         list(
                             allservers.items()),
-                            key=lambda k_v: (-k_v[1], k_v[0])[:4])
+                            key=lambda k_v: (-k_v[1], k_v[0]))
                     maxp = top
                     for p, n in sorted_servers:
+                      if p.lower().find(mp.argsdef().lower()) != -1:
                         maxp -= 1
                         main.sendcmsg(p + ': ' + str(
                             round(n / sorted_servers[0][1], 2)))
                         if maxp <= 0:
                             break
-            elif mp.argbool('calc'):
-                calcstats(k, v)
             else:
                 o = rf.find_name(search)
                 main.sendcmsg('Found ' + str(o.totaln) + ' in '
@@ -199,7 +201,7 @@ def tick():
 
 def showhelp(h):
     h("ison [-stats] [-overall] [-calc] <name>: Find players from a RedFlare.")
-    main.sendcmsg('-overall: -top=<top> -days -hours -players -servers')
+    main.sendcmsg('-overall: -top=<top> -days -hours -players -servers ["search"]')
     main.sendcmsg("ison may be another command, list below:")
     for k in list(redflares.keys()):
         v = redflares[k]
