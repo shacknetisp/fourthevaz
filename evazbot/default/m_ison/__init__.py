@@ -32,32 +32,32 @@ def calcstats(k, v):
     if 'times' not in statdb.data_dict:
         statdb.data_dict['times'] = 0
     statdb.data_dict['times'] += 1
-    if str(now.month) not in statdb.data_dict:
-        statdb.data_dict[str(now.month)] = {}
-    if str(now.hour) not in statdb.data_dict[str(now.month)]:
-        statdb.data_dict[str(now.month)][str(now.hour)] = {}
+    if str(now.weekday()) not in statdb.data_dict:
+        statdb.data_dict[str(now.weekday())] = {}
+    if str(now.hour) not in statdb.data_dict[str(now.weekday())]:
+        statdb.data_dict[str(now.weekday())][str(now.hour)] = {}
     if 'servers' not in statdb.data_dict[
-        str(now.month)][str(now.hour)]:
-        statdb.data_dict[str(now.month)][
+        str(now.weekday())][str(now.hour)]:
+        statdb.data_dict[str(now.weekday())][
             str(now.hour)]['servers'] = {}
     if 'players' not in statdb.data_dict[
-        str(now.month)][str(now.hour)]:
-        statdb.data_dict[str(now.month)][
+        str(now.weekday())][str(now.hour)]:
+        statdb.data_dict[str(now.weekday())][
             str(now.hour)]['players'] = {}
     for server in s.data:
         if server['desc'] not in statdb.data_dict[
-            str(now.month)][str(now.hour)]['servers']:
-            statdb.data_dict[str(now.month)][
+            str(now.weekday())][str(now.hour)]['servers']:
+            statdb.data_dict[str(now.weekday())][
                 str(now.hour)]['servers'][server['desc']] = 0
-        statdb.data_dict[str(now.month)][
+        statdb.data_dict[str(now.weekday())][
                 str(now.hour)]['servers'][
                     server['desc']] += len(server['players'])
     for player in s.players():
         if player not in statdb.data_dict[
-            str(now.month)][str(now.hour)]['players']:
-            statdb.data_dict[str(now.month)][
+            str(now.weekday())][str(now.hour)]['players']:
+            statdb.data_dict[str(now.weekday())][
                 str(now.hour)]['players'][player] = 0
-        statdb.data_dict[str(now.month)][
+        statdb.data_dict[str(now.weekday())][
                 str(now.hour)]['players'][
                     player] += 1
     statdb.save()
@@ -121,7 +121,7 @@ def msg(mp):
                 if top > 10:
                     top = 10
                     main.sendcmsg('Top must be < 10.')
-                if mp.argbool('months'):
+                if mp.argbool('days'):
                     sorted_months = sorted(
                         list(
                             mtservers.items()),
@@ -130,7 +130,7 @@ def msg(mp):
                     for p, n in sorted_months:
                         maxp -= 1
                         main.sendcmsg(
-                            calendar.month_name[int(p)] + ': ' + str(
+                            calendar.day_name[int(p)] + ': ' + str(
                                 round(n / times, 1)))
                         if maxp <= 0:
                             break
@@ -196,7 +196,7 @@ def tick():
 
 def showhelp(h):
     h("ison [-stats] [-overall] [-calc] <name>: Find players from a RedFlare.")
-    main.sendcmsg('-overall: -top=<top> -months -hours -players -servers')
+    main.sendcmsg('-overall: -top=<top> -days -hours -players -servers')
     main.sendcmsg("ison may be another command, list below:")
     for k in list(redflares.keys()):
         v = redflares[k]
