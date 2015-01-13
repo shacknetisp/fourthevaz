@@ -96,7 +96,7 @@ class irccontext:
         return self.mp.text()[self.mp.text().index(":" + main.ircprofiles[
         main.currentprofile]["nick"]):].split()
 
-    def islogin(self, w, a):
+    def islogin(self, w=0, a=0):
         if self.mp.iswlist(w):
             if self.mp.isadmin(a):
                 return True
