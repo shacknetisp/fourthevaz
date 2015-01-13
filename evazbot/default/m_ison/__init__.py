@@ -20,6 +20,10 @@ replacements = []
 exec(c_locs.mconfig("ison"))
 
 
+def start():
+    return list(redflares.keys())
+
+
 def calcstats(k, v):
     now = datetime.datetime.utcnow()
     rf = redflare.redflare(v, replacements)
@@ -82,7 +86,6 @@ def msg(mp):
                 out.append('Used Servers: ' + str(s.numservers()))
                 cmd.outlist(out)
             elif mp.argbool('overall'):
-                times = statdb.data_dict['times']
                 allservers = {}
                 allplayers = {}
                 mtservers = {}

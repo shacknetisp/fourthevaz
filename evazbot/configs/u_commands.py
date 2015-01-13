@@ -58,6 +58,7 @@ def getcmd(ircmsg, c, mark=cprefix()):
 
 
 def getcwlist(u):
+    import evazbot.configs.c_wlist as c_wlist
     try:
         return c_wlist.getcwlist()[u]
     except KeyError:
@@ -65,6 +66,7 @@ def getcwlist(u):
 
 
 def iswlist(ircmsg, w=1):
+    import evazbot.configs.c_wlist as c_wlist
     if w == 0:
         return True
     if getcwlist(getuser(ircmsg)) >= w:
@@ -78,6 +80,7 @@ def iswlist(ircmsg, w=1):
 
 
 def isadmin(ircmsg, w=1):
+    import evazbot.configs.c_wlist as c_wlist
     if w == 0:
         return True
     try:

@@ -4,14 +4,13 @@ from base import *
 modname = "Core"
 
 
-def start():
-    c_wlist.load()
-
-
 def msg(mp, ct):
     if mp.acmd("mreload"):
         reload(c_modules)
         reload(c_wlist)
+        import evazbot.irc as irc
+        reload(irc)
+        reload(cmd)
         c_modules.reloadall()
         return True
 

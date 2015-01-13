@@ -16,6 +16,7 @@ offset = 1
 name_offset = 0
 modules = []
 module_callbacks = []
+module_registry = {}
 
 
 def unique(seq, idfun=None):
@@ -64,7 +65,7 @@ def helpmodulenames():
     return ret
 
 
-def incomplete(i):
+def incomplete(i=''):
     return
 
 
@@ -100,7 +101,10 @@ def remove(n):
                 incomplete(n)
             except NameError:
                 incomplete(n)
-            main.sendcmsg("Module " + n + " has been removed.")
+            try:
+                del module_registry[n]
+            except KeyError:
+                pass
             del module_callbacks[i]
             return True
     return False
@@ -110,20 +114,21 @@ def astart(n):
     n = n.strip()
     remove(n)
     newmodule = add(n)
+    global module_registry
     try:
-        newmodule.start()
+        module_registry[n] = newmodule.start()
     except AttributeError:
             incomplete(n)
     except NameError:
             incomplete(n)
-    main.sendcmsg("Module " + n + " has been added.")
+    return True
 
 
 def load():
     errorcount = 0
     for i in modules:
         try:
-            add(i)
+            astart(i)
         except ImportError:
             traceback.print_exc()
             errorcount += 1
@@ -145,30 +150,53 @@ def reloadall():
     main.sendcmsg("Reloaded modules.")
 
 
-def event(f, s=""):
+def isget(f):
+    return f == 'msg' or f == 'afterall' or f == 'get' or f == 'getafter'
+
+
+def doevent(i, f, s):
     import evazbot.configs.u_commands as cmd
     import evazbot.irc as irc
-    reload(irc)
-    reload(cmd)
-    for i in module_callbacks:
+    try:
         try:
             function = getattr(i[offset], f)
-            asp = inspect.getargspec(function)
-            mp = cmd.MParser(s)
-            if len(asp.args) == 1 and (f == 'msg' or f == 'afterall'):
-                function(mp)
-            elif len(asp.args) == 1 and (f == 'get' or
-            f == 'getafter' or
-            f == 'ping'):
-                function(irc.getcontext(mp))
-            elif len(asp.args) == 2:
-                function(mp, irc.getcontext(mp))
-            else:
-                function()
         except AttributeError:
-            incomplete(i[name_offset])
-        except:
-            traceback.print_exc()
+            return
+        asp = inspect.getargspec(function)
+        mp = cmd.MParser(s)
+        if len(asp.args) == 1 and (f == 'msg' or f == 'afterall'):
+            function(mp)
+        elif len(asp.args) == 1 and (f == 'get' or
+        f == 'getafter' or
+        f == 'ping'):
+            function(irc.getcontext(mp))
+        elif len(asp.args) == 2:
+            function(mp, irc.getcontext(mp))
+        else:
+            function()
+    except:
+        if isget(f):
+            main.sendcmsg('Unhandled exception!')
+        traceback.print_exc()
+
+
+def event(f, s=""):
+    import evazbot.configs.u_commands as cmd
+    if isget(f):
+        modulewant = ''
+        for k, v in list(module_registry.items()):
+            if v is not None:
+                for fc in v:
+                    if cmd.getcmd(s, fc):
+                        modulewant = k
+        if len(modulewant) > 0:
+            for r in range(len(module_callbacks)):
+                if module_callbacks[r][name_offset] == modulewant:
+                    doevent(module_callbacks[r], f, s)
+                    return
+    for i in module_callbacks:
+        doevent(i, f, s)
+    return
 
 
 def showhelp(n):
