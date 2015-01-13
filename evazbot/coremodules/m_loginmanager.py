@@ -31,16 +31,16 @@ def get(ct):
         if ct.args.getdef() == ct.user():
             ct.msg("You cannot set yourself.")
             return True
-        if ct.islogin(level + 1) and (ct.getwlevel(mp.argsdef()) <
+        if ct.islogin(level + 1) and (ct.getwlevel(ct.args.getdef()) <
         ct.getwlevel(ct.user())):
-            c_wlist.getcwlist()[mp.argsdef()] = level
-            main.sendcmsg(cmd.getname(mp.argsdef()) +
+            c_wlist.getcwlist()[ct.args.getdef()] = level
+            main.sendcmsg(cmd.getname(ct.args.getdef()) +
             " is now at level " + str(level))
         else:
             main.sendcmsg("You can only set: 0 to " +
-            str(ct.getwlevel(mp.user()) - 1))
+            str(ct.getwlevel(ct.user()) - 1))
             main.sendcmsg("The level of your target is: " +
-            str(ct.getwlevel(mp.argsdef())))
+            str(ct.getwlevel(ct.args.getdef())))
         save()
     if ct.cmd("login"):
         if ct.args.getbool("check"):
