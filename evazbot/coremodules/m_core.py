@@ -20,7 +20,9 @@ def msg(mp, ct):
         if len(splitargs) == 1:
             r = c_modules.remove(splitargs[0])
             if not r:
-                main.sendcmsg("Couldn't remove module!")
+                main.sendcmsg('Error while removing ' + splitargs[0])
+            else:
+                main.sendcmsg('Successfully removed ' + splitargs[0])
         else:
             main.sendcmsg("Invalid Arguments!")
         return True
