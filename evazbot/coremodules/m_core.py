@@ -28,13 +28,17 @@ def msg(mp, ct):
         args = mp.args()
         splitargs = args.split()
         if len(splitargs) == 1:
-            c_modules.astart(splitargs[0])
+            if c_modules.astart(splitargs[0]):
+                main.sendcmsg('Successfully added ' + splitargs[0])
+            else:
+                main.sendcmsg('Error while adding ' + splitargs[0])
         else:
             main.sendcmsg("Invalid Arguments!")
         return True
     if mp.acmd("dadd", 99):
         module = ct.args.getdef()
-        c_modules.astart(module)
+        if c_modules.astart(module):
+            print((module + " is now active."))
         dmodules = []
         with open(c_modules.dbfile, 'r') as f:
             for line in f.readlines():
@@ -47,9 +51,11 @@ def msg(mp, ct):
             dmodules2.append(i + '\n')
         with open(c_modules.dbfile, 'w') as f:
             f.writelines(dmodules2)
+        print(('Added ' + module + ' to default list.'))
     if mp.acmd("dremove", 99):
         module = ct.args.getdef()
-        c_modules.remove(module)
+        if c_modules.remove(module):
+            print('Removed ' + module + ' from active.')
         dmodules = []
         with open(c_modules.dbfile, 'r') as f:
             for line in f.readlines():
@@ -61,6 +67,7 @@ def msg(mp, ct):
             dmodules2.append(i + '\n')
         with open(c_modules.dbfile, 'w') as f:
             f.writelines(dmodules2)
+        print(('Removed ' + module + ' to default list.'))
     if mp.acmd("join", 99):
         channel = mp.argsdef()
         main.ircprofiles[main.currentprofile]['channels'].append(channel)
