@@ -33,12 +33,12 @@ class wordai:
     data_dict = {}
 
     def load(self):
-        dict_file = open(self.dbfile, 'rb')
         try:
+            dict_file = open(self.dbfile, 'rb')
             self.data_dict = pickle.load(dict_file)
+            dict_file.close()
         except:
             pass
-        dict_file.close()
 
     def save(self):
         output = open(self.dbfile, 'wb')
