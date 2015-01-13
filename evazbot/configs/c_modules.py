@@ -148,6 +148,7 @@ def reloadall():
 def event(f, s=""):
     import evazbot.configs.u_commands as cmd
     import evazbot.irc as irc
+    reload(irc)
     reload(cmd)
     for i in module_callbacks:
         try:
