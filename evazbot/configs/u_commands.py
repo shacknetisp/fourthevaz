@@ -132,6 +132,7 @@ def getargs(msg, command):
 
 
 def getname(name, usenames=True):
+    import evazbot.configs.c_wlist as c_wlist
     try:
         for i in c_wlist.getw("names"):
             for n in i[0]:
