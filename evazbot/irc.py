@@ -38,7 +38,13 @@ class irccontext:
             self.ct = ct
 
         def whois(self, nick):
-            self.ct.write('WHOIS', nick)
+            self.ct.msg('WHOIS', nick)
+
+        def join(self, channel):
+            self.ct.write('JOIN', channel)
+
+        def part(self, channel):
+            self.ct.write('PART', channel)
 
     class profile:
 
@@ -71,11 +77,21 @@ class irccontext:
 
     def msg(self, message, target='', command='PRIVMSG'):
         if target == '':
-            target = main.getchannel()
-        main.sendmsg(target, message, command)
+            main.sendcmsg(message, command)
+        else:
+            main.sendmsg(target, message, command)
 
     def user(self):
         return self.mp.user()
+
+    def botnick(self):
+        return main.ircprofiles[main.currentprofile]["nick"]
+
+    def botname(self):
+        return main.botname()
+
+    def isprivate(self):
+        return self.mindex.target() == self.botnick()
 
     def ircuser(self):
         return self.mp.ircuser()

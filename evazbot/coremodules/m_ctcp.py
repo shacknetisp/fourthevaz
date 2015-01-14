@@ -3,19 +3,20 @@ from base import *
 import platform
 
 
-def msg(mp):
-    if mp.text().find("\x01VERSION") != -1:
+def get(ct):
+    def replyctcp(message):
+        ct.msg("\x01" + message + "\x01", '', "NOTICE")
+
+    def isctcp(command):
+        return ct.text().find("\x01" + command) != -1
+
+    if isctcp("VERSION"):
         t = platform.python_version_tuple()
-        main.sendcmsg("\x01" +
-        "VERSION " +
-        main.botname() + " runs on Python " +
-        str(t[0]) + "." + str(t[1]) + "." + str(t[2]) +
-        "\x01",
-        "NOTICE")
+        replyctcp("VERSION " +
+        ct.botname() + " runs on Python " +
+        str(t[0]) + "." + str(t[1]) + "." + str(t[2]))
         return True
-    elif mp.text().find("\x01PING") != -1:
-        main.sendcmsg("\x01" +
-        "PING " + mp.text().split()[4],
-        "NOTICE")
+    elif isctcp("PING"):
+        replyctcp("PING " + ct.getsplit(4).strip('\x01'))
         return True
     return False

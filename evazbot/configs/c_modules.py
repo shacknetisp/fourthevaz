@@ -102,6 +102,7 @@ def remove(n):
             except NameError:
                 incomplete(n)
             try:
+                print(("Removing module registry: " + str(module_registry[n])))
                 del module_registry[n]
             except KeyError:
                 pass
@@ -117,6 +118,7 @@ def astart(n):
     global module_registry
     try:
         module_registry[n] = newmodule.start()
+        print(("Adding module registry: " + str(module_registry[n])))
     except AttributeError:
             incomplete(n)
     except NameError:

@@ -19,44 +19,48 @@ def joined():
 lastauthuser = {}
 
 
-def msg(mp):
+def start():
+    return [
+        "ircregister",
+        "ircverify",
+        "ircauth"
+        ]
+
+
+def get(ct):
     global lastauthuser
     usedcmd = False
-    if mp.acmd("ircregister"):
+    if ct.cmd("ircregister", 1, 1):
         usedcmd = True
         try:
             password = main.password
-            print(("Registering for password: " + password))
-            if len(mp.argsdef()) == 0:
-                main.sendcmsg("No e-mail address specified.")
+            if len(ct.args.getdef()) == 0:
+                ct.msg("No e-mail address specified.")
             else:
-                main.sendmsg("nickserv", "REGISTER " +
-                password + " " + mp.argsdef())
+                ct.msg("REGISTER " +
+                password + " " + ct.args.getdef(), "nickserv")
         except:
             main.sendcmsg("Unable to register, no password set.")
-    elif mp.acmd("ircverify"):
+    elif ct.cmd("ircverify", 1, 1):
         usedcmd = True
-        main.sendmsg("nickserv", "VERIFY REGISTER " + main.ircprofiles[
-        main.currentprofile]["nick"] + " " + mp.argsdef())
-    elif mp.acmd("ircauth"):
+        ct.msg("VERIFY REGISTER " + ct.botnick() + " " + ct.args.getdef(),
+        "NickServ")
+    elif ct.cmd("ircauth", 1, 1):
         usedcmd = True
         identify()
     if usedcmd:
-        lastauthuser[main.currentprofile] = mp.ircuser()
+        lastauthuser[main.currentprofile] = ct.ircuser()
     try:
         if (len(lastauthuser[main.currentprofile]) > 0 and
-        mp.ircuser().lower() == "nickserv"):
-            main.sendmsg(lastauthuser[main.currentprofile], mp.text().strip())
+        ct.ircuser() == "NickServ"):
+            ct.msg(ct.text(), lastauthuser[main.currentprofile])
     except KeyError:
         pass
     return False
 
 
-def showhelp():
+def showhelp(h):
     main.sendcmsg("You must define a password in profiles.py.")
-    main.sendcmsg(
-        cmd.cprefix() +
-        "ircregister <email>: Register this bot's current nick to <email>")
-    main.sendcmsg(cmd.cprefix() +
-    "ircverify <verify code>: Verify registration.")
-    main.sendcmsg(cmd.cprefix() + "ircauth: Authenticate to Nickserv.")
+    h("ircregister <email>: Register this bot's current nick to <email>")
+    h("ircverify <verify code>: Verify registration.")
+    h("ircauth: Authenticate to Nickserv.")
