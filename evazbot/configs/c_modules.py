@@ -179,6 +179,8 @@ def doevent(i, f, s):
     except:
         if isget(f):
             main.sendcmsg('Unhandled exception!')
+            if cmd.isadmin(s) and cmd.iswlist(s):
+                main.sendmsg(cmd.getircuser(s), traceback.format_exc())
         traceback.print_exc()
 
 
