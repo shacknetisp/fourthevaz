@@ -23,7 +23,7 @@ class irccontext:
         def __init__(self, ct):
             self.ct = ct
 
-        def getdef(self, s='"\''):
+        def getdef(self, s=''):
             return self.ct.mp.argsdef(s)
 
         def getbool(self, arg):

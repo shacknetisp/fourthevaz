@@ -177,7 +177,7 @@ def outlist(l, n=6, delim="|"):
 
 
 class MParser:
-    def argsdef(self, s='"\''):
+    def argsdef(self, s=''):
         if hasattr(self, "error"):
             raise self.error
         return self.argsdefv.strip(s)
@@ -242,10 +242,15 @@ class MParser:
         ret = {}
         self.argsdefv = ""
         ar = []
+        splitargs = self.args().split(' ')
         try:
-            ar = shlex.split(self.args(c))
-        except ValueError as e:
-            self.error = e
+            for i in range(len(splitargs)):
+                fstr = ''
+                for k in range(i):
+                    fstr += splitargs[k] + " "
+                ar = shlex.split(fstr.strip())
+        except ValueError:
+            pass
         ok = True
         for i in ar:
             if i[0] == '-' and ok:
@@ -265,6 +270,11 @@ class MParser:
             self.argsdefv = self.argsdefv[self.argsdefv.find('" ') + 2:]
         else:
             self.argsdefv = self.args(c)
+        if len(self.argsdefv) > 0:
+            if self.argsdefv[0] == '"' or self.argsdefv[0] == "'":
+                self.argsdefv = self.argsdefv[1:]
+            if self.argsdefv[-1] == '"' or self.argsdefv[-1] == "'":
+                self.argsdefv = self.argsdefv[:-1]
         return ret
 
     def isserver(self):
