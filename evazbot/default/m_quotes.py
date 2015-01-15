@@ -1,47 +1,31 @@
 # -*- coding: utf-8 -*-
 from base import *
-import random
+l_quotes = mload("l_quotes")
 
-dbfile = c_redeclipse.dbhome + "/quotes.db.txt"
+dbfile = c_locs.dbhome + "/l_quotes.db.pkl"
 
 
-def msg(mp):
-    if mp.wcmd("addquote"):
-        args = mp.args("addquote")
-        with open(dbfile, "a") as myfile:
-            if args[0] == '<':
-                myfile.write(args + "\n")
-                main.sendcmsg("Quote added: " + args)
-            else:
-                myfile.write("<anonymous> " + args + "\n")
-                main.sendcmsg("Quote added, anonymously: " + args)
-        return True
-    if mp.cmd("quote"):
-        args = mp.args("quote")
-        lines = []
-        for line in open(dbfile, 'r'):
-            if line.upper().find("<" + args.upper()) == 0:
-                lines.append(line.strip())
-        out = random.choice(lines)
-        outfull = str.format('Quote: "{0}"', out)
-        main.sendcmsg(outfull)
-        return True
-    if mp.wcmd("sortquotes"):
-        lines = []
-        for line in open(dbfile, 'r'):
-            lines.append(line)
-        lines.sort()
-        with open(dbfile, 'w') as f:
-            f.writelines(lines)
-        main.sendcmsg("The quotes have been sorted.")
+def get(ct):
+    if ct.cmd("quote"):
+        db = c_vars.variablestore(dbfile)
+        try:
+            db.load()
+        except IOError:
+            pass
+        qdb = l_quotes.quotedb(db, 'quotes', 'quote', 'quotes', ct)
+        if ct.args.getbool('add'):
+            qdb.add(ct.args.getdef())
+        elif ct.args.getbool('remove'):
+            qdb.remove(ct.args.getdef())
+        else:
+            out = qdb.get(ct.args.getdef())
+            if out is not None:
+                ct.msg(out)
         return True
     return False
 
 
-def showhelp():
-    main.sendcmsg(
-        cmd.cprefix() +
-        "quote <[start]>: Recall a random quote, match the beginning with " +
-        "'<start' (literal '<' and 'start' represents the search pattern).")
-    main.sendcmsg(cmd.cprefix() + "addquote <the quote>: Add <the quote>.")
-    main.sendcmsg(cmd.cprefix() + 'sortquotes: Clean the quote DB.')
+def showhelp(h):
+    h("quote [<search>]: Get a random quote")
+    h("quote -add <new quote>")
+    h("quote -remove [<search>]: Delete a quote, uses Python RegEx")

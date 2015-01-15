@@ -57,7 +57,8 @@ class redflare:
         for server in list(self.data.keys()):
             for name_p in self.data[server]['playerNames']:
                 name = name_p['plain']
-                if name.lower().find(search.lower()) != -1:
+                if (name.lower().find(search.lower()) != -1 or
+                c_regex.contains(search.lower(), name.lower())):
                     if server not in found:
                         found[server] = list()
                     found[server].append(name)

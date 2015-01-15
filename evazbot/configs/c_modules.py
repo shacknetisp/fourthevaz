@@ -176,11 +176,11 @@ def doevent(i, f, s):
             function(mp, irc.getcontext(mp))
         else:
             function()
-    except:
+    except Exception as e:
         if isget(f):
             main.sendcmsg('Unhandled exception!')
             if cmd.isadmin(s) and cmd.iswlist(s):
-                main.sendmsg(cmd.getircuser(s), traceback.format_exc())
+                main.sendmsg(cmd.getircuser(s), str(e))
         traceback.print_exc()
 
 

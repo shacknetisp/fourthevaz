@@ -3,6 +3,7 @@
 from base import *
 import datetime
 import calendar
+import re
 
 redflare = mload('m_ison.redflare')
 
@@ -67,6 +68,106 @@ def calcstats(k, v):
     statdb.save()
 
 
+def getoverall(mp, k, v, statdb):
+    allservers = {}
+    allplayers = {}
+    mtservers = {}
+    htservers = {}
+    for mon, monv in list(statdb.data_dict.items()):
+        if mon != 'times':
+            mservers = {}
+            for hou, houv in list(monv.items()):
+                hservers = {}
+                for serv, servv in list(houv['servers'].items()):
+                    if serv not in allservers:
+                        allservers[serv] = 0
+                    allservers[serv] += servv
+
+                    if serv not in mservers:
+                        mservers[serv] = 0
+                    mservers[serv] += servv
+
+                    if serv not in hservers:
+                        hservers[serv] = 0
+                    hservers[serv] += servv
+                for pl, plv in list(houv['players'].items()):
+                    if pl.lower() not in allplayers:
+                        allplayers[pl.lower()] = 0
+                    allplayers[pl.lower()] += plv
+                if hou not in htservers:
+                    htservers[hou] = 0
+                for k, v in list(hservers.items()):
+                    htservers[hou] += v
+            if mon not in mtservers:
+                mtservers[mon] = 0
+            for k, v in list(mservers.items()):
+                mtservers[mon] += v
+    outall = ['Results']
+    top = int(mp.argstr('top', '4'))
+    if top > 10:
+        top = 10
+        main.sendcmsg('Top must be < 10.')
+    if mp.argbool('days'):
+        sorted_months = sorted(
+            list(
+                mtservers.items()),
+                key=lambda k_v: (-k_v[1], k_v[0]))
+        maxp = top
+        for p, n in sorted_months:
+            if calendar.day_name[
+                  int(p)].lower() == mp.argsdef().lower() or len(
+                      mp.argsdef().lower()) == 0:
+                maxp -= 1
+                outall.append(
+                    calendar.day_name[int(p)] + ': ' + str(
+                        round(n / sorted_months[0][1], 2)))
+                if maxp <= 0:
+                    break
+    if mp.argbool('hours'):
+        sorted_hours = sorted(
+            list(
+                htservers.items()),
+                key=lambda k_v: (-k_v[1], k_v[0]))
+        maxp = top
+        for p, n in sorted_hours:
+            if p.lower() == mp.argsdef().lower() or len(
+                  mp.argsdef().lower()) == 0:
+                maxp -= 1
+                outall.append(p + ' UTC: ' + str(
+                    round(n / sorted_hours[0][1], 2)))
+                if maxp <= 0:
+                    break
+    if mp.argbool('players'):
+        sorted_players = sorted(
+            list(
+                allplayers.items()),
+                key=lambda k_v: (-k_v[1], k_v[0]))
+        maxp = top
+        for p, n in sorted_players:
+            if (p.lower().find(mp.argsdef().lower()) != -1 or
+            c_regex.contains(mp.argsdef(). lower(), p.lower())):
+                maxp -= 1
+                outall.append(p + ': ' + str(
+                    round(n / sorted_players[0][1], 2)))
+                if maxp <= 0:
+                    break
+    if mp.argbool('servers'):
+        sorted_servers = sorted(
+            list(
+                allservers.items()),
+                key=lambda k_v: (-k_v[1], k_v[0]))
+        maxp = top
+        for p, n in sorted_servers:
+            if (p.lower().find(mp.argsdef().lower()) != -1 or
+            c_regex.contains(mp.argsdef(). lower(), p.lower())):
+                maxp -= 1
+                outall.append(p + ': ' + str(
+                    round(n / sorted_servers[0][1], 2)))
+                if maxp <= 0:
+                    break
+    return outall
+
+
 def msg(mp):
     for k in list(redflares.keys()):
         v = redflares[k]
@@ -86,110 +187,23 @@ def msg(mp):
                 out.append('Used Servers: ' + str(s.numservers()))
                 cmd.outlist(out)
             elif mp.argbool('overall'):
-                allservers = {}
-                allplayers = {}
-                mtservers = {}
-                htservers = {}
-                for mon, monv in list(statdb.data_dict.items()):
-                    if mon != 'times':
-                        mservers = {}
-                        for hou, houv in list(monv.items()):
-                            hservers = {}
-                            for serv, servv in list(houv['servers'].items()):
-                                if serv not in allservers:
-                                    allservers[serv] = 0
-                                allservers[serv] += servv
-
-                                if serv not in mservers:
-                                    mservers[serv] = 0
-                                mservers[serv] += servv
-
-                                if serv not in hservers:
-                                    hservers[serv] = 0
-                                hservers[serv] += servv
-                            for pl, plv in list(houv['players'].items()):
-                                if pl.lower() not in allplayers:
-                                    allplayers[pl.lower()] = 0
-                                allplayers[pl.lower()] += plv
-                            if hou not in htservers:
-                                htservers[hou] = 0
-                            for k, v in list(hservers.items()):
-                                htservers[hou] += v
-                        if mon not in mtservers:
-                            mtservers[mon] = 0
-                        for k, v in list(mservers.items()):
-                            mtservers[mon] += v
-                outall = ['Results']
-                top = int(mp.argstr('top', '4'))
-                if top > 10:
-                    top = 10
-                    main.sendcmsg('Top must be < 10.')
-                if mp.argbool('days'):
-                    sorted_months = sorted(
-                        list(
-                            mtservers.items()),
-                            key=lambda k_v: (-k_v[1], k_v[0]))
-                    maxp = top
-                    for p, n in sorted_months:
-                        if calendar.day_name[
-                              int(p)].lower() == mp.argsdef().lower() or len(
-                                  mp.argsdef().lower()) == 0:
-                            maxp -= 1
-                            outall.append(
-                                calendar.day_name[int(p)] + ': ' + str(
-                                    round(n / sorted_months[0][1], 2)))
-                            if maxp <= 0:
-                                break
-                if mp.argbool('hours'):
-                    sorted_hours = sorted(
-                        list(
-                            htservers.items()),
-                            key=lambda k_v: (-k_v[1], k_v[0]))
-                    maxp = top
-                    for p, n in sorted_hours:
-                        if p.lower() == mp.argsdef().lower() or len(
-                              mp.argsdef().lower()) == 0:
-                            maxp -= 1
-                            outall.append(p + ' UTC: ' + str(
-                                round(n / sorted_hours[0][1], 2)))
-                            if maxp <= 0:
-                                break
-                if mp.argbool('players'):
-                    sorted_players = sorted(
-                        list(
-                            allplayers.items()),
-                            key=lambda k_v: (-k_v[1], k_v[0]))
-                    maxp = top
-                    for p, n in sorted_players:
-                        if p.lower().find(mp.argsdef().lower()) != -1:
-                            maxp -= 1
-                            outall.append(p + ': ' + str(
-                                round(n / sorted_players[0][1], 2)))
-                            if maxp <= 0:
-                                break
-                if mp.argbool('servers'):
-                    sorted_servers = sorted(
-                        list(
-                            allservers.items()),
-                            key=lambda k_v: (-k_v[1], k_v[0]))
-                    maxp = top
-                    for p, n in sorted_servers:
-                        if p.lower().find(mp.argsdef().lower()) != -1:
-                            maxp -= 1
-                            outall.append(p + ': ' + str(
-                                round(n / sorted_servers[0][1], 2)))
-                            if maxp <= 0:
-                                break
-                cmd.outlist(outall)
+                try:
+                    outall = getoverall(mp, k, v, statdb)
+                    cmd.outlist(outall)
+                except re.error as e:
+                    main.sendcmsg('Error: ' + str(e))
             else:
-                o = rf.find_name(search)
-                main.sendcmsg('Found ' + str(o.totaln) + ' in '
-                              + str(o.totals) + ' server(s).')
-                for k in o.out:
-                    outfinal = k + ": "
-                    for i in o.out[k]:
-                        outfinal += i + '; '
-                    main.sendcmsg(outfinal)
+                try:
+                    o = rf.find_name(search)
+                    main.sendcmsg('Found ' + str(o.totaln) + ' in '
+                                  + str(o.totals) + ' server(s).')
+                    for k in o.out:
+                        outfinal = k + ": "
+                        for i in o.out[k]:
+                            outfinal += i + '; '
+                        main.sendcmsg(outfinal)
+                except re.error as e:
+                    main.sendcmsg('Error: ' + str(e))
             return True
     return False
 
@@ -208,7 +222,8 @@ def tick():
 
 def showhelp(h):
     h("ison [-stats] [-overall] [-calc] <name>: Find players from a RedFlare.")
-    main.sendcmsg('-overall: -top=<top> -days -hours -players -servers ["search"]')
+    main.sendcmsg(
+        '-overall: -top=<top> -days -hours -players -servers ["search"]')
     main.sendcmsg("ison may be another command, list below:")
     for k in list(redflares.keys()):
         v = redflares[k]

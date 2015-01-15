@@ -112,10 +112,12 @@ class irccontext:
         return self.mp.text()[self.mp.text().index(":" + main.ircprofiles[
         main.currentprofile]["nick"]):].split()
 
-    def islogin(self, w=0, a=0):
+    def islogin(self, w=0, a=0, message=False):
         if self.mp.iswlist(w):
             if self.mp.isadmin(a):
                 return True
+        if message:
+            self.msg('You need level %d:%d.' % (w, a))
         return False
 
     def getwlevel(self, nick):
