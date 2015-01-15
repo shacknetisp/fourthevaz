@@ -108,9 +108,9 @@ def msg(mp):
                                     hservers[serv] = 0
                                 hservers[serv] += servv
                             for pl, plv in list(houv['players'].items()):
-                                if pl not in allplayers:
-                                    allplayers[pl] = 0
-                                allplayers[pl] += plv
+                                if pl.lower() not in allplayers:
+                                    allplayers[pl.lower()] = 0
+                                allplayers[pl.lower()] += plv
                             if hou not in htservers:
                                 htservers[hou] = 0
                             for k, v in list(hservers.items()):
