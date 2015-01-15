@@ -131,15 +131,15 @@ def msg(mp):
                             key=lambda k_v: (-k_v[1], k_v[0]))
                     maxp = top
                     for p, n in sorted_months:
-                      if calendar.day_name[
-                          int(p)].lower() == mp.argsdef().lower() or len(
-                              mp.argsdef().lower()) == 0:
-                        maxp -= 1
-                        outall.append(
-                            calendar.day_name[int(p)] + ': ' + str(
-                                round(n / sorted_months[0][1], 2)))
-                        if maxp <= 0:
-                            break
+                        if calendar.day_name[
+                              int(p)].lower() == mp.argsdef().lower() or len(
+                                  mp.argsdef().lower()) == 0:
+                            maxp -= 1
+                            outall.append(
+                                calendar.day_name[int(p)] + ': ' + str(
+                                    round(n / sorted_months[0][1], 2)))
+                            if maxp <= 0:
+                                break
                 if mp.argbool('hours'):
                     sorted_hours = sorted(
                         list(
@@ -147,13 +147,13 @@ def msg(mp):
                             key=lambda k_v: (-k_v[1], k_v[0]))
                     maxp = top
                     for p, n in sorted_hours:
-                      if p.lower() == mp.argsdef().lower() or len(
-                          mp.argsdef().lower()) == 0:
-                        maxp -= 1
-                        outall.append(p + ' UTC: ' + str(
-                            round(n / sorted_hours[0][1], 2)))
-                        if maxp <= 0:
-                            break
+                        if p.lower() == mp.argsdef().lower() or len(
+                              mp.argsdef().lower()) == 0:
+                            maxp -= 1
+                            outall.append(p + ' UTC: ' + str(
+                                round(n / sorted_hours[0][1], 2)))
+                            if maxp <= 0:
+                                break
                 if mp.argbool('players'):
                     sorted_players = sorted(
                         list(
@@ -161,12 +161,12 @@ def msg(mp):
                             key=lambda k_v: (-k_v[1], k_v[0]))
                     maxp = top
                     for p, n in sorted_players:
-                      if p.lower().find(mp.argsdef().lower()) != -1:
-                        maxp -= 1
-                        outall.append(p + ': ' + str(
-                            round(n / sorted_players[0][1], 2)))
-                        if maxp <= 0:
-                            break
+                        if p.lower().find(mp.argsdef().lower()) != -1:
+                            maxp -= 1
+                            outall.append(p + ': ' + str(
+                                round(n / sorted_players[0][1], 2)))
+                            if maxp <= 0:
+                                break
                 if mp.argbool('servers'):
                     sorted_servers = sorted(
                         list(
@@ -174,12 +174,12 @@ def msg(mp):
                             key=lambda k_v: (-k_v[1], k_v[0]))
                     maxp = top
                     for p, n in sorted_servers:
-                      if p.lower().find(mp.argsdef().lower()) != -1:
-                        maxp -= 1
-                        outall.append(p + ': ' + str(
-                            round(n / sorted_servers[0][1], 2)))
-                        if maxp <= 0:
-                            break
+                        if p.lower().find(mp.argsdef().lower()) != -1:
+                            maxp -= 1
+                            outall.append(p + ': ' + str(
+                                round(n / sorted_servers[0][1], 2)))
+                            if maxp <= 0:
+                                break
                 cmd.outlist(outall)
             else:
                 o = rf.find_name(search)
