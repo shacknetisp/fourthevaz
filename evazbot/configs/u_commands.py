@@ -244,11 +244,11 @@ class MParser:
         ar = []
         splitargs = self.args().split(' ')
         try:
-            for i in range(len(splitargs)):
+            for i in range(len(splitargs) + 1):
                 fstr = ''
                 for k in range(i):
                     fstr += splitargs[k] + " "
-                ar = shlex.split(fstr.strip())
+                ar = shlex.split(fstr)
         except ValueError:
             pass
         ok = True
