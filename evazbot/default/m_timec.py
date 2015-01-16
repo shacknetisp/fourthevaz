@@ -3,7 +3,8 @@ from base import *
 import pytz
 from datetime import datetime, tzinfo, timedelta
 import random
-
+import pygeoip
+gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
 
 ZERO = timedelta(0)
 
@@ -46,8 +47,24 @@ def get(ct):
             cmd.outlist(results)
             return True
         else:
+            argument = ct.args.getdef().upper()
             try:
-                target = pytz.timezone(gettimezone(ct.args.getdef().upper()))
+                pytz.timezone(gettimezone(argument))
+            except pytz.exceptions.UnknownTimeZoneError:
+                ip = ct.args.getdef()
+                try:
+                    r = gi.record_by_addr(ip)
+                except:
+                    try:
+                        r = gi.record_by_name(ip)
+                    except:
+                        r = None
+                try:
+                    argument = r['time_zone']
+                except TypeError:
+                    pass
+            try:
+                target = pytz.timezone(gettimezone(argument))
             except pytz.exceptions.UnknownTimeZoneError:
                 try:
                     ct.msg('Cannot find timezone, do you mean %s?' % (str(
@@ -72,14 +89,14 @@ def get(ct):
                 return
             t = t.astimezone(target)
             utcs += ' is %s: %02d:%02d' % (
-                ct.args.getdef().upper(), t.hour, t.minute)
+                argument, t.hour, t.minute)
             ct.msg(utcs)
             return True
     return False
 
 
 def showhelp(h):
-    h("time [-utc=<00:00>] <timezone/region>: " +
+    h("time [-utc=<00:00>] <timezone/region/ip/host>: " +
     "get current time, or UTC time from -utc")
     h("time -getzone <zonesearch>: " +
     "Get first 12 timezones matching <zonesearch>.")
