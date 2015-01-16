@@ -138,6 +138,8 @@ class irccontext:
             for i in c_wlist.getw("adminlist"):
                 if main.ircprofiles[main.currentprofile][
                     "adminlist"][nick] == i[1]:
+			if i[0] is None:
+			  return 0
                         return i[0]
         except KeyError:
             return 0
