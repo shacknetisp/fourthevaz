@@ -37,3 +37,24 @@ class variablestore:
 
     def __init__(self, dbf):
         self.dbfile = dbf
+
+
+class liststore:
+    dbfile = ''
+    data_list = []
+
+    def load(self):
+        dict_file = open(self.dbfile, 'rb')
+        try:
+            self.data_list = pickle.load(dict_file)
+        except:
+            pass
+        dict_file.close()
+
+    def save(self):
+        output = open(self.dbfile, 'wb')
+        pickle.dump(self.data_list, output)
+        output.close()
+
+    def __init__(self, dbf):
+        self.dbfile = dbf
