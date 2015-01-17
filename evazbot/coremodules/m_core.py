@@ -87,14 +87,14 @@ def msg(mp, ct):
         try:
             if mp.argbool('set'):
                 main.aliasdb.data_dict[mp.argstr('set')] = mp.argsdef()
-                main.sendcmsg("{%s} = '%s'" % (mp.argstr('set'), mp.argsdef()))
+                main.sendcmsg("${%s} = '%s'" % (mp.argstr('set'), mp.argsdef()))
                 main.aliasdb.save()
             elif mp.argbool('remove'):
                 del main.aliasdb.data_dict[mp.argstr('remove')]
-                main.sendcmsg("{%s} has been deleted" % (mp.argstr('remove')))
+                main.sendcmsg("${%s} has been deleted" % (mp.argstr('remove')))
                 main.aliasdb.save()
             else:
-                main.sendcmsg("{%s} = '%s'" % (
+                main.sendcmsg("${%s} = '%s'" % (
                     mp.argsdef(), main.aliasdb.data_dict[mp.argsdef()]))
         except KeyError as e:
             main.sendcmsg("Invalid alias: %s" % e)

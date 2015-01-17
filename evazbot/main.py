@@ -9,6 +9,7 @@ import select
 import re
 from collections import deque
 import sys
+from string import Template
 
 running = True
 channel = "nochannel"
@@ -196,14 +197,8 @@ def process(ircmsgp):
             wasserver = False
             if len(ircmsg.split()) > 3 and ircmsg.split()[3].find(
                 ':' + cmd.cprefix()) == 0:
-                try:
-		    ircmsg = ircmsg.replace("{}","")
-                    ircmsg = ircmsg.format(**aliasdb.data_dict)
-                except KeyError as e:
-                    sendcmsg('Bad alias: %s' % str(e))
-                    return
-                except IndexError:
-                    pass
+                  irt = Template(ircmsg)
+                  ircmsg = irt.safe_substitute(aliasdb.data_dict)
             c_modules.event("msg", ircmsg)
             c_modules.event("get", ircmsg)
             c_modules.event("afterall", ircmsg)
