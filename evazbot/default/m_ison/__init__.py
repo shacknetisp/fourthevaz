@@ -16,8 +16,10 @@ replacements = []
 
 ##mconfig/ison.py
 ##lines of the following:
+
 #redflares['ison2']="http://redflare.ofthings.net"
 ##this will cause the command .ison2 to use that url
+
 #replacements = ['name1', 'name2']
 exec(c_locs.mconfig("ison"))
 
@@ -119,9 +121,10 @@ def calcoverall(k, v):
                         hservers[serv] = 0
                     hservers[serv] += servv
                 for pl, plv in list(houv['players'].items()):
-                    if pl.lower() not in allplayers[k]:
-                        allplayers[k][pl.lower()] = 0
-                    allplayers[k][pl.lower()] += plv
+		    if pl != "unnamed":
+		      if pl.lower() not in allplayers[k]:
+			  allplayers[k][pl.lower()] = 0
+		      allplayers[k][pl.lower()] += plv
                 if hou not in htservers[k]:
                     htservers[k][hou] = 0
                 for hk, hv in list(hservers.items()):
