@@ -3,6 +3,8 @@ import socket
 import random
 import time
 from evazbot.configs import c_net
+from evazbot.configs import c_variables as c_vars
+from evazbot.configs import c_locs
 import select
 import re
 from collections import deque
@@ -30,6 +32,12 @@ for i in range(len(ircprofiles)):
     if 'prefix' not in ircprofiles[i]:
         ircprofiles[i]['prefix'] = '.'
     ircprofiles[i]['nicklist'] = {}
+
+aliasdb = c_vars.variablestore(c_locs.dbhome + "/alias.db.pkl")
+try:
+    aliasdb.load()
+except:
+    pass
 
 
 def nlistcheck(n):
@@ -186,6 +194,11 @@ def process(ircmsgp):
             global wasserver
             handled = False
             wasserver = False
+            try:
+                ircmsg = ircmsg.format(**aliasdb.data_dict)
+            except KeyError as e:
+                sendcmsg('Bad alias: %s' % str(e))
+                return
             c_modules.event("msg", ircmsg)
             c_modules.event("get", ircmsg)
             c_modules.event("afterall", ircmsg)
