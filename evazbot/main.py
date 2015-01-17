@@ -201,6 +201,8 @@ def process(ircmsgp):
                 except KeyError as e:
                     sendcmsg('Bad alias: %s' % str(e))
                     return
+                except IndexError:
+                    pass
             c_modules.event("msg", ircmsg)
             c_modules.event("get", ircmsg)
             c_modules.event("afterall", ircmsg)
