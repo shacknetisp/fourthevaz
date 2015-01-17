@@ -197,6 +197,7 @@ def process(ircmsgp):
             if len(ircmsg.split()) > 3 and ircmsg.split()[3].find(
                 ':' + cmd.cprefix()) == 0:
                 try:
+		    ircmsg = ircmsg.replace("{}","")
                     ircmsg = ircmsg.format(**aliasdb.data_dict)
                 except KeyError as e:
                     sendcmsg('Bad alias: %s' % str(e))
