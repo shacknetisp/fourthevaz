@@ -194,11 +194,13 @@ def process(ircmsgp):
             global wasserver
             handled = False
             wasserver = False
-            try:
-                ircmsg = ircmsg.format(**aliasdb.data_dict)
-            except KeyError as e:
-                sendcmsg('Bad alias: %s' % str(e))
-                return
+            if len(ircmsg.split()) > 3 and ircmsg.split()[3].find(
+                ':' + cmd.cprefix()) == 0:
+                try:
+                    ircmsg = ircmsg.format(**aliasdb.data_dict)
+                except KeyError as e:
+                    sendcmsg('Bad alias: %s' % str(e))
+                    return
             c_modules.event("msg", ircmsg)
             c_modules.event("get", ircmsg)
             c_modules.event("afterall", ircmsg)
