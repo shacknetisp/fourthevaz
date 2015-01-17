@@ -123,10 +123,7 @@ def calcoverall(k, v):
                 for pl, plv in list(houv['players'].items()):
                     if pl.lower() not in allplayers[k]:
                         allplayers[k][pl.lower()] = 0
-                    if pl.lower() == "unnamed":
-                      allplayers[k][pl.lower()] += plv/2
-                    else:
-                      allplayers[k][pl.lower()] += plv
+                    allplayers[k][pl.lower()] += plv
                 if hou not in htservers[k]:
                     htservers[k][hou] = 0
                 for hk, hv in list(hservers.items()):
