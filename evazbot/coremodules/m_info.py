@@ -2,14 +2,18 @@
 # -*- coding: utf-8 -*-
 from base import *
 
-modname = "Info"
-modcommand = "4e"
+
+def start():
+    return [
+        "4e",
+        "info",
+        ]
 
 
 def msg(mp):
     modmessage = main.botname() + " is running. Use " +\
     cmd.cprefix() + "help for help."
-    if mp.cmd(modcommand) or mp.cmd("info"):
+    if mp.cmd("4e") or mp.cmd("info"):
         main.sendcmsg(modmessage)
         return True
     return False

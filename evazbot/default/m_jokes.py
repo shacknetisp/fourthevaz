@@ -5,6 +5,10 @@ l_quotes = mload("l_quotes")
 dbfile = c_locs.dbhome + "/l_quotes.db.pkl"
 
 
+def start():
+    return ["joke"]
+
+
 def get(ct):
     if ct.cmd("joke"):
         db = c_vars.variablestore(dbfile)

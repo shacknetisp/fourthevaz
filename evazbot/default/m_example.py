@@ -3,6 +3,13 @@
 from base import *
 
 
+#start() returns a list of commands to register
+#this speeds up the event loop greatly
+def start():
+    #we use the command 'example'
+    return ["example"]
+
+
 #The message-received event
 def msg(mp):
     #if .example is received as a command

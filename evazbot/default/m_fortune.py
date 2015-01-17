@@ -4,6 +4,10 @@ import subprocess
 reload(subprocess)
 
 
+def start():
+    return ["fortune"]
+
+
 def msg(mp):
     if mp.cmd("fortune"):
         p = subprocess.Popen("fortune -n 40", shell=True,

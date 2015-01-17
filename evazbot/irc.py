@@ -139,7 +139,7 @@ class irccontext:
                 if main.ircprofiles[main.currentprofile][
                     "adminlist"][nick] == i[1]:
                         if i[0] is None:
-                           return 0
+                            return 0
                         return i[0]
         except KeyError:
             return 0

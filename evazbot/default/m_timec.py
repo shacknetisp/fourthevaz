@@ -39,9 +39,13 @@ def gettimezone(search):
     return ""
 
 
+def start():
+    return ["time"]
+
+
 def get(ct):
     if ct.cmd('time'):
-        if ct.args.getbool('getzone'):
+        if ct.args.getbool('findzone'):
             results = ['Results']
             results += gettimezones(ct.args.getdef(), 13)
             cmd.outlist(results)
@@ -98,5 +102,5 @@ def get(ct):
 def showhelp(h):
     h("time [-utc=<00:00>] <timezone/region/ip/host>: " +
     "get current time, or UTC time from -utc")
-    h("time -getzone <zonesearch>: " +
+    h("time -findzone <zonesearch>: " +
     "Get first 12 timezones matching <zonesearch>.")

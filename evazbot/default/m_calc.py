@@ -9,6 +9,10 @@ calccmd = "calc"
 exec(c_locs.mconfig("calc"))
 
 
+def start():
+    return ["calc"]
+
+
 def msg(mp):
     if mp.cmd('calc'):
         arg = mp.argsdef()

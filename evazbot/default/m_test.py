@@ -2,6 +2,10 @@
 from base import *
 
 
+def start():
+    return ["test"]
+
+
 def get(ct):
     if(ct.cmd('test')):
         ct.msg('"%s"' % str(ct.args.getbool("test")))

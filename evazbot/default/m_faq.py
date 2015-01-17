@@ -9,6 +9,10 @@ dbfile = c_redeclipse.dbhome + '/faq.db.pkl'
 data_dict = {}
 
 
+def start():
+    return ["faq"]
+
+
 def load():
     global data_dict
     try:

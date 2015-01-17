@@ -4,6 +4,10 @@ import pickle
 dbfile = c_locs.dbhome + "/wlist.db.pkl"
 
 
+def start():
+    return ["wlist", "login"]
+
+
 def load():
     try:
         dict_file = open(dbfile, 'rb')

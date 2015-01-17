@@ -12,6 +12,7 @@ gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
 
 def start():
     print(('GeoIP Server Login: ' + str(enable_geoip)))
+    return ["geoip"]
 
 
 def msg(mp):

@@ -2,8 +2,14 @@
 from base import *
 
 
+def start():
+    return [
+        "help",
+        ]
+
+
 def msg(mp):
-    if mp.cmd(c_net.helpcommand):
+    if mp.cmd("help"):
         args = mp.args()
         splitargs = args.split()
         if mp.iswlist():

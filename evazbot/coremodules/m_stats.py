@@ -3,6 +3,10 @@
 from base import *
 
 
+def start():
+    return ["stats"]
+
+
 def msg(mp):
     if mp.cmd('stats'):
         out = []

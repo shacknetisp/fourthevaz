@@ -7,6 +7,10 @@ import pygeoip
 gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
 
 
+def start():
+    return ["weather"]
+
+
 class weatherinfo:
     data = {}
 

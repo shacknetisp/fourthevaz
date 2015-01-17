@@ -3,6 +3,10 @@
 from base import *
 
 
+def start():
+    return ["chat", "say", "chathelp"]
+
+
 def msg(mp):
     if mp.cmd('chat'):
         args = mp.args()
