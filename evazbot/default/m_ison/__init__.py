@@ -156,7 +156,7 @@ def getoverall(mp, k, v, statdb):
                 maxp -= 1
                 outall.append(
                     calendar.day_name[int(p)] + ': ' + str(
-                        round(n / sorted_months[0][1], 2)))
+                        round(n / sorted_months[0][1], 2)) + "(" + str(n) + ")")
                 if maxp <= 0:
                     break
     if mp.argbool('hours'):
@@ -170,7 +170,7 @@ def getoverall(mp, k, v, statdb):
                   mp.argsdef().lower()) == 0:
                 maxp -= 1
                 outall.append(p + ' UTC: ' + str(
-                    round(n / sorted_hours[0][1], 2)))
+                    round(n / sorted_hours[0][1], 2)) + "(" + str(n) + ")")
                 if maxp <= 0:
                     break
     if mp.argbool('players'):
@@ -184,7 +184,7 @@ def getoverall(mp, k, v, statdb):
             c_regex.contains(mp.argsdef(). lower(), p.lower())):
                 maxp -= 1
                 outall.append(p + ': ' + str(
-                    round(n / sorted_players[0][1], 2)))
+                    round(n / sorted_players[0][1], 2)) + "(" + str(n) + ")")
                 if maxp <= 0:
                     break
     if mp.argbool('servers'):
@@ -198,7 +198,7 @@ def getoverall(mp, k, v, statdb):
             c_regex.contains(mp.argsdef(). lower(), p.lower())):
                 maxp -= 1
                 outall.append(p + ': ' + str(
-                    round(n / sorted_servers[0][1], 2)))
+                    round(n / sorted_servers[0][1], 2)) + "(" + str(n) + ")")
                 if maxp <= 0:
                     break
     return outall
