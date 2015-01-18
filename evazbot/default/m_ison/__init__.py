@@ -141,11 +141,16 @@ def getoverall(mp, k, v, statdb):
     global mtservers
     global htserver
     outall = ['Results']
-    top = int(mp.argstr('top', '4'))
+    try:
+        top = int(mp.argstr('top', '4'))
+    except ValueError:
+        top = 4
     if top > 10:
         top = 10
         main.sendcmsg('Top must be < 10.')
+    gotarg = False
     if mp.argbool('days'):
+        gotarg = True
         sorted_months = sorted(
             list(
                 mtservers[k].items()),
@@ -162,6 +167,7 @@ def getoverall(mp, k, v, statdb):
                 if maxp <= 0:
                     break
     if mp.argbool('hours'):
+        gotarg = True
         sorted_hours = sorted(
             list(
                 htservers[k].items()),
@@ -176,6 +182,7 @@ def getoverall(mp, k, v, statdb):
                 if maxp <= 0:
                     break
     if mp.argbool('players'):
+        gotarg = True
         sorted_players = sorted(
             list(
                 allplayers[k].items()),
@@ -190,6 +197,7 @@ def getoverall(mp, k, v, statdb):
                 if maxp <= 0:
                     break
     if mp.argbool('servers'):
+        gotarg = True
         sorted_servers = sorted(
             list(
                 allservers[k].items()),
@@ -203,6 +211,8 @@ def getoverall(mp, k, v, statdb):
                     round(n / sorted_servers[0][1], 2)) + "(" + str(n) + ")")
                 if maxp <= 0:
                     break
+    if not gotarg:
+        outall.append('No useful options!')
     return outall
 
 
