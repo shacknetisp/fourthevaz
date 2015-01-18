@@ -25,20 +25,17 @@ adminlist = {}
 ircprofiles = []
 cwlist = {}
 outputbuffer = deque()
-
 sys.path.append('deps')
-
-exec(open("evazbot/configs/profiles.py").read())
-for i in range(len(ircprofiles)):
-    if 'prefix' not in ircprofiles[i]:
-        ircprofiles[i]['prefix'] = '.'
-    ircprofiles[i]['nicklist'] = {}
-
 aliasdb = c_vars.variablestore(c_locs.dbhome + "/alias.db.pkl")
 try:
     aliasdb.load()
 except:
     pass
+exec(open("evazbot/configs/profiles.py").read())
+for i in range(len(ircprofiles)):
+    if 'prefix' not in ircprofiles[i]:
+        ircprofiles[i]['prefix'] = '.'
+    ircprofiles[i]['nicklist'] = {}
 
 
 def nlistcheck(n):
