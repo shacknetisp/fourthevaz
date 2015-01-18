@@ -195,10 +195,11 @@ def process(ircmsgp):
             global wasserver
             handled = False
             wasserver = False
-            if len(ircmsg.split()) > 3 and ircmsg.split()[3].find(
-                ':' + cmd.cprefix()) == 0:
-                  irt = Template(ircmsg)
-                  ircmsg = irt.safe_substitute(aliasdb.data_dict)
+            oldircmsg = ircmsg
+            irt = Template(ircmsg)
+            ircmsg = irt.safe_substitute(aliasdb.data_dict)
+            if ircmsg != oldircmsg:
+                print(('--' + ircmsg))
             c_modules.event("msg", ircmsg)
             c_modules.event("get", ircmsg)
             c_modules.event("afterall", ircmsg)
