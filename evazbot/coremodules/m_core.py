@@ -10,7 +10,6 @@ def start():
         "module",
         "join",
         "part",
-        "alias",
         ]
 
 
@@ -82,32 +81,12 @@ def msg(mp, ct):
         main.ircwrite('PART ' + channel)
         main.sendcmsg('Attempted to part channel ' + channel)
         return True
-
-    if mp.wcmd("alias"):
-        try:
-            if mp.argbool('set'):
-                main.aliasdb.data_dict[mp.argstr('set')] = mp.argsdef()
-                main.sendcmsg("${%s} = '%s'" % (mp.argstr('set'), mp.argsdef()))
-                main.aliasdb.save()
-            elif mp.argbool('remove'):
-                del main.aliasdb.data_dict[mp.argstr('remove')]
-                main.sendcmsg("${%s} has been deleted" % (mp.argstr('remove')))
-                main.aliasdb.save()
-            else:
-                main.sendcmsg("${%s} = '%s'" % (
-                    mp.argsdef(), main.aliasdb.data_dict[mp.argsdef()]))
-        except KeyError as e:
-            main.sendcmsg("Invalid alias: %s" % e)
-        return True
     return False
 
 
 def showhelp(h):
     h("mreload: Stop modules & reload default modules.")
     h("m [-add -remove -dadd -dremove] <m>: Operate on module <m>")
-    h("alias [-set=<alias> -remove=<alias>] " +
-    "<text for -set, alias for getting>: " +
-    "Operate on an alias, accessible with {<alias name>}.")
     h("join #channel")
     h("part #channel")
 

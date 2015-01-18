@@ -31,6 +31,8 @@ try:
     aliasdb.load()
 except:
     pass
+#pre-defined
+aliasdb.data_dict["nn"] = '\n&:'
 exec(open("evazbot/configs/profiles.py").read())
 for i in range(len(ircprofiles)):
     if 'prefix' not in ircprofiles[i]:
@@ -192,15 +194,21 @@ def process(ircmsgp):
             global wasserver
             handled = False
             wasserver = False
+            oldoldircmsg = ircmsg
             oldircmsg = ircmsg
             irt = Template(ircmsg)
             ircmsg = irt.safe_substitute(aliasdb.data_dict)
-            if ircmsg != oldircmsg:
+            while ircmsg != oldircmsg:
+                oldircmsg = ircmsg
+                irt = Template(ircmsg)
+                ircmsg = irt.safe_substitute(aliasdb.data_dict)
+            if ircmsg != oldoldircmsg:
                 print(('--' + ircmsg))
-            c_modules.event("msg", ircmsg)
-            c_modules.event("get", ircmsg)
-            c_modules.event("afterall", ircmsg)
-            c_modules.event("getafter", ircmsg)
+            for ims in ircmsg.split('\n'):
+                c_modules.event("msg", ims)
+                c_modules.event("get", ims)
+                c_modules.event("afterall", ims)
+                c_modules.event("getafter", ims)
 
 
 def loop_select():

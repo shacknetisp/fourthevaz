@@ -11,4 +11,5 @@ needed = [
     "ctcp",
     "ccheck",
     "joinpart",
+    "alias",
 ]

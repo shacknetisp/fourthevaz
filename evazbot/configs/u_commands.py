@@ -43,7 +43,8 @@ def getuser(message):
 def getcmd(ircmsg, c, mark=cprefix()):
     if len(getuser(ircmsg).strip()) > 0:
         if ircmsg.find("PRIVMSG " + main.getchannel() + " :" + mark) != -1\
-        or ircmsg.find(getuser(ircmsg) + "> " + mark) != -1:
+        or ircmsg.find(getuser(ircmsg) + "> " + mark) != -1 or\
+        ircmsg[0] == '&':
             if (ircmsg.find(":" + mark + c + " ") != -1 or (
                     ircmsg.find(":" + mark + c) != -1
                     and ircmsg.endswith(":" + mark + c)) or ircmsg.find(
