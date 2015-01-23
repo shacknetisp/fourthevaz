@@ -162,18 +162,18 @@ def getircuser(message):
     return name
 
 
-def outlist(l, n=6, delim="|"):
+def outlist(l, n=6, delim=" | "):
     text = ""
     addn = 0
     for i in l:
-        text += i + " " + delim + " "
+        text += i + delim
         addn += 1
         if addn >= n:
-            main.sendcmsg(text)
+            main.sendcmsg(text.strip(delim))
             text = ""
             addn = 0
     if text:
-        main.sendcmsg(text)
+        main.sendcmsg(text.strip(delim))
 
 
 class MParser:

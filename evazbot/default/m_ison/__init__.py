@@ -156,16 +156,18 @@ def getoverall(mp, k, v, statdb):
                 mtservers[k].items()),
                 key=lambda k_v: (-k_v[1], k_v[0]))
         maxp = top
+        index = 0
         for p, n in sorted_months:
+            index += 1
             if calendar.day_name[
                   int(p)].lower() == mp.argsdef().lower() or len(
                       mp.argsdef().lower()) == 0:
                 maxp -= 1
-                outall.append(
-                    calendar.day_name[int(p)] + ': ' + str(
-                        round(n / sorted_months[0][1], 2)) + "(" + str(n) + ")")
-                if maxp <= 0:
-                    break
+                if maxp > 0:
+                    outall.append(
+                        calendar.day_name[int(p)] + ': ' + str(
+                            round(n / sorted_months[0][1], 2))
+                            + " (" + str(index) + ")")
     if mp.argbool('hours'):
         gotarg = True
         sorted_hours = sorted(
@@ -173,14 +175,16 @@ def getoverall(mp, k, v, statdb):
                 htservers[k].items()),
                 key=lambda k_v: (-k_v[1], k_v[0]))
         maxp = top
+        index = 0
         for p, n in sorted_hours:
+            index += 1
             if p.lower() == mp.argsdef().lower() or len(
                   mp.argsdef().lower()) == 0:
                 maxp -= 1
-                outall.append(p + ' UTC: ' + str(
-                    round(n / sorted_hours[0][1], 2)) + "(" + str(n) + ")")
-                if maxp <= 0:
-                    break
+                if maxp >= 0:
+                    outall.append(p + ' UTC: ' + str(
+                        round(n / sorted_hours[0][1], 2))
+                        + " (" + str(index) + ")")
     if mp.argbool('players'):
         gotarg = True
         sorted_players = sorted(
@@ -188,14 +192,16 @@ def getoverall(mp, k, v, statdb):
                 allplayers[k].items()),
                 key=lambda k_v: (-k_v[1], k_v[0]))
         maxp = top
+        index = 0
         for p, n in sorted_players:
+            index += 1
             if (p.lower().find(mp.argsdef().lower()) != -1 or
             c_regex.contains(mp.argsdef(). lower(), p.lower())):
                 maxp -= 1
-                outall.append(p + ': ' + str(
-                    round(n / sorted_players[0][1], 2)) + "(" + str(n) + ")")
-                if maxp <= 0:
-                    break
+                if maxp >= 0:
+                    outall.append(p + ': ' + str(
+                        round(n / sorted_players[0][1], 2))
+                        + " (" + str(index) + ")")
     if mp.argbool('servers'):
         gotarg = True
         sorted_servers = sorted(
@@ -203,14 +209,16 @@ def getoverall(mp, k, v, statdb):
                 allservers[k].items()),
                 key=lambda k_v: (-k_v[1], k_v[0]))
         maxp = top
+        index = 0
         for p, n in sorted_servers:
+            index += 1
             if (p.lower().find(mp.argsdef().lower()) != -1 or
             c_regex.contains(mp.argsdef(). lower(), p.lower())):
                 maxp -= 1
-                outall.append(p + ': ' + str(
-                    round(n / sorted_servers[0][1], 2)) + "(" + str(n) + ")")
-                if maxp <= 0:
-                    break
+                if maxp >= 0:
+                    outall.append(p + ': ' + str(
+                        round(n / sorted_servers[0][1], 2))
+                        + " (" + str(index) + ")")
     if not gotarg:
         outall.append('No useful options!')
     return outall
@@ -237,7 +245,7 @@ def msg(mp):
             elif mp.argbool('overall'):
                 try:
                     outall = getoverall(mp, k, v, statdb)
-                    cmd.outlist(outall)
+                    cmd.outlist(outall, 6, ', ')
                 except re.error as e:
                     main.sendcmsg('Error: ' + str(e))
             elif mp.argbool('calc') and mp.isadmin(99):
