@@ -147,7 +147,7 @@ def getoverall(mp, k, v, statdb):
         top = 4
     if top > 10:
         top = 10
-        main.sendcmsg('Top must be < 10.')
+        main.sendcmsg('Top must be <= 10.')
     gotarg = False
     if mp.argbool('days'):
         gotarg = True
