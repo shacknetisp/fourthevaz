@@ -14,13 +14,16 @@ redflares = {
 
 replacements = []
 
+overallround = 2
+
 ##mconfig/ison.py
 ##lines of the following:
-
-#redflares['ison2']="http://redflare.ofthings.net"
 ##this will cause the command .ison2 to use that url
-
+#redflares['ison2']="http://redflare.ofthings.net"
+##replace in the .ison
 #replacements = ['name1', 'name2']
+##round for -overall
+#overallround = 2
 exec(c_locs.mconfig("ison"))
 
 
@@ -166,7 +169,7 @@ def getoverall(mp, k, v, statdb):
                 if maxp > 0:
                     outall.append(
                         calendar.day_name[int(p)] + ': ' + str(
-                            round(n / sorted_months[0][1], 2))
+                            round(n / sorted_months[0][1], overallround))
                             + " (" + str(index) + ")")
     if mp.argbool('hours'):
         gotarg = True
@@ -183,7 +186,7 @@ def getoverall(mp, k, v, statdb):
                 maxp -= 1
                 if maxp >= 0:
                     outall.append(p + ' UTC: ' + str(
-                        round(n / sorted_hours[0][1], 2))
+                        round(n / sorted_hours[0][1], overallround))
                         + " (" + str(index) + ")")
     if mp.argbool('players'):
         gotarg = True
@@ -200,7 +203,7 @@ def getoverall(mp, k, v, statdb):
                 maxp -= 1
                 if maxp >= 0:
                     outall.append(p + ': ' + str(
-                        round(n / sorted_players[0][1], 2))
+                        round(n / sorted_players[0][1], overallround))
                         + " (" + str(index) + ")")
     if mp.argbool('servers'):
         gotarg = True
@@ -217,7 +220,7 @@ def getoverall(mp, k, v, statdb):
                 maxp -= 1
                 if maxp >= 0:
                     outall.append(p + ': ' + str(
-                        round(n / sorted_servers[0][1], 2))
+                        round(n / sorted_servers[0][1], overallround))
                         + " (" + str(index) + ")")
     if not gotarg:
         outall.append('No useful options!')
