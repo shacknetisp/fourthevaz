@@ -40,9 +40,8 @@ def get(ct):
         Q_ = ureg.Quantity
         try:
             out = str(Q_(amount + "*" + fromc).to(toc))
-            ct.msg('%s [%s] = %d [%s]' % (
-                amount, fromc, round(float(out.split()[0]), int(
-                    ct.args.get("round", "5"))), toc))
+            ct.msg('%s [%s] = %.5f [%s]' % (
+                amount, fromc, round(float(out.split()[0]), 5), toc))
         except SyntaxError:
             ct.msg("Invalid input.")
         except pint.UndefinedUnitError:
@@ -53,4 +52,4 @@ def get(ct):
 
 def showhelp(h):
     h("money -from=<curreny> -to=<currency> <amount>: Convert money.")
-    h("unit -from=<unit> -to=<unit> -round=<digits> <amount>: Convert units.")
+    h("unit -from=<unit> -to=<unit> <amount>: Convert units.")
