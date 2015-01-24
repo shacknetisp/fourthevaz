@@ -32,7 +32,7 @@ class TransformDict(MutableMapping):
         *init_dict* and *kwargs* are optional initializers, as in the
         dict constructor.
         '''
-        if not callable(transform):
+        if not hasattr(type(transform), "__call__"):
             raise TypeError("expected a callable, got %r" % transform.__class__)
         self._transform = transform
         # transformed => original
