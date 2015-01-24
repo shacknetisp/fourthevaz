@@ -23,8 +23,8 @@ def get(ct):
         json = response.json()
         try:
             rate = float(json['rate']) * amount
-            ct.msg('Converting from %s %d: %s %.2f' % (
-                fromc, amount, toc, rate))
+            ct.msg('Converting from %s %d: %s %.4f' % (
+                fromc, amount, toc, round(rate, 4)))
         except KeyError:
             ct.msg("API error, invalid currency?")
 
