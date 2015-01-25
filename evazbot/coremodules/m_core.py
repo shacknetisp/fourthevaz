@@ -25,17 +25,17 @@ def msg(mp, ct):
 
     if ct.cmd('m', 0, 99):
         if ct.args.getbool('add'):
-            module = ct.args.getdef()
+            module = ct.args.getdef().strip()
             if c_modules.astart(module):
                 print((module + " is now active."))
             ct.msg('Added %s' % module)
         elif ct.args.getbool('remove'):
-            module = ct.args.getdef()
+            module = ct.args.getdef().strip()
             if c_modules.remove(module):
                 print(("Removed " + module + " from active."))
             ct.msg('Removed %s' % module)
         elif ct.args.getbool('dadd'):
-            module = ct.args.getdef()
+            module = ct.args.getdef().strip()
             if c_modules.astart(module):
                 print((module + " is now active."))
             dmodules = []
@@ -52,7 +52,7 @@ def msg(mp, ct):
                 f.writelines(dmodules2)
             ct.msg(('Added ' + module + ' to default list.'))
         elif ct.args.getbool('dremove'):
-            module = ct.args.getdef()
+            module = ct.args.getdef().strip()
             if c_modules.remove(module):
                 print(("Removed " + module + " from active."))
             dmodules = []
