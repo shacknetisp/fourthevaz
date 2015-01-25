@@ -14,7 +14,7 @@ def msg(mp):
             main.sendcmsg('(%s) = (%s)' % (
                 arg, str(c_safeeval.domath(arg))))
         except OverflowError:
-            main.sendcmsg("Error.")
+            main.sendcmsg("Overflow Error.")
         return True
     return False
 
