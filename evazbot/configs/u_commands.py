@@ -242,16 +242,9 @@ class MParser:
         ret = {}
         self.argsdefv = ""
         ar = []
-        splitargs = self.args().split(' ')
-        try:
-            for i in range(len(splitargs) + 1):
-                fstr = ''
-                for k in range(i):
-                    fstr += splitargs[k] + " "
-                ar = shlex.split(fstr)
-        except ValueError:
-            pass
+        ar = shlex.split(self.args())
         ok = True
+        fstr = ""
         for i in ar:
             if i[0] == '-' and ok:
                 var = i.split("=")[0][1:]
@@ -260,13 +253,17 @@ class MParser:
                 except:
                     val = ""
                 ret[var] = val
+                fstr += "-" + var + "=" + val + " "
                 lastval = i
             else:
+                fstr += i + " "
                 ok = False
-        lastval = lastval.strip()
+        fstr = fstr.strip()
+        self.argsv = fstr
         if lastval:
             self.argsdefv = self.args(c)[
               self.args(c).rfind(lastval) + len(lastval):]
+            print((self.argsdefv))
             self.argsdefv = self.argsdefv[self.argsdefv.find('" ') + 2:]
         else:
             self.argsdefv = self.args(c)

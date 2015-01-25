@@ -38,7 +38,10 @@ def get(ct):
                '"' + ct.args.getdef() + '"')
         #send a message echoing -test
         if ct.args.getbool('test'):  # checks if -test was called
-            ct.msg('"' + ct.args.get("test") + '"')
+            ct.msg('-test = "' + ct.args.get("test") + '"')
+        #echo all arguments
+        for i in ct.mp.argsn:
+            ct.msg(i + " = '" + ct.args.get(i) + "'")
         #Command was received
         return True
     return False
