@@ -29,9 +29,13 @@ def get(ct):
             apiform = 'name'
         elif ct.args.getbool("geoip"):
             apiform = 'geoip'
+        lastmsg = ""
         for i in info:
-            ct.msg((weather.printweather(
-                weatherstyle, style, i, apiform, argument, gi)))
+            thismsg = weather.printweather(
+                weatherstyle, style, i, apiform, argument, gi)
+            if thismsg != lastmsg:
+                ct.msg(thismsg)
+            lastmsg = thismsg
 
 
 def showhelp():

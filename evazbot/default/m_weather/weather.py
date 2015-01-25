@@ -35,7 +35,6 @@ def printweather(ws, style, info, apiform, argument, gi):
             try:
                 argument = r['city'] + ', ' + r['region_code'] + ', '\
                         + r['country_code']
-                main.sendcmsg("Using: " + argument)
             except TypeError:
                 return('Cannot get GeoIP information.')
         #if not urlid:
