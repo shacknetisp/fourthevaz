@@ -7,7 +7,7 @@ def printweather(ws, style, info, apiform, argument, gi):
     if ws == 'weather':
         tempstyle = None
         urlid = False
-        urlcity = False
+        #urlcity = False
         usegeoip = False
         if style == 'cel':
             tempstyle = "cel"
@@ -17,14 +17,14 @@ def printweather(ws, style, info, apiform, argument, gi):
             tempstyle = "far"
         if apiform == "id":
             urlid = True
-        elif apiform == "name":
-            urlcity = True
+        #elif apiform == "name":
+            #urlcity = True
         elif apiform == "geoip":
             usegeoip = True
         if usegeoip:
             ip = argument
             urlid = False
-            urlcity = True
+            #urlcity = True
             try:
                 r = gi.record_by_addr(ip)
             except:
@@ -38,10 +38,10 @@ def printweather(ws, style, info, apiform, argument, gi):
                 main.sendcmsg("Using: " + argument)
             except TypeError:
                 return('Cannot get GeoIP information.')
-        if not urlid:
-            urlcity = True
+        #if not urlid:
+            #urlcity = True
 
-        if not i=="temp" and not i=="windspe":
+        if not info == "temp" and not info == "windspe":
             return("Specify what information you want.")
         else:
             jsonurl = 'http://api.openweathermap.org/data/2.5/weather?q=' + \
@@ -53,7 +53,6 @@ def printweather(ws, style, info, apiform, argument, gi):
             wxinfo = weatherinfo(jsonurl, tempstyle, argument)
             data = wxinfo.data
             if data["cod"] == 200:
-                if i=="windspe":
-                    return(wxinfo.getinfo(info))
+                return(wxinfo.getinfo(info))
             elif data["cod"] == "404":
                 return(data["cod"] + ":" + data["message"])
