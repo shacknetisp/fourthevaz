@@ -6,8 +6,6 @@ weatherinfo = mload('m_weather.weatherinfo').weatherinfo
 def printweather(ws, style, info, apiform, argument, gi):
     if ws == 'weather':
         tempstyle = None
-        returnwind = False
-        returntemp = False
         urlid = False
         urlcity = False
         usegeoip = False
@@ -17,10 +15,6 @@ def printweather(ws, style, info, apiform, argument, gi):
             tempstyle = "kel"
         elif style == 'far':
             tempstyle = "far"
-        if info == "windspe":
-            returnwind = True
-        elif info == "temp":
-            returntemp = True
         if apiform == "id":
             urlid = True
         elif apiform == "name":
@@ -47,10 +41,8 @@ def printweather(ws, style, info, apiform, argument, gi):
         if not urlid:
             urlcity = True
 
-        if not returntemp and not returnwind:
+        if not i=="temp" and not i=="windspe":
             return("Specify what information you want.")
-        if (urlcity and urlid):
-            return("You can't have both -name and -id!")
         else:
             jsonurl = 'http://api.openweathermap.org/data/2.5/weather?q=' + \
             argument
@@ -61,10 +53,7 @@ def printweather(ws, style, info, apiform, argument, gi):
             wxinfo = weatherinfo(jsonurl, tempstyle, argument)
             data = wxinfo.data
             if data["cod"] == 200:
-                if returnwind:
-                    return(wxinfo.getinfo("currentwindspeed"))
-                if returntemp:
-                    return(wxinfo.getinfo("currenttemp"))
+                if i=="windspe":
+                    return(wxinfo.getinfo(info))
             elif data["cod"] == "404":
                 return(data["cod"] + ":" + data["message"])
-

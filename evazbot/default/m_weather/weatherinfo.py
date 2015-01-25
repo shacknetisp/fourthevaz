@@ -14,7 +14,7 @@ class weatherinfo:
         if len(name) == 0:
             name = self.dname
         #checks what the request wants
-        if number == "currenttemp":
+        if number == "temp":
             if self.outputtemp == "kel":
                 return "It is " +\
                 str(data["main"]["temp"]) +\
@@ -31,7 +31,7 @@ class weatherinfo:
             else:
                 raise ValueError(
                     "Invalid Temperature Style: " + self.outputtemp)
-        elif number == "currentwindspeed":
+        elif number == "windspe":
             return "The Wind is Blowing at " +\
             str(data["wind"]["speed"]) + " m/s in " + name + ", " + cname
 

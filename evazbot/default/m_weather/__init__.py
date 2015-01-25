@@ -10,11 +10,12 @@ def start():
 
 def get(ct):
     if ct.cmd('weather'):
+        info = []
         weatherstyle = "weather"
         if ct.args.getbool('wind'):
-            info = "windspe"
-        elif ct.args.getbool('temp'):
-            info = 'temp'
+            info.append('windspe')
+        if ct.args.getbool('temp'):
+            info.append('temp')
         style = "cel"
         if ct.args.getbool('kel'):
             style = 'kel'
@@ -28,8 +29,9 @@ def get(ct):
             apiform = 'name'
         elif ct.args.getbool("geoip"):
             apiform = 'geoip'
-        ct.msg((weather.printweather(
-            weatherstyle, style, info, apiform, argument, gi)))
+        for i in info:
+            ct.msg((weather.printweather(
+                weatherstyle, style, i, apiform, argument, gi)))
 
 
 def showhelp():
@@ -42,4 +44,3 @@ def showhelp():
         "-cel, -kel, -far: Use celsius, kelvin, farenheit, -cel is default.")
     main.sendcmsg(
         "-name, -id, -geoip: Use city name or ID or GeoIP, -name is default.")
-
