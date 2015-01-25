@@ -46,14 +46,14 @@ def init():
     # Format: Name, Module
     module_callbacks = []
     modules = []
+    for i in corelist.needed:
+        needmodule(i)
     try:
         for line in open(dbfile, "r"):
             if len(line.strip()) > 0:
                 modules.append(line.strip())
     except IOError:
         modules.append("core")
-    for i in corelist.needed:
-        needmodule(i)
     modules = unique(modules)
 
 
