@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from base import *
-import pygeoip
-gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
+weatherinfo = mload('m_weather.weatherinfo').weatherinfo
 
 
-def printweather(style, info, apiform, argument):
-    if info == 'weather':
+def printweather(ws, style, info, apiform, argument, gi):
+    if ws == 'weather':
         tempstyle = None
         returnwind = False
         returntemp = False
@@ -42,16 +41,16 @@ def printweather(style, info, apiform, argument):
             try:
                 argument = r['city'] + ', ' + r['region_code'] + ', '\
                         + r['country_code']
-                return("Using: " + argument)
+                main.sendcmsg("Using: " + argument)
             except TypeError:
                 return('Cannot get GeoIP information.')
         if not urlid:
             urlcity = True
 
         if not returntemp and not returnwind:
-            main.sendcmsg("Specify what information you want.")
+            return("Specify what information you want.")
         if (urlcity and urlid):
-            main.sendcmsg("You can't have both -name and -id!")
+            return("You can't have both -name and -id!")
         else:
             jsonurl = 'http://api.openweathermap.org/data/2.5/weather?q=' + \
             argument
