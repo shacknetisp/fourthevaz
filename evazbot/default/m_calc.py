@@ -14,7 +14,7 @@ def msg(mp):
             main.sendcmsg('(%s) = (%s)' % (
                 arg, str(c_safeeval.domath(arg))))
         except Exception as e:
-            main.sendcmsg(str(e))
+            main.sendcmsg('Error: ' + str(e))
         return True
     return False
 
