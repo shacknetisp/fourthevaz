@@ -10,8 +10,11 @@ def start():
 def msg(mp):
     if mp.cmd('calc'):
         arg = mp.argsdef()
-        main.sendcmsg('(%s) = (%s)' % (
-            arg, str(c_safeeval.domath(arg))))
+        try:
+            main.sendcmsg('(%s) = (%s)' % (
+                arg, str(c_safeeval.domath(arg))))
+        except OverflowError:
+            main.sendcmsg("Error.")
         return True
     return False
 
