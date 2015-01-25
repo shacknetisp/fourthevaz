@@ -9,8 +9,9 @@ def start():
     #we use the command 'example'
     return ["example"]
 
-
-#The message-received event
+###########With mp##########
+'''
+The message-received event
 def msg(mp):
     #if .example is received as a command
     if mp.cmd("example"):
@@ -24,9 +25,28 @@ def msg(mp):
         return True
     #No command received
     return False
-
+'''
+#########With ct##############
+# the message-received event
+def get(ct):
+    #if .example is received as a command
+    if ct.cmd('example'):
+        #Send a message echoing the arguments to the current channel/query.
+        ct.msg("Example's Default Arguments: " +
+               '"' + mp.argsdef() + '"')
+        #send a message echoing -test
+        if ct.args.getbool('test'): #checks if -test was called
+            ct.msg('"' + mp.argstr("test") + '"')
+        #Command was received
+        return True
+    return False
 
 #The ".help example" event
-def showhelp():
+# NEW
+def showhelp(h):
     #Send a basic help message
-    main.sendhmsg("example <arguments>: Return the arguments.")
+    h("example <arguments>: Return the arguments.")
+
+'''OLD
+#def showhelp():
+#   main.sendcmsg('"example <arguments>: Return the arguments."')'''
