@@ -1,4 +1,5 @@
 from base import *
+reload(c_safeeval)
 
 
 def start():
@@ -10,7 +11,7 @@ def msg(mp):
         arg = mp.argsdef()
         try:
             main.sendcmsg('(%s) = (%s)' % (
-                arg, str(c_safeeval.domath(arg))))
+                arg, str(float(c_safeeval.domath(arg)))))
         except Exception as e:
             main.sendcmsg('Error: ' + str(e))
         return True
