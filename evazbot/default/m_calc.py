@@ -13,8 +13,8 @@ def msg(mp):
         try:
             main.sendcmsg('(%s) = (%s)' % (
                 arg, str(c_safeeval.domath(arg))))
-        except OverflowError:
-            main.sendcmsg("Overflow Error.")
+        except Exception as e:
+            main.sendcmsg(str(e))
         return True
     return False
 
