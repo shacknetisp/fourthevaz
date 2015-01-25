@@ -4,12 +4,6 @@ import pygeoip
 gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
 
 
-def start():
-    return ["weather"]
-
-
-
-
 def printweather(style, info, apiform, argument):
     if info == 'weather':
         tempstyle = None
@@ -75,31 +69,3 @@ def printweather(style, info, apiform, argument):
             elif data["cod"] == "404":
                 return(data["cod"] + ":" + data["message"])
 
-'''
-def showhelp():
-    main.sendcmsg(
-        'Weather is a module that returns many usefull weather information.'
-        )
-    main.sendcmsg('This module uses OpenWeatherMap api (openweathermap.org)')
-    main.sendcmsg("")
-    main.sendcmsg('There are several options listed below:')
-    main.sendcmsg('        -cel: Returns answer in celcius')
-    main.sendcmsg("        -far: Returns answer in Farenheit")
-    main.sendcmsg("        -kel: Returns answer in Kelvin")
-    main.sendcmsg("        -name: Looks up info by city name. " +
-    "Please use the closest large town")
-    main.sendcmsg("        -id: Looks up by city id")
-    main.sendcmsg("        -wind: Finds wind information")
-'''
-
-
-def showhelp():
-    main.sendcmsg(
-        cmd.cprefix() + "weather [-temp] [-wind] [-cel -kel -far] [-name -id]" +
-        "<city name/id>:" +
-        " Get weather from http://openweathermap.org")
-    main.sendcmsg("-temp, -wind: Get temperature, wind.")
-    main.sendcmsg(
-        "-cel, -kel, -far: Use celsius, kelvin, farenheit, -cel is default.")
-    main.sendcmsg(
-        "-name, -id, -geoip: Use city name or ID or GeoIP, -name is default.")

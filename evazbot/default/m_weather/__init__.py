@@ -3,8 +3,13 @@ from json import loads
 from urllib.request import urlopen
 from decimal import *
 import pygeoip
-weather = mload('m_weather.weather.py')
+weather = mload('m_weather.weather')
 gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
+
+
+def start():
+    return ["weather"]
+
 
 class weatherinfo:
     data = {}
@@ -44,6 +49,7 @@ class weatherinfo:
         self.outputtemp = style
         self.dname = altname
 
+
 def get(ct):
     if ct.cmd('weather'):
         if ct.args.getbool('wind'):
@@ -62,4 +68,17 @@ def get(ct):
             apiform = 'name'
         elif ct.args.getbool(geoip):
             apiform = 'geoip'
-        ct.msg(weather.printweather(style,info,apiform,argument))
+        ct.msg(weather.printweather(style, info, apiform, argument))
+
+
+def showhelp():
+    main.sendcmsg(
+        cmd.cprefix() + "weather [-temp] [-wind] [-cel -kel -far] [-name -id]" +
+        "<city name/id>:" +
+        " Get weather from http://openweathermap.org")
+    main.sendcmsg("-temp, -wind: Get temperature, wind.")
+    main.sendcmsg(
+        "-cel, -kel, -far: Use celsius, kelvin, farenheit, -cel is default.")
+    main.sendcmsg(
+        "-name, -id, -geoip: Use city name or ID or GeoIP, -name is default.")
+
