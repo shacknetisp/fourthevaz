@@ -72,6 +72,9 @@ class irccontext:
                     return True
         return False
 
+    def isserver(self):
+        return self.mp.isserver()
+
     def write(self, command, message):
         main.ircwrite(command + ' ' + message)
 
