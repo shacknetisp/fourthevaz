@@ -23,6 +23,12 @@ class irccontext:
         def __init__(self, ct):
             self.ct = ct
 
+        def getdict(self):
+            return self.ct.mp.argsn
+
+        def getlist(self):
+            return list(self.ct.mp.argsn.keys())
+
         def getdef(self, s=''):
             return self.ct.mp.argsdef(s)
 
