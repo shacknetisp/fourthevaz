@@ -7,14 +7,14 @@ from decimal import *
 class weatherinfo:
     data = {}
 
-    def getinfo(self, number):
+    def getinfo(self, info):
         data = self.data
         name = data["name"]
         cname = data["sys"]["country"]
         if len(name) == 0:
             name = self.dname
         #checks what the request wants
-        if number == "temp":
+        if info == "temp":
             if self.outputtemp == "kel":
                 return "It is " +\
                 str(data["main"]["temp"]) +\
@@ -31,7 +31,7 @@ class weatherinfo:
             else:
                 raise ValueError(
                     "Invalid Temperature Style: " + self.outputtemp)
-        elif number == "windspe":
+        elif info == "windspe":
             return "The Wind is Blowing at " +\
             str(data["wind"]["speed"]) + " m/s in " + name + ", " + cname
 
