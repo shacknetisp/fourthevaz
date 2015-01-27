@@ -39,10 +39,12 @@ def get(ct):
             if thismsg != lastmsg:
                 ct.msg(thismsg)
             lastmsg = thismsg
-    elif ct.cmd() == 'forecast':
+    elif ct.cmd('forecast'):
         opt = {'mode': 'xml'}
         if (not ct.args.getbool('id')) and (not ct.args.getbool('name')) and (not ct.args.getbool('geoip')):
             ct.msg('Specify an input method!')
+        elif ct.args.getbool('name'):
+            opt['q'] = ct.args.getdef()
         elif ct.args.getbool('id'):
             opt['id'] = ct.args.getdef()
         elif ct.args.getbool('geoip'):
@@ -64,9 +66,9 @@ def get(ct):
         try:
             opt['cnt'] = ct.args.get('days')
         except ValueError:
-            opt['cnt'] = '7'
+            opt['cnt'] = 7
 
-        url = 'api.openweathermap.org/data/2.5/forecast?'
+        url = 'http://api.openweathermap.org/data/2.5/forecast/daily'
         r = requests.get(url, params=opt)
         data = xmltodict.parse(r.text)
         data = data['weatherdata']['forecast']['time']

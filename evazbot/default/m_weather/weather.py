@@ -52,6 +52,6 @@ def printweather(ws, style, info, apiform, argument, gi):
             wxinfo = weatherinfo(jsonurl, tempstyle, argument)
             data = wxinfo.data
             if data["cod"] == 200:
-                return(wxinfo.getinfo(info))
+                return(wxinfo.getcurrentinfo(info))
             elif data["cod"] == "404":
                 return(data["cod"] + ":" + data["message"])
