@@ -7,7 +7,7 @@ from decimal import *
 class weatherinfo:
     data = {}
 
-    def getinfo(self, info):
+    def getcurrentinfo(self, info):
         data = self.data
         name = data["name"]
         cname = data["sys"]["country"]

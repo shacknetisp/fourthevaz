@@ -20,4 +20,4 @@ You are ready!
 Run with: python3 ib.py
 
 
-Credits: Beha, acz13
+Credits: [Beha](http://www.github.com/shacknetisp), [acz13](http://www.github.com/acz13)

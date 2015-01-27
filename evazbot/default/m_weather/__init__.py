@@ -1,6 +1,9 @@
 from base import *
 import pygeoip
+import requests
+from xmltodict import parse
 weather = mload('m_weather.weather')
+forecast = mload('m_weather.forecast')
 gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
 
 
@@ -36,6 +39,51 @@ def get(ct):
             if thismsg != lastmsg:
                 ct.msg(thismsg)
             lastmsg = thismsg
+elif ct.cmd == 'forecast':
+        opt = {}
+        if (not ct.args.getbool('id')) (and not ct.args.getbool('name')) and (not ct.args.getbool('geoip')):
+            ct.msg('Specify an input method!')
+        elif ct.args.getbool('id')
+            opt['id'] = ct.args.getdef()
+        elif ct.args.getbool('geoip'):
+            ip = ct.args.getdef()
+            urlid = False
+            #urlcity = True
+            try:
+                r = gi.record_by_addr(ip)
+            except:
+                    r = gi.record_by_name(ip)
+                except:
+                    r = None
+            try:
+                opt['q'] = r['city'] + ', ' + r['region_code'] + ', '\
+                        + r['country_code']
+            except TypeError:
+                ct.msg('Cannot get GeoIP information.')
+                break
+        try:
+            opt['cnt'] = ct.args.get('days')
+        except ValueError:
+            opt['cnt'] = '7'
+
+        url = 'api.openweathermap.org/data/2.5/forecast?'
+        r = requests.get(url, params = opt)
+        data = r.parse()
+        data = data['weatherdata']['forecast']['time']
+        info = []
+        for i in ct.args.getlist():
+            if i in data:
+                subdict = data[i]
+                    for o in ct.args.get(i).split('')
+                        if o in subdict:
+                            info.append([i, '@' + o])
+                        else:
+                            info.append([i, '@' + list(subdict.keys()[0])])
+        forecastdata = forecast.printforecast(info,data)
+        forecastdata = forecastdata.split('\n')
+        for i in forecastdata:
+            ct.msg(i)
+
 
 
 def showhelp():
