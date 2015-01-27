@@ -80,10 +80,9 @@ def get(ct):
                     sub = ct.args.get(i)
                     for o in sub.split(','):
                         for a in subdict:
-                            if o == subdict:
+                            if '@' + o == a:
                                 info.append([i, '@' + o])
-
-        forecastdata = forecast.printforecast(info,data)
+        forecastdata = forecast.printforecast(info, data)
         forecastdata = forecastdata.split('\n')
         for i in forecastdata:
             ct.msg(i)
