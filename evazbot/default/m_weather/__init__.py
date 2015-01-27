@@ -74,14 +74,15 @@ def get(ct):
         data = data['weatherdata']['forecast']['time']
         info = []
         for i in ct.args.getlist():
-            if i in data:
-                subdict = data[i]
-                sub = ct.args.get(i)
-                for o in sub.split(','):
-                    if o in subdict:
-                        info.append([i, '@' + o])
-                    else:
-                        info.append([i, '@' + list(subdict.keys()[0])])
+            for obj in data[0]:
+                if i == obj:
+                    subdict = data[0][i]
+                    sub = ct.args.get(i)
+                    for o in sub.split(','):
+                        for a in subdict:
+                            if o == subdict:
+                                info.append([i, '@' + o])
+
         forecastdata = forecast.printforecast(info,data)
         forecastdata = forecastdata.split('\n')
         for i in forecastdata:
