@@ -128,7 +128,6 @@ def getargs(msg, command):
     else:
         args = ""
     return args
-    return args
 
 
 def getname(name, usenames=True):
@@ -250,10 +249,11 @@ class MParser:
                 var = i.split("=")[0][1:]
                 try:
                     val = i.split("=")[1]
+                    fstr += "-" + var + "=" + val + " "
                 except:
                     val = ""
+                    fstr += "-" + var + " "
                 ret[var] = val
-                fstr += "-" + var + "=" + val + " "
                 lastval = i
             else:
                 fstr += i + " "
