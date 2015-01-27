@@ -44,7 +44,7 @@ class irccontext:
             self.ct = ct
 
         def whois(self, nick):
-            self.ct.msg('WHOIS', nick)
+            self.ct.write('WHOIS', nick)
 
         def join(self, channel):
             self.ct.write('JOIN', channel)
