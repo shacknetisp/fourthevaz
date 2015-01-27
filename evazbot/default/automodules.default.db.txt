@@ -13,5 +13,5 @@ history
 replies
 faq
 geoip
-money
+conversions
 fortune
