@@ -31,5 +31,5 @@ def msg(mp):
 def showhelp(h):
     h("alias [-set=<alias> -remove=<alias>] " +
     "<text for -set, alias for getting>: " +
-    "Operate on an alias, accessible with {<alias name>}.")
+    "Operate on an alias, accessible with ${<alias name>}.")
     h("echo <text>")
