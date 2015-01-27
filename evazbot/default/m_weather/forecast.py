@@ -2,7 +2,7 @@ from base import *
 weatherinfo = mload('m_weather.weatherinfo').weatherinfo
 from prettytable import prettytable
 from collections import OrderedDict
-def printforecast(info, data, days):
+def printforecast(info, data):
     forecast = prettytable()
     headings = []
     for i in info:

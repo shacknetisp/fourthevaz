@@ -3,6 +3,7 @@ import pygeoip
 import requests
 from xmltodict import parse
 weather = mload('m_weather.weather')
+forecast = mload('m_weather.forecast')
 gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
 
 
@@ -38,7 +39,7 @@ def get(ct):
             if thismsg != lastmsg:
                 ct.msg(thismsg)
             lastmsg = thismsg
-'''    elif ct.cmd == 'forecast':
+elif ct.cmd == 'forecast':
         opt = {}
         if (not ct.args.getbool('id')) (and not ct.args.getbool('name')) and (not ct.args.getbool('geoip')):
             ct.msg('Specify an input method!')
@@ -70,11 +71,18 @@ def get(ct):
         data = r.parse()
         data = data['weatherdata']['forecast']['time']
         info = []
-        if ct.args.getbool('windSpeed'):
-            if ct.args.get('windSpeed') in data['windSpeed']: '''
-
-
-
+        for i in ct.args.getlist():
+            if i in data:
+                subdict = data[i]
+                    for o in ct.args.get(i).split('')
+                        if o in subdict:
+                            info.append([i, '@' + o])
+                        else:
+                            info.append([i, '@' + list(subdict.keys()[0])])
+        forecastdata = forecast.printforecast(info,data)
+        forecastdata = forecastdata.split('\n')
+        for i in forecastdata:
+            ct.msg(i)
 
 
 
