@@ -6,22 +6,29 @@ weather = mload('m_weather.weather')
 forecast = mload('m_weather.forecast')
 gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
 
-global counter
 counter = 0
-global queue
 queue = []
-global caller
 caller = ''
+
+
 def start():
     return ["weather"]
 
+
 def tick():
+    global counter
+    global queue
+    global caller
     if not queue == []:
         main.sendmsg(caller, queue[0])
         queue.pop(0)
         counter -= 1
 
+
 def get(ct):
+    global caller
+    global counter
+    global queue
     if ct.cmd('weather'):
         info = []
         weatherstyle = "weather"
@@ -56,7 +63,8 @@ def get(ct):
             date = True
         else:
             date = False
-        if (not ct.args.getbool('id')) and (not ct.args.getbool('name')) and (not ct.args.getbool('geoip')):
+        if ((not ct.args.getbool('id')) and
+        (not ct.args.getbool('name')) and (not ct.args.getbool('geoip'))):
             ct.msg('Specify an input method!')
         elif ct.args.getbool('name'):
             opt['q'] = ct.args.getdef()
@@ -64,7 +72,7 @@ def get(ct):
             opt['id'] = ct.args.getdef()
         elif ct.args.getbool('geoip'):
             ip = ct.args.getdef()
-            urlid = False
+            #urlid = False
             #urlcity = True
             try:
                 r = gi.record_by_addr(ip)
@@ -101,8 +109,8 @@ def get(ct):
         forecastdata = forecastdata.split('\n')
         for i in forecastdata:
             if counter < 11:
-                ct.msg(i,ct.ircuser())
-                counter +=1
+                ct.msg(i, ct.ircuser())
+                counter += 1
             else:
                 queue.append(i)
 
