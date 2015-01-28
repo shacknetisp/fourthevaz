@@ -6,10 +6,20 @@ weather = mload('m_weather.weather')
 forecast = mload('m_weather.forecast')
 gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
 
-
+global counter
+counter = 0
+global queue
+queue = []
+global caller
+caller = ''
 def start():
     return ["weather"]
 
+def tick():
+    if not queue == []:
+        main.sendmsg(caller, queue[0])
+        queue.pop(0)
+        counter -= 1
 
 def get(ct):
     if ct.cmd('weather'):
@@ -40,7 +50,12 @@ def get(ct):
                 ct.msg(thismsg)
             lastmsg = thismsg
     elif ct.cmd('forecast'):
+        caller = ct.ircuser()
         opt = {'mode': 'xml'}
+        if ct.args.getbool('absdate'):
+            date = True
+        else:
+            date = False
         if (not ct.args.getbool('id')) and (not ct.args.getbool('name')) and (not ct.args.getbool('geoip')):
             ct.msg('Specify an input method!')
         elif ct.args.getbool('name'):
@@ -82,11 +97,14 @@ def get(ct):
                         for a in subdict:
                             if '@' + o == a:
                                 info.append([i, '@' + o])
-        forecastdata = forecast.printforecast(info, data)
+        forecastdata = forecast.printforecast(info, data, date)
         forecastdata = forecastdata.split('\n')
         for i in forecastdata:
-            ct.msg(i)
-
+            if counter < 11:
+                ct.msg(i,ct.ircuser())
+                counter +=1
+            else:
+                queue.append(i)
 
 
 def showhelp():
