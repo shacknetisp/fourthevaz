@@ -3,9 +3,20 @@
 from base import *
 import wikipedia
 from urllib.request import urlopen
+gtapi = mload("m_define.googletranslate")
 import re
 from html.parser import HTMLParser
 search = mload("m_define.google").search
+
+
+def start():
+    return [
+        'translate',
+        'lookup',
+        'define',
+        'wiki',
+        'google'
+        ]
 
 
 class MLStripper(HTMLParser):
@@ -56,6 +67,20 @@ def googleword(word, n=1):
     cmd.outlist(urls)
 
 
+def getl(l):
+    ldict = {
+        'en': ['english'],
+        'de': ['german', 'deutsch'],
+        'es': ['spanish', 'espanol', 'español'],
+        'af': ['afrikaans'],
+        'la': ['latin'],
+        }
+    for k, v in list(ldict.items()):
+        if l.lower() in v:
+            return k
+    return l
+
+
 def msg(mp):
     if mp.wcmd('google'):
         word = mp.args().strip()
@@ -65,6 +90,15 @@ def msg(mp):
         if int(mp.argstr('n', '1')) <= 0:
             main.sendcmsg('Do you really expect results with a maximum of '
                            + str(int(mp.argstr('n', '1'))) + ' URLs?')
+        return True
+    if mp.wcmd('translate'):
+        fromword = mp.argstr('from', '')
+        toword = mp.argstr('to', 'en')
+        translator = gtapi.TranslateService()
+        if fromword == '':
+            fromword = list(translator.detect(mp.argsdef()).keys())[0]
+        main.sendcmsg(translator.trans_sentence(
+                getl(fromword), getl(toword), mp.argsdef()))
         return True
     if mp.wcmd('define'):
         word = mp.args().strip()
@@ -102,10 +136,10 @@ def msg(mp):
     return False
 
 
-def showhelp():
-    main.sendcmsg(cmd.cprefix() + 'lookup <word>: Lookup <word>.')
-    main.sendcmsg(cmd.cprefix() + 'define <word>: Define <word>.')
-    main.sendcmsg(cmd.cprefix() + 'wiki <words>: Lookup on Wikipedia: <words>.')
-    main.sendcmsg(cmd.cprefix() +
-    'google [-n=number] <words to lookup>: Lookup on Google.'
-                  )
+def showhelp(h):
+    h('translate -from=[language] -to=[language] <text>: Translate text. ' +
+    'Leave -from empty to autodetect, -to defaults to english.')
+    h('lookup <word>: Lookup <word>.')
+    h('define <word>: Define <word>.')
+    h('wiki <words>: Lookup on Wikipedia: <words>.')
+    h('google [-n=number] <words to lookup>: Lookup on Google.')
