@@ -20,4 +20,4 @@ You are ready!
 Run with: python3 ib.py
 
 
-Credits: [Beha](http://www.github.com/shacknetisp), [acz13](http://www.github.com/acz13)
+Credits: [Beha](http://www.github.com/shacknetisp), [acz13](http://www.github.com/acz13), [Martín Blech](http://www.github.com/martinblech) xmltodict module, [Applied Security](http://github.com/appliedsec) pygeoip, [Jonathan Goldsmith](http://www.github.com/goldsmith) Wikipedia
