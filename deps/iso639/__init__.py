@@ -62,7 +62,7 @@ def to_name(key):
     item = find(whatever=key)
     if not item:
         raise NonExistentLanguageError('Language does not exist.')
-    return item[u'name']
+    return item['name']
 
 
 def _load_data():
