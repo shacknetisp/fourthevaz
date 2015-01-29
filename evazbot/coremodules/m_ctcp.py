@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from base import *
 import platform
+import OS
 
 
 def get(ct):
@@ -15,6 +16,7 @@ def get(ct):
         replyctcp("VERSION " +
         ct.botname() + " runs on Python " +
         str(t[0]) + "." + str(t[1]) + "." + str(t[2]))
+        replyctcp('Running on ' + platform.platform())
         return True
     elif isctcp("PING"):
         replyctcp("PING " + ct.getsplit(4).strip('\x01'))
