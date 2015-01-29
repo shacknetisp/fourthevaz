@@ -1,10 +1,6 @@
 import os
 import codecs
 
-# Python 3.4 compatibility
-if not 'unicode' in dir():
-    unicode = str
-
 
 class NonExistentLanguageError(RuntimeError):
     pass
@@ -25,7 +21,7 @@ def find(whatever=None, language=None, iso639_1=None, iso639_2=None):
         val = iso639_2
     else:
         raise ValueError('Invalid search criteria.')
-    val = unicode(val)
+    val = str(val)
     return next((item for item in data if any(
         item[key].lower() == val.lower() for key in keys)), None)
 
@@ -55,7 +51,7 @@ def to_iso639_2(key, type='B'):
     item = find(whatever=key)
     if not item:
         raise NonExistentLanguageError('Language does not exist.')
-    if type == 'T' and item[u'iso639_2_t']:
+    if type == 'T' and item['iso639_2_t']:
         return item['iso639_2_t']
     return item['iso639_2_b']
 
