@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
 from base import *
-import wikipedia
+wikipedia = irload('wikipedia')
+iso639 = irload('iso639')
 from urllib.request import urlopen
 gtapi = mload("m_define.googletranslate")
 import re
@@ -68,17 +69,10 @@ def googleword(word, n=1):
 
 
 def getl(l):
-    ldict = {
-        'en': ['english'],
-        'de': ['german', 'deutsch'],
-        'es': ['spanish', 'espanol', 'español'],
-        'af': ['afrikaans'],
-        'la': ['latin'],
-        }
-    for k, v in list(ldict.items()):
-        if l.lower() in v:
-            return k
-    return l
+    item = iso639.find(whatever=l)
+    if item:
+        return item['iso639_1']
+    raise ValueError("Cannot find '" + l + "'")
 
 
 def msg(mp):
@@ -97,8 +91,11 @@ def msg(mp):
         translator = gtapi.TranslateService()
         if fromword == '':
             fromword = list(translator.detect(mp.argsdef()).keys())[0]
-        main.sendcmsg(translator.trans_sentence(
-                getl(fromword), getl(toword), mp.argsdef()))
+        try:
+            main.sendcmsg(translator.trans_sentence(
+                    getl(fromword), getl(toword), mp.argsdef()))
+        except ValueError as e:
+            main.sendcmsg(str(e))
         return True
     if mp.wcmd('define'):
         word = mp.args().strip()

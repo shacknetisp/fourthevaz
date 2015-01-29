@@ -6,6 +6,12 @@ import os
 import errno
 
 
+def irload(module):
+    m = importlib.import_module(module)
+    reload(m)
+    return m
+
+
 def cload(module):
     m = importlib.import_module("evazbot.configs." + module)
     reload(m)
