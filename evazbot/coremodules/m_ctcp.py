@@ -37,9 +37,10 @@ def get(ct):
         replyctcp('SOURCE', 'http://github.com/shacknetisp/fourthevaz')
         return True
     elif isctcp('TIME'):
+        val = (time.timezone / 60 / 60)
         replyctcp('TIME', str(datetime.datetime.now().strftime(
-            '%Y-%m-%d %H:%M:%S GMT ') + str(
-                (time.localtime().tm_gmtoff / 60 / 60))))
+            '%Y-%m-%d %H:%M:%S GMT ') + str("" if val < 0 else "+") + str(
+                val)))
         return True
     elif isctcp('USERINFO'):
         replyctcp('USERINFO', userinfo)
