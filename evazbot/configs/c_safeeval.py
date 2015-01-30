@@ -567,4 +567,8 @@ def safe_eval_timeout(expr, functions_and_constants={},
 
 def domath(source):
     import math
-    return safe_eval_timeout(source, math.__dict__, False)
+    sd = {}
+    for i in list(math.__dict__.keys()):
+        if hasattr(math.__dict__[i], '__call__'):
+            sd[i] = math.__dict__[i]
+    return safe_eval_timeout(source, sd, False)
