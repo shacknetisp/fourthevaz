@@ -528,8 +528,6 @@ def _safe_eval(expr, functions_and_constants={},
 
     assert len(expr) < 1024
 
-    assert expr.find('_') == -1
-
     # Check for potential bad compiler input
 
     if check_compiling_input:
