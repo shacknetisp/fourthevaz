@@ -1,24 +1,57 @@
 # -*- coding: utf-8 -*-
 from base import *
 import platform
-import OS
+import datetime
+import time
+
+userinfo = "<no user info set>"
+
+##mconfig/ctcp.py
+##lines of the following:
+#userinfo = "user info goes here"
+exec(c_locs.mconfig("ctcp"))
 
 
 def get(ct):
-    def replyctcp(message):
-        ct.msg("\x01" + message + "\x01", '', "NOTICE")
+    def replyctcp(command, message):
+        ct.msg("\x01" + command + ' ' + message + "\x01", '', "NOTICE")
 
     def isctcp(command):
         return ct.text().find("\x01" + command) != -1
 
     if isctcp("VERSION"):
         t = platform.python_version_tuple()
-        replyctcp("VERSION " +
-        ct.botname() + " runs on Python " +
-        str(t[0]) + "." + str(t[1]) + "." + str(t[2]))
-        replyctcp('Running on ' + platform.platform())
+        replyctcp("VERSION", str(
+            "{name} | Python {t[0]}.{t[1]}.{t[2]} |"
+            + " OS: {pv}").format(**
+            {
+                't': t,
+                'pv': platform.platform(),
+                'name': ct.botname(),
+                }))
         return True
     elif isctcp("PING"):
-        replyctcp("PING " + ct.getsplit(4).strip('\x01'))
+        replyctcp("PING", ct.getsplit(4).strip('\x01'))
+        return True
+    elif isctcp('SOURCE'):
+        replyctcp('SOURCE', 'http://github.com/shacknetisp/fourthevaz')
+        return True
+    elif isctcp('TIME'):
+        replyctcp('TIME', str(datetime.datetime.now().strftime(
+            '%Y-%m-%d %H:%M:%S GMT ') + str(
+                (time.localtime().tm_gmtoff / 60 / 60))))
+        return True
+    elif isctcp('USERINFO'):
+        replyctcp('USERINFO', userinfo)
+        return True
+    elif isctcp('FINGER'):
+        replyctcp('FINGER', ct.botname())
+        return True
+    elif isctcp('ERRMSG'):
+        replyctcp('ERRMSG', "Invalid Data")
+        return True
+    elif isctcp('CLIENTINFO'):
+        replyctcp('CLIENTINFO',
+            'VERSION PING SOURCE TIME CLIENTINFO USERINFO FINGER ERRMSG')
         return True
     return False
