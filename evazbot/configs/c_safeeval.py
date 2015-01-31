@@ -565,8 +565,14 @@ def safe_eval_timeout(expr, functions_and_constants={},
 
 def domath(source):
     import math
+    import random
     sd = {}
     for i in list(math.__dict__.keys()):
         if hasattr(math.__dict__[i], '__call__'):
             sd[i] = math.__dict__[i]
+    sd['random'] = random.random
+    sd['randrange'] = random.randrange
+    sd['uniform'] = random.uniform
+    sd['normalvariate'] = random.normalvariate
+
     return safe_eval_timeout(source, sd, False)
