@@ -36,6 +36,12 @@ for i in range(len(ircprofiles)):
     if 'prefix' not in ircprofiles[i]:
         ircprofiles[i]['prefix'] = '.'
     ircprofiles[i]['nicklist'] = {}
+    ircprofiles[i]['channelnames'] = {}
+    ircprofiles[i]['userinfo'] = {}
+    ircprofiles[i]['whoisqueue'] = deque()
+    ircprofiles[i]['lastwhois'] = 0
+    for ch in ircprofiles[i]['channels']:
+        ircprofiles[i]['channelnames'][ch] = []
 
 
 def nlistcheck(n):
@@ -248,6 +254,17 @@ def loop_select():
                     break
         except IndexError:
             pass
+        for i in range(len(ircprofiles)):
+            currentprofile = i
+            if ircprofiles[currentprofile]["whoisqueue"]:
+                if (time.time() - ircprofiles[
+                    currentprofile]["lastwhois"]) > 1.5:
+                    ircprofiles[currentprofile]["lastwhois"] = time.time()
+                    o = ircprofiles[currentprofile]["whoisqueue"].popleft()
+                    if o in ircprofiles[currentprofile]['userinfo']:
+                        ircprofiles[currentprofile][
+                            'userinfo'][o]['offline'] = True
+                    whois(o)
 
 
 def safemkdir(d):

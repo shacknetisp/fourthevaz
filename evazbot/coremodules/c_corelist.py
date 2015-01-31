@@ -12,4 +12,5 @@ needed = [
     "ccheck",
     "joinpart",
     "alias",
+    "userinfo",
 ]

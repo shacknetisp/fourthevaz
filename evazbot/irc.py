@@ -90,6 +90,9 @@ class irccontext:
         else:
             main.sendmsg(target, message, command)
 
+    def channel(self):
+        return self.mindex.target()
+
     def user(self):
         return self.mp.user()
 
@@ -118,8 +121,8 @@ class irccontext:
         return self.mp.text()
 
     def nameslist(self):
-        return self.mp.text()[self.mp.text().index(":" + main.ircprofiles[
-        main.currentprofile]["nick"]):].split()
+        return self.mp.text()[self.mp.text().index(
+            self.getsplit(4)) + len(self.getsplit(4)):].split()
 
     def islogin(self, w=0, a=0, message=False):
         if self.mp.iswlist(w):

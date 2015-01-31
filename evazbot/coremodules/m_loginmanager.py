@@ -85,8 +85,6 @@ def get(ct):
             n = i.strip('@+:')
             ch = ct.getsplit(4)
             main.nlistadd(n, ch)
-            if ct.getwlevel(n) > 0:
-                main.whois(n)
 
 
 def showhelp(h):

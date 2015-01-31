@@ -6,6 +6,7 @@ import importlib
 import evazbot.main as main
 import traceback
 import evazbot.configs.c_locs as c_locs
+import evazbot.configs.c_utils as c_utils
 
 reload(c_locs)
 
@@ -17,21 +18,6 @@ name_offset = 0
 modules = []
 module_callbacks = []
 module_registry = {}
-
-
-def unique(seq, idfun=None):
-    if idfun is None:
-        def idfun(x):
-            return x
-    seen = {}
-    result = []
-    for item in seq:
-        marker = idfun(item)
-        if marker in seen:
-            continue
-        seen[marker] = 1
-        result.append(item)
-    return result
 
 
 def needmodule(n):
@@ -55,7 +41,7 @@ def init():
         modules.append("core")
     for i in corelist.needed:
         needmodule(i)
-    modules = unique(modules)
+    modules = c_utils.unique(modules)
 
 
 def helpmodulenames():
