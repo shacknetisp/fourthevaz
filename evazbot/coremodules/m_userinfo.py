@@ -67,12 +67,15 @@ def get(ct):
 
 
 counter = 120
+counterdlist = 30
 
 
 def tick():
     global counter
+    global counterdlist
     counter += 1
-    if counter > 120:
+    counterdlist += 1
+    if counterdlist > 30:
         dlist = []
         for search in main.ircprofiles[main.currentprofile]['userinfo']:
             found = False
@@ -82,11 +85,12 @@ def tick():
                         if i == search:
                             found = True
             if not found:
-                print(('Offlined: %s' % search))
                 dlist.append(search)
         for i in dlist:
             main.ircprofiles[
                 main.currentprofile]['userinfo'][i]['offline'] = True
+        counterdlist = 0
+    if counter > 120:
         for channel in main.ircprofiles[main.currentprofile]['channels']:
             if channel in main.ircprofiles[
                 main.currentprofile]['channelnames']:
