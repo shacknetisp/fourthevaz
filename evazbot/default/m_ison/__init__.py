@@ -281,13 +281,13 @@ lastcalc2 = 0
 
 def tick():
     global lastcalc
-    if time.time() - lastcalc > 60 * 6:
+    if time.time() - lastcalc > 60 * 2:
         for k in list(redflares.keys()):
             v = redflares[k]
             calcstats(k, v)
         lastcalc = time.time()
     global lastcalc2
-    if time.time() - lastcalc2 > 60 * 12:
+    if time.time() - lastcalc2 > 60 * 4:
         for k in list(redflares.keys()):
             v = redflares[k]
             calcoverall(k, v)
