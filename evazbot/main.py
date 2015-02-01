@@ -162,6 +162,8 @@ def dochannel(ircmsg, i):
                 channel = i
     except IndexError:
         pass
+    except KeyError:
+        pass
 
 
 def process(ircmsgp):
