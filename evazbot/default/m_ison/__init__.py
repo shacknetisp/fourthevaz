@@ -48,6 +48,7 @@ def calcstats(k, v):
                     deletionlist.append(dk)
         except KeyError:
             deletionlist.append(dk)
+    print('Deleting %d from stat table.' % len(deletionlist))
     for tod in deletionlist:
         del statdb.data_list[tod]
     outd = {'timestamp': time.time(), 'dictionary': {}}
@@ -255,6 +256,7 @@ def msg(mp):
                 calcstats(k, v)
                 calcoverall(k, v)
                 main.sendcmsg('Calculated.')
+            elif mp.argbool('')
             else:
                 try:
                     o = rf.find_name(search)
