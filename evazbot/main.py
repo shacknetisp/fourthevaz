@@ -131,7 +131,7 @@ def pconnect():
             botname()))
         ircwrite("NICK " + ircprofiles[currentprofile]["nick"])
         time.sleep(0.25)
-    except socket.error:
+    except OSError:
         pass
 
 
@@ -230,14 +230,15 @@ def loop_select():
                 if ircprofiles[r]["ircsock"] == socket:
                     got = True
                     currentprofile = r
+                    ircmsg = ""
                     try:
                         ircmsg = ircprofiles[currentprofile][
                             "ircsock"].recv(4096).decode()
                         regex = re.compile(
                             "\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
                         ircmsg = regex.sub("", ircmsg)
-                    except socket.error as exc:
-                        raise exc
+                    except OSError:
+                        pconnect()
                     msgs = ircmsg.split("\r\n")
                     for i in msgs:
                         process(i)
