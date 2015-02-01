@@ -256,7 +256,6 @@ def msg(mp):
                 calcstats(k, v)
                 calcoverall(k, v)
                 main.sendcmsg('Calculated.')
-            elif mp.argbool('')
             else:
                 try:
                     o = rf.find_name(search)
