@@ -66,7 +66,7 @@ def get(ct):
     return False
 
 
-def tick():
+def tick_profile():
     counter = 999
     if 'userinfo.counter' in main.ircprofiles[main.currentprofile]:
         counter = main.ircprofiles[main.currentprofile]['userinfo.counter']
@@ -76,6 +76,7 @@ def tick():
         counterdlist = main.ircprofiles[
            main.currentprofile]['userinfo.counterdlist']
     counterdlist += 1
+    print(("%d: %d:%d" % (main.currentprofile, counter, counterdlist)))
     if counterdlist > 10:
         dlist = []
         for search in main.ircprofiles[main.currentprofile]['userinfo']:
