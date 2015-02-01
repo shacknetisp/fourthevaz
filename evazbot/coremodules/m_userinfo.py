@@ -67,7 +67,7 @@ def get(ct):
 
 
 counter = 120
-counterdlist = 30
+counterdlist = 5
 
 
 def tick():
@@ -75,7 +75,7 @@ def tick():
     global counterdlist
     counter += 1
     counterdlist += 1
-    if counterdlist > 30:
+    if counterdlist > 10:
         dlist = []
         for search in main.ircprofiles[main.currentprofile]['userinfo']:
             found = False
@@ -96,6 +96,7 @@ def tick():
                 main.currentprofile]['channelnames']:
                 main.ircprofiles[
                     main.currentprofile]['channelnames'][channel] = []
+            print(('Updating names list for %s' % channel))
             main.ircwrite("NAMES %s" % channel)
         counter = 0
 
