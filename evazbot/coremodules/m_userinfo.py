@@ -67,11 +67,11 @@ def get(ct):
 
 
 def tick():
-    counter = 0
+    counter = 999
     if 'userinfo.counter' in main.ircprofiles[main.currentprofile]:
         counter = main.ircprofiles[main.currentprofile]['userinfo.counter']
     counter += 1
-    counterdlist = 0
+    counterdlist = 999
     if 'userinfo.counterdlist' in main.ircprofiles[main.currentprofile]:
         counterdlist = main.ircprofiles[
            main.currentprofile]['userinfo.counterdlist']
