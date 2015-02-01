@@ -224,10 +224,15 @@ def loop_select():
         if time.time() - lasttime >= 1:
             lasttime = time.time()
             c_modules.event("tick")
+            ocp = currentprofile
+            for i in range(len(ircprofiles)):
+                currentprofile = i
+                c_modules.event("tick_profile")
+            currentprofile = ocp
         got = False
-        for socket in selectresult:
+        for csocket in selectresult:
             for r in range(len(ircprofiles)):
-                if ircprofiles[r]["ircsock"] == socket:
+                if ircprofiles[r]["ircsock"] == csocket:
                     got = True
                     currentprofile = r
                     ircmsg = ""
