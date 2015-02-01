@@ -259,7 +259,7 @@ def msg(mp):
                 main.sendcmsg('Calculated.')
             elif mp.argbool('info'):
                 main.sendcmsg('%0.3f days worth of data.' % (
-                    len(statdb.data_list) / 10 / 24))
+                    len(statdb.data_list) / 30 / 24))
             else:
                 try:
                     o = rf.find_name(search)
