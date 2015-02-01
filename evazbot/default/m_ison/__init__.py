@@ -257,6 +257,9 @@ def msg(mp):
                 calcstats(k, v)
                 calcoverall(k, v)
                 main.sendcmsg('Calculated.')
+            elif mp.argbool('info'):
+                main.sendcmsg('%0.3f days worth of data.' % (
+                    len(statdb.data_list) / 10 / 24))
             else:
                 try:
                     o = rf.find_name(search)
@@ -292,7 +295,8 @@ def tick():
 
 
 def showhelp(h):
-    h("ison [-stats] [-overall] [-calc] <name>: Find players from a RedFlare.")
+    h("ison [-stats] [-overall] [-calc] [-info] <name>: " +
+    "Find players from a RedFlare.")
     main.sendcmsg(
         '-overall: -top=<top> -days -hours -players -servers ["search"]')
     main.sendcmsg("ison may be another command, list below:")
