@@ -48,7 +48,8 @@ def calcstats(k, v):
                     deletionlist.append(dk)
         except KeyError:
             deletionlist.append(dk)
-    print('Deleting %d from stat table.' % len(deletionlist))
+    print(('Deleting %d out of %d from stat table.' % (len(deletionlist),
+    len(statdb.data_list))))
     for tod in deletionlist:
         del statdb.data_list[tod]
     outd = {'timestamp': time.time(), 'dictionary': {}}
