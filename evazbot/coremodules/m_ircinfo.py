@@ -28,11 +28,13 @@ def get(ct):
         if name not in main.ircprofiles[main.currentprofile]['userinfo']:
             ct.msg('Unable to find user.')
             return True
+        was = False
         if main.ircprofiles[main.currentprofile]['userinfo'][name]['offline']:
-            ct.msg("%s WAS:" % name)
+            was = True
         u = main.ircprofiles[main.currentprofile]['userinfo'][name]
-        ct.msg('%s: %s %s %s' % (
+        ct.msg('%s%s: %s %s %s' % (
             name,
+            " <offline>" if was else " <away>" if u['away'] else "",
             u['ident'],
             u['address'],
             u['name'],
@@ -44,12 +46,18 @@ def get(ct):
         main.ircprofiles[main.currentprofile]['userinfo'][user] = {}
         main.ircprofiles[main.currentprofile]['userinfo'][user][
             'offline'] = False
+        main.ircprofiles[main.currentprofile]['userinfo'][user][
+            'away'] = False
         main.ircprofiles[main.currentprofile][
             'userinfo'][user]['ident'] = ct.getsplit(4)
         main.ircprofiles[main.currentprofile][
             'userinfo'][user]['address'] = ct.getsplit(5)
         main.ircprofiles[main.currentprofile][
             'userinfo'][user]['name'] = ct.text()[ct.text().rfind(':') + 1:]
+    elif ct.code('301'):
+        user = ct.getsplit(3)
+        main.ircprofiles[main.currentprofile]['userinfo'][user][
+            'away'] = True
     elif ct.code("353"):
         ch = ct.getsplit(4)
         if ch not in main.ircprofiles[main.currentprofile]['channelnames']:
@@ -76,7 +84,6 @@ def tick_profile():
         counterdlist = main.ircprofiles[
            main.currentprofile]['userinfo.counterdlist']
     counterdlist += 1
-    print(("%d: %d:%d" % (main.currentprofile, counter, counterdlist)))
     if counterdlist > 10:
         dlist = []
         for search in main.ircprofiles[main.currentprofile]['userinfo']:
