@@ -3,8 +3,7 @@ from base import *
 import pytz
 from datetime import datetime, tzinfo, timedelta
 import random
-import pygeoip
-gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
+c_geoip = cload('c_geoip')
 
 ZERO = timedelta(0)
 
@@ -56,13 +55,7 @@ def get(ct):
                 pytz.timezone(gettimezone(argument))
             except pytz.exceptions.UnknownTimeZoneError:
                 ip = ct.args.getdef()
-                try:
-                    r = gi.record_by_addr(ip)
-                except:
-                    try:
-                        r = gi.record_by_name(ip)
-                    except:
-                        r = None
+                r = c_geoip.getinfo(ip)
                 try:
                     argument = r['time_zone']
                 except TypeError:

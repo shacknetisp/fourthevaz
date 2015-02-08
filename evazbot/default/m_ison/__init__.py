@@ -51,7 +51,10 @@ def calcstats(k, v):
     print(('Deleting %d out of %d from stat table.' % (len(deletionlist),
     len(statdb.data_list))))
     for tod in deletionlist:
-        del statdb.data_list[tod]
+        try:
+            del statdb.data_list[tod]
+        except IndexError:
+            pass
     outd = {'timestamp': time.time(), 'dictionary': {}}
     ddnum = outd['dictionary']
     if str(now.weekday()) not in ddnum:
