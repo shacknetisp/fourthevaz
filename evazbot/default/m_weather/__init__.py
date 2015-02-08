@@ -1,10 +1,9 @@
 from base import *
-import pygeoip
+c_geoip = cload('c_geoip')
 import requests
 import xmltodict
 weather = mload('m_weather.weather')
 forecast = mload('m_weather.forecast')
-gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
 
 counter = 0
 queue = []
@@ -74,13 +73,7 @@ def get(ct):
             ip = ct.args.getdef()
             #urlid = False
             #urlcity = True
-            try:
-                r = gi.record_by_addr(ip)
-            except:
-                try:
-                    r = gi.record_by_name(ip)
-                except:
-                    r = None
+            r = c_geoip.getinfo(ip)
             try:
                 opt['q'] = r['city'] + ', ' + r['region_code'] + ', '\
                         + r['country_code']

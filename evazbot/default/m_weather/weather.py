@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from base import *
 weatherinfo = mload('m_weather.weatherinfo').weatherinfo
+c_geoip = cload('c_geoip')
 
 
 def printweather(ws, style, info, apiform, argument, gi):
@@ -25,13 +26,7 @@ def printweather(ws, style, info, apiform, argument, gi):
             ip = argument
             urlid = False
             #urlcity = True
-            try:
-                r = gi.record_by_addr(ip)
-            except:
-                try:
-                    r = gi.record_by_name(ip)
-                except:
-                    r = None
+            r = c_geoip.getinfo(ip)
             try:
                 argument = r['city'] + ', ' + r['region_code'] + ', '\
                         + r['country_code']

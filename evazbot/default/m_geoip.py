@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from base import *
-import pygeoip
+c_geoip = cload('c_geoip')
 import re
 enable_geoip = False
 ##mconfig/geoip.py
 ##options:
 #enable_geoip = True #Give country when someone connects to a server
 exec(c_locs.mconfig("geoip"))
-gi = pygeoip.GeoIP('deps/pygeoip/GeoLiteCity.dat')
 
 
 def start():
@@ -19,13 +18,7 @@ def msg(mp):
     if mp.isserver() and mp.text().find(') has joined the game') != -1 \
         and enable_geoip:
         ip = re.findall(' \((.*?)\) has', mp.text())[-1]
-        try:
-            r = gi.record_by_addr(ip)
-        except:
-            try:
-                r = gi.record_by_name(ip)
-            except:
-                r = None
+        r = c_geoip.getinfo(ip)
         try:
             index = mp.text().index(' (' + ip)
         except ValueError:
@@ -45,16 +38,10 @@ def msg(mp):
         return True
     if mp.wcmd('geoip'):
         ip = mp.argsdef()
+        r = c_geoip.getinfo(ip)
         try:
-            r = gi.record_by_addr(ip)
-        except:
-            try:
-                r = gi.record_by_name(ip)
-            except:
-                r = None
-        try:
-            main.sendcmsg(r['city'] + ', ' + r['region_code'] + ', '
-                          + r['country_name'])
+            main.sendcmsg(r['city'] + ', ' + r['region'] + ', '
+                          + r['country'])
         except TypeError:
             main.sendcmsg('Cannot get information.')
         return True
