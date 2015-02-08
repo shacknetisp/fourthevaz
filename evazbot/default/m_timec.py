@@ -57,7 +57,7 @@ def get(ct):
                 ip = ct.args.getdef()
                 r = c_geoip.getinfo(ip)
                 try:
-                    argument = r['time_zone']
+                    argument = r['timezone']
                 except TypeError:
                     pass
             try:
