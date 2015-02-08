@@ -4,7 +4,7 @@ weatherinfo = mload('m_weather.weatherinfo').weatherinfo
 c_geoip = cload('c_geoip')
 
 
-def printweather(ws, style, info, apiform, argument, gi):
+def printweather(ws, style, info, apiform, argument):
     if ws == 'weather':
         tempstyle = None
         urlid = False
@@ -28,8 +28,7 @@ def printweather(ws, style, info, apiform, argument, gi):
             #urlcity = True
             r = c_geoip.getinfo(ip)
             try:
-                argument = r['city'] + ', ' + r['region_code'] + ', '\
-                        + r['country_code']
+                argument = r['city'] + ', ' + r['countryCode']
             except TypeError:
                 return('Cannot get GeoIP information.')
         #if not urlid:

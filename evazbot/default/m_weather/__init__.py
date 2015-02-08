@@ -51,7 +51,7 @@ def get(ct):
         lastmsg = ""
         for i in info:
             thismsg = weather.printweather(
-                weatherstyle, style, i, apiform, argument, gi)
+                weatherstyle, style, i, apiform, argument)
             if thismsg != lastmsg:
                 ct.msg(thismsg)
             lastmsg = thismsg
@@ -75,8 +75,7 @@ def get(ct):
             #urlcity = True
             r = c_geoip.getinfo(ip)
             try:
-                opt['q'] = r['city'] + ', ' + r['region_code'] + ', '\
-                        + r['country_code']
+                opt['q'] = r['city'] + ', ' + r['countryCode']
             except TypeError:
                 ct.msg('Cannot get GeoIP information.')
         try:
