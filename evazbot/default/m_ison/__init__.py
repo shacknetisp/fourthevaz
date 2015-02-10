@@ -38,7 +38,12 @@ def calcstats(k, v):
     try:
         statdb.load()
     except:
-        pass
+        try:
+            statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db.bak'
+            statdb.load()
+            statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db'
+        except:
+            pass
     s = rf.get_stats()
     deletionlist = []
     for dk in range(len(statdb.data_list)):
@@ -87,6 +92,8 @@ def calcstats(k, v):
                     player] += 1
     statdb.data_list.append(outd)
     print("Calculated statistics.")
+    statdb.save()
+    statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db.bak'
     statdb.save()
 
 
