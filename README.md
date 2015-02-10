@@ -21,7 +21,7 @@ Run with: python3 ib.py
 
 
 Credits:
-[Beha](http://www.github.com/shacknetisp)
-[acz13](http://www.github.com/acz13)
-[Martín Blech](http://www.github.com/martinblech) xmltodict module
-[Jonathan Goldsmith](http://www.github.com/goldsmith) Wikipedia
+* [Beha](http://www.github.com/shacknetisp)
+* [acz13](http://www.github.com/acz13)
+* [Martín Blech](http://www.github.com/martinblech) xmltodict module
+* [Jonathan Goldsmith](http://www.github.com/goldsmith) Wikipedia
