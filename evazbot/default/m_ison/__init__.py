@@ -299,7 +299,8 @@ def msg(mp):
                         main.sendcmsg('%s was last seen at %s' % (
                             lssearch, statdblastseen.data_dict[lsk][0]))
                         return
-                    elif c_regex.casecontains(lssearch, lsk):
+                    elif c_regex.casecontains(lssearch, lsk) or lsk.find(
+                        lssearch) != -1:
                         if finalout:
                             if finalout[1] > statdblastseen.data_dict[lsk][1]:
                                 continue
