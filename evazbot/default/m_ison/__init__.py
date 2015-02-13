@@ -5,6 +5,7 @@ import datetime
 import calendar
 import re
 import time
+import random
 
 redflare = mload('m_ison.redflare')
 
@@ -101,8 +102,8 @@ def calcstats(k, v):
         ddnum[str(now.weekday())][
                 str(now.hour)]['players'][
                     player] += 1
-        statdblastseen.data_dict[player.lower()] = now.strftime(
-            '%d/%m/%Y %H:%M:%S UTC')
+        statdblastseen.data_dict[player.lower()] = [now.strftime(
+            '%d/%m/%Y %H:%M:%S UTC'), time.time()]
     statdb.data_list.append(outd)
     print("Calculated statistics.")
     statdb.save()
@@ -291,24 +292,22 @@ def msg(mp):
                 except:
                     pass
                 lssearch = mp.argsdef().lower().strip()
-                finalout = []
+                finalout = None
+                finaloutlsk = ""
                 for lsk in list(statdblastseen.data_dict.keys()):
                     if lsk == lssearch:
                         main.sendcmsg('%s was last seen at %s' % (
-                            lssearch, statdblastseen.data_dict[lsk]))
+                            lssearch, statdblastseen.data_dict[lsk][0]))
                         return
-                    elif c_regex.casecontains(lssearch, lsk) and len(
-                        finalout) < 12:
-                        finalout.append(lsk)
+                    elif c_regex.casecontains(lssearch, lsk):
+                        if finalout:
+                            if finalout[1] > statdblastseen.data_dict[lsk][1]:
+                                continue
+                        finalout = statdblastseen.data_dict[lsk]
+                        finaloutlsk = lsk
                 if finalout:
-                    if len(finalout) == 1:
                         main.sendcmsg('%s was last seen at %s' % (
-                            finalout[0], statdblastseen.data_dict[
-                                finalout[0]]))
-                        return
-                    else:
-                        main.sendcmsg('Did you mean?')
-                        cmd.outlist(finalout)
+                            finaloutlsk, finalout[0]))
                         return
                 else:
                     main.sendcmsg('No matches found.')
