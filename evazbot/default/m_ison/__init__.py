@@ -44,6 +44,17 @@ def calcstats(k, v):
             statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db'
         except:
             pass
+    statdblastseen = c_vars.variablestore(
+        c_locs.dbhome + '/ison.ls.' + k + '.db')
+    try:
+        statdblastseen.load()
+    except:
+        try:
+            statdblastseen.dbfile = c_locs.dbhome + '/ison.ls.' + k + '.db.bak'
+            statdblastseen.load()
+            statdblastseen.dbfile = c_locs.dbhome + '/ison.ls.' + k + '.db'
+        except:
+            pass
     s = rf.get_stats()
     deletionlist = []
     for dk in range(len(statdb.data_list)):
@@ -90,11 +101,16 @@ def calcstats(k, v):
         ddnum[str(now.weekday())][
                 str(now.hour)]['players'][
                     player] += 1
+        statdblastseen.data_dict[player.lower()] = now.strftime(
+            '%d/%m/%Y %H:%M:%S UTC')
     statdb.data_list.append(outd)
     print("Calculated statistics.")
     statdb.save()
     statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db.bak'
     statdb.save()
+    statdblastseen.save()
+    statdblastseen.dbfile = c_locs.dbhome + '/ison.ls.' + k + '.db.bak'
+    statdblastseen.save()
 
 
 allservers = {}
@@ -243,7 +259,7 @@ def msg(mp):
     for k in list(redflares.keys()):
         v = redflares[k]
         if mp.wcmd(k):
-            search = mp.args()
+            search = mp.argsdef()
             rf = redflare.redflare(v, replacements)
             statdb = c_vars.liststore(c_locs.dbhome + '/ison.' + k + '.db')
             try:
@@ -267,6 +283,36 @@ def msg(mp):
                 calcstats(k, v)
                 calcoverall(k, v)
                 main.sendcmsg('Calculated.')
+            elif mp.argbool('lastseen'):
+                statdblastseen = c_vars.variablestore(
+                    c_locs.dbhome + '/ison.ls.' + k + '.db')
+                try:
+                    statdblastseen.load()
+                except:
+                    pass
+                lssearch = mp.argsdef().lower().strip()
+                finalout = []
+                for lsk in list(statdblastseen.data_dict.keys()):
+                    if lsk == lssearch:
+                        main.sendcmsg('%s was last seen at %s' % (
+                            lssearch, statdblastseen.data_dict[lsk]))
+                        return
+                    elif c_regex.casecontains(lssearch, lsk) and len(
+                        finalout) < 12:
+                        finalout.append(lsk)
+                if finalout:
+                    if len(finalout) == 1:
+                        main.sendcmsg('%s was last seen at %s' % (
+                            finalout[0], statdblastseen.data_dict[
+                                finalout[0]]))
+                        return
+                    else:
+                        main.sendcmsg('Did you mean?')
+                        cmd.outlist(finalout)
+                        return
+                else:
+                    main.sendcmsg('No matches found.')
+
             elif mp.argbool('info'):
                 main.sendcmsg('%0.3f days worth of data.' % (
                     len(statdb.data_list) / 30 / 24))
@@ -305,7 +351,7 @@ def tick():
 
 
 def showhelp(h):
-    h("ison [-stats] [-overall] [-calc] [-info] <name>: " +
+    h("ison [-stats] [-overall] [-calc] [-info] [-lastseen] <name>: " +
     "Find players from a RedFlare.")
     main.sendcmsg(
         '-overall: -top=<top> -days -hours -players -servers ["search"]')
