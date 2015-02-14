@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pickle
+import os
 
 
 class variablestore:
@@ -15,9 +16,14 @@ class variablestore:
         dict_file.close()
 
     def save(self):
-        output = open(self.dbfile, 'wb')
+        output = open(self.dbfile + '.working', 'wb')
         pickle.dump(self.data_dict, output)
         output.close()
+        try:
+            os.unlink(self.dbfile)
+        except:
+            pass
+        os.rename(self.dbfile + '.working', self.dbfile)
 
     def setvar(self, v, val):
         self.data_dict[str(v)] = str(val)
@@ -52,9 +58,14 @@ class liststore:
         dict_file.close()
 
     def save(self):
-        output = open(self.dbfile, 'wb')
+        output = open(self.dbfile + '.working', 'wb')
         pickle.dump(self.data_list, output)
         output.close()
+        try:
+            os.unlink(self.dbfile)
+        except:
+            pass
+        os.rename(self.dbfile + '.working', self.dbfile)
 
     def __init__(self, dbf):
         self.dbfile = dbf

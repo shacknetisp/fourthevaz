@@ -39,32 +39,13 @@ def calcstats(k, v):
     try:
         statdb.load()
     except:
-        try:
-            statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db.bak'
-            statdb.load()
-            statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db'
-        except:
-            pass
-    statdbbak = c_vars.liststore(c_locs.dbhome + '/ison.' + k + '.db.bak')
-    try:
-        statdbbak.load()
-    except:
         pass
-    if len(statdb.data_list) < len(statdbbak.data_list):
-        statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db.bak'
-        statdb.load()
-        statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db'
     statdblastseen = c_vars.variablestore(
         c_locs.dbhome + '/ison.ls.' + k + '.db')
     try:
         statdblastseen.load()
     except:
-        try:
-            statdblastseen.dbfile = c_locs.dbhome + '/ison.ls.' + k + '.db.bak'
-            statdblastseen.load()
-            statdblastseen.dbfile = c_locs.dbhome + '/ison.ls.' + k + '.db'
-        except:
-            pass
+        pass
     s = rf.get_stats()
     deletionlist = []
     for dk in range(len(statdb.data_list)):
@@ -116,10 +97,6 @@ def calcstats(k, v):
     statdb.data_list.append(outd)
     print("Calculated statistics.")
     statdb.save()
-    statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db.bak'
-    statdb.save()
-    statdblastseen.save()
-    statdblastseen.dbfile = c_locs.dbhome + '/ison.ls.' + k + '.db.bak'
     statdblastseen.save()
 
 
