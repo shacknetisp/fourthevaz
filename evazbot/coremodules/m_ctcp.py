@@ -17,7 +17,7 @@ def get(ct):
         ct.msg("\x01" + command + ' ' + message + "\x01", '', "NOTICE")
 
     def isctcp(command):
-        return ct.text().find("\x01" + command) != -1
+        return ct.text().upper().find("\x01" + command) != -1
 
     if isctcp("VERSION"):
         t = platform.python_version_tuple()
