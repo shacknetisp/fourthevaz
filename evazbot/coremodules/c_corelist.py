@@ -13,4 +13,5 @@ needed = [
     "joinpart",
     "alias",
     "ircinfo",
+    "dcc",
 ]

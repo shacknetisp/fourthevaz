@@ -27,6 +27,7 @@ cwlist = {}
 outputbuffer = deque()
 sys.path.append('deps')
 aliasdb = c_vars.variablestore(c_locs.dbhome + "/alias.db.pkl")
+dccconnections = []
 try:
     aliasdb.load()
 except:
@@ -42,6 +43,15 @@ for i in range(len(ircprofiles)):
     ircprofiles[i]['lastwhois'] = 0
     for ch in ircprofiles[i]['channels']:
         ircprofiles[i]['channelnames'][ch] = []
+
+
+def connectdcc(nick, ip, port, wlistlevel):
+    import evazbot.irc as irc
+    import evazbot.configs.c_modules as c_modules
+    a = irc.dccconnection(nick, ip, port, wlistlevel)
+    print(("Opening DCC connection: %s: %d" % (nick, wlistlevel)))
+    c_modules.dccevent("dccconnect", a)
+    dccconnections.append(a)
 
 
 def nlistcheck(n):
@@ -211,12 +221,45 @@ def process(ircmsgp):
             c_modules.event("getafter", ircmsg)
 
 
+def dcc_select():
+    import evazbot.configs.c_modules as c_modules
+    sockets = []
+    tod = []
+    for index_p in range(len(dccconnections)):
+        if not dccconnections[index_p].socket:
+            tod.append(index_p)
+    for t in tod:
+        del dccconnections[t]
+    for p in dccconnections:
+        sockets.append(p.socket)
+    selectresult, sr2, sr3 = select.select(sockets, [], [], 0.1)
+    for selected in selectresult:
+        for p in dccconnections:
+            if p.socket == selected:
+                ircmsg = p.socket.recv(4096)
+                c_modules.dccevent("dccgetbin", p, ircmsg)
+                try:
+                    ircmsg = ircmsg.decode()
+                except UnicodeDecodeError:
+                    pass
+                regex = re.compile(
+                    "\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
+                ircmsg = regex.sub("", ircmsg)
+                print(('DCC: %s: %s' % (p.nick, ircmsg.strip())))
+                c_modules.dccevent("dccget", p, ircmsg)
+                if len(ircmsg) == 0:
+                    print(("Terminating DCC connection with %s" % p.nick))
+                    p.socket.close()
+                    p.socket = None
+
+
 def loop_select():
     import evazbot.configs.c_modules as c_modules
     global channel
     global currentprofile
     lasttime = time.time()
     while running:
+        dcc_select()
         sockets = []
         for p in range(len(ircprofiles)):
             sockets.append(ircprofiles[p]["ircsock"])

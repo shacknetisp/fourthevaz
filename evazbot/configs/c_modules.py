@@ -190,6 +190,18 @@ def event(f, s=""):
     return
 
 
+def dccevent(f, d, s=None):
+    for i in module_callbacks:
+        try:
+            function = getattr(i[offset], f)
+        except AttributeError:
+            continue
+        if s is None:
+            function(d)
+        else:
+            function(d, s)
+
+
 def showhelp(n):
     n = n.strip()
     found = False

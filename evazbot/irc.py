@@ -160,3 +160,22 @@ class irccontext:
 def getcontext(mp):
     return irccontext(mp)
 
+
+class dccconnection:
+        def __init__(self, nick, ip, port, wlistlevel):
+            import socket
+            self.nick = nick
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.wlistlevel = wlistlevel
+            self.socket.connect((ip, int(port)))
+            self.profile = main.currentprofile
+
+        def send(self, text):
+            import evazbot.configs.c_modules as c_modules
+            self.socket.send(text.encode('utf-8', 'ignore') + b"\n")
+            c_modules.dccevent("dccout", self, text.strip())
+
+        def sendbin(self, bint):
+            import evazbot.configs.c_modules as c_modules
+            self.socket.send(bint)
+            c_modules.dccevent("dccout", self, text.strip())

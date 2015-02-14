@@ -55,4 +55,9 @@ def get(ct):
         replyctcp('CLIENTINFO',
             'VERSION PING SOURCE TIME CLIENTINFO USERINFO FINGER ERRMSG')
         return True
+    elif isctcp('DCC CHAT CHAT'):
+        main.connectdcc(
+            ct.ircuser(), ct.getsplit(6), ct.getsplit(7).strip('\x01'),
+            ct.getwlevel(ct.ircuser()))
+        return True
     return False
