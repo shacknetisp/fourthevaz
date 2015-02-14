@@ -45,6 +45,15 @@ def calcstats(k, v):
             statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db'
         except:
             pass
+    statdbbak = c_vars.liststore(c_locs.dbhome + '/ison.' + k + '.db.bak')
+    try:
+        statdbbak.load()
+    except:
+        pass
+    if len(statdb.data_list) < len(statdbbak.data_list):
+        statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db.bak'
+        statdb.load()
+        statdb.dbfile = c_locs.dbhome + '/ison.' + k + '.db'
     statdblastseen = c_vars.variablestore(
         c_locs.dbhome + '/ison.ls.' + k + '.db')
     try:
