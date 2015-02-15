@@ -286,7 +286,9 @@ def msg(mp):
                             main.sendcmsg('%s was last seen at %s' % (
                                 lssearch, statdblastseen.data_dict[lsk][0]))
                             return
-                        elif c_regex.casecontains(lssearch, lsk) or lsk.find(
+                        elif (
+                            c_regex.casecontains(lssearch, lsk) and
+                            not mp.argbool('noregex')) or lsk.find(
                             lssearch) != -1:
                             if finalout:
                                 if finalout[1] > statdblastseen.data_dict[
@@ -308,7 +310,7 @@ def msg(mp):
                     len(statdb.data_list) / 30 / 24))
             else:
                 try:
-                    o = rf.find_name(search)
+                    o = rf.find_name(search, mp.argbool('noregex'))
                     main.sendcmsg('Found ' + str(o.totaln) + ' in '
                                   + str(o.totals) + ' server(s).')
                     for k in o.out:
@@ -341,7 +343,8 @@ def tick():
 
 
 def showhelp(h):
-    h("ison [-stats] [-overall] [-calc] [-info] [-lastseen] <name>: " +
+    h("ison [-stats] [-overall] [-calc] " +
+    "[-info] [-noregex] [-lastseen] <name>: " +
     "Find players from a RedFlare.")
     main.sendcmsg(
         '-overall: -top=<top> -days -hours -players -servers ["search"]')
