@@ -280,24 +280,28 @@ def msg(mp):
                 lssearch = mp.argsdef().lower().strip()
                 finalout = None
                 finaloutlsk = ""
-                for lsk in list(statdblastseen.data_dict.keys()):
-                    if lsk == lssearch:
-                        main.sendcmsg('%s was last seen at %s' % (
-                            lssearch, statdblastseen.data_dict[lsk][0]))
-                        return
-                    elif c_regex.casecontains(lssearch, lsk) or lsk.find(
-                        lssearch) != -1:
-                        if finalout:
-                            if finalout[1] > statdblastseen.data_dict[lsk][1]:
-                                continue
-                        finalout = statdblastseen.data_dict[lsk]
-                        finaloutlsk = lsk
-                if finalout:
-                        main.sendcmsg('%s was last seen at %s' % (
-                            finaloutlsk, finalout[0]))
-                        return
-                else:
-                    main.sendcmsg('No matches found.')
+                try:
+                    for lsk in list(statdblastseen.data_dict.keys()):
+                        if lsk == lssearch:
+                            main.sendcmsg('%s was last seen at %s' % (
+                                lssearch, statdblastseen.data_dict[lsk][0]))
+                            return
+                        elif c_regex.casecontains(lssearch, lsk) or lsk.find(
+                            lssearch) != -1:
+                            if finalout:
+                                if finalout[1] > statdblastseen.data_dict[
+                                    lsk][1]:
+                                    continue
+                            finalout = statdblastseen.data_dict[lsk]
+                            finaloutlsk = lsk
+                    if finalout:
+                            main.sendcmsg('%s was last seen at %s' % (
+                                finaloutlsk, finalout[0]))
+                            return
+                    else:
+                        main.sendcmsg('No matches found.')
+                except re.error as e:
+                    main.sendcmsg('Error: ' + str(e))
 
             elif mp.argbool('info'):
                 main.sendcmsg('%0.3f days worth of data.' % (
