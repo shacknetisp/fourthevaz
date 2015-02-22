@@ -1,6 +1,5 @@
 fourthevaz
 
-An Eleptor Project
 ==========
 
 IRC bot for Red Eclipse & Descendants of the same.
