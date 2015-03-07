@@ -161,7 +161,7 @@ def getircuser(message):
     return name
 
 
-def outlist(l, n=6, delim=" | "):
+def outlist(l, n=8, delim=" | "):
     text = ""
     addn = 0
     for i in l:
