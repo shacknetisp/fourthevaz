@@ -82,6 +82,8 @@ def getchannel():
 def getuser():
     return currentuser
 
+def splitCount(s, count):
+     return [''.join(x) for x in zip(*[list(s[z::count]) for z in range(count)])]
 
 def sendmsg(chan, msg, t="PRIVMSG"):
     import evazbot.configs.c_modules as c_modules
