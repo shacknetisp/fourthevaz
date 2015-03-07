@@ -12,7 +12,7 @@ def msg(mp):
     if mp.cmd("help"):
         args = mp.args()
         splitargs = args.split()
-        if mp.iswlist():
+        if mp.iswlist() or true:
             if len(splitargs) == 0:
                 main.sendcmsg("Use " +
                 cmd.cprefix() + "help <module> for a specific module.")
