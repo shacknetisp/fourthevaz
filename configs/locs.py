@@ -14,3 +14,4 @@ else:
     raise ValueError('OS not supported.')
 if len(overridehome) > 0:
     userdata = overridehome
+os.makedirs(userdata, exist_ok=True)

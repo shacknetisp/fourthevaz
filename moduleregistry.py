@@ -10,7 +10,8 @@ def delete_module(m):
 
 def add_module(m):
     global registry
-    delete_module(m)
+    if m in registry:
+        return
     registry.append(m)
     reload(m)
 

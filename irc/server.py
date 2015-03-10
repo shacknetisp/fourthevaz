@@ -4,18 +4,25 @@ import time
 import re
 from collections import deque
 from . import splitparse
+from . import fullparse
+import configs.mload as mload
+import moduleregistry
+moduleregistry.add_module(splitparse)
+moduleregistry.add_module(fullparse)
+moduleregistry.add_module(mload)
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 
 class Server:
 
-    def __init__(self, address, port, nick, name, channels, options={
+    def __init__(self, address, port, nick, name, channels, mset, options={
         'print_log': True,
         'tick_min': 50,
         'recv_size': 4096,
         }):
         self.options = options
         self.address = address
+        self.moduleset = mset,
         self.port = port
         self.nick = nick
         self.name = name
@@ -26,15 +33,20 @@ class Server:
         self.channels = channels
         self.properties = {}
         self.properties['joined'] = False
+        self.modules = []
+        mload.serverinit(self)
 
     def initjoin(self):
         self.properties['joined'] = True
         for channel in self.channels:
-            if type(channel) is str:
-                channel = {'channel': channel}
             self.join_channel(channel)
 
     def join_channel(self, c):
+        if type(c) is str:
+            c = {
+            'channel': c,
+            'disable': [],
+            }
         self.write_cmd('JOIN ', c['channel'])
 
     def log(self, prefix, p_text):
@@ -98,10 +110,11 @@ class Server:
     def process_message(self, sp):
         if sp.iscode('endmotd') and not self.properties['joined']:
             self.initjoin()
-        elif sp.iscode('kick') and sp.object == self.nick:
-            self.join_channel(sp.target)
         elif sp.sender == 'PING':
             self.write_cmd('PONG', sp.message.split()[1])
+        for m in self.modules:
+            for f in m.get_base_hooks('recv'):
+                f(fullparse.FullParse(self, sp))
 
     class ServerConnectException:
 
