@@ -100,6 +100,8 @@ class Server:
             self.initjoin()
         elif sp.iscode('kick') and sp.object == self.nick:
             self.join_channel(sp.target)
+        elif sp.sender == 'PING':
+            self.write_cmd('PONG', sp.message.split()[1])
 
     class ServerConnectException:
 

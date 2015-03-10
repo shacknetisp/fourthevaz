@@ -25,6 +25,9 @@ class SplitParser():
         elif c == 'kick':
             if self.command == 'KICK':
                 return True
+        elif c == 'ping':
+            if self.command == 'PING':
+                return True
         else:
             raise ValueError('Invalid Value for "c".')
         return False
