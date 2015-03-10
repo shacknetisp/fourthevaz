@@ -1,5 +1,5 @@
 {
-  "mainFile": "ib.py", 
+  "mainFile": "__init__.py", 
   "use-tabs": false, 
   "venv": "", 
   "relatedProjects": [], 
