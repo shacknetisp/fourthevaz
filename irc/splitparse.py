@@ -7,9 +7,18 @@ class SplitParser():
         self.message = message
         self.splitmessage = message.split(' ')
         self.sender = self.getsplit(0)
+        try:
+            self.sendernick = self.sender[
+                self.sender.index(':') + 1:self.sender.index('!')]
+        except ValueError:
+            self.sendernick = ""
         self.command = self.getsplit(1).upper()
         self.target = self.getsplit(2)
         self.object = self.getsplit(3)
+        try:
+            self.text = self.message[self.message.index(' :') + 2:]
+        except ValueError:
+            self.text = ""
 
     def getsplit(self, n, d=''):
         try:
@@ -27,6 +36,9 @@ class SplitParser():
                 return True
         elif c == 'ping':
             if self.command == 'PING':
+                return True
+        elif c == 'chat':
+            if self.command == 'NOTICE' or self.command == 'PRIVMSG':
                 return True
         else:
             raise ValueError('Invalid Value for "c".')

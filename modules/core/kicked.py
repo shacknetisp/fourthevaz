@@ -3,7 +3,8 @@ from configs.module import Module
 
 
 def init():
-    m = Module()
+    m = Module('kicked')
+    m.set_help('Rejoin a channel when kicked.')
     m.add_base_hook('recv', recv)
     return m
 

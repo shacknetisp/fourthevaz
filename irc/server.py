@@ -15,14 +15,14 @@ current_milli_time = lambda: int(round(time.time() * 1000))
 
 class Server:
 
-    def __init__(self, address, port, nick, name, channels, mset, options={
+    def __init__(
+        self, address, port, nick, name, channels, entry, options={
         'print_log': True,
         'tick_min': 50,
-        'recv_size': 4096,
+        'recv_size': pow(2, 12),
         }):
         self.options = options
         self.address = address
-        self.moduleset = mset,
         self.port = port
         self.nick = nick
         self.name = name
@@ -30,11 +30,25 @@ class Server:
         self.logbuffer = []
         self.lasttick = 0
         self.socket = None
-        self.channels = channels
+        self.entry = entry
+        self.channels = []
+        for c in channels:
+            c = self.shortchannel(c)
+            self.channels.append(c)
         self.properties = {}
         self.properties['joined'] = False
         self.modules = []
         mload.serverinit(self)
+        self.load_commands()
+
+    def shortchannel(self, c):
+        if type(c) is str:
+            c = {
+            'channel': c,
+            'disable': [],
+            'prefix': self.entry['prefix'],
+            }
+        return c
 
     def initjoin(self):
         self.properties['joined'] = True
@@ -42,11 +56,6 @@ class Server:
             self.join_channel(channel)
 
     def join_channel(self, c):
-        if type(c) is str:
-            c = {
-            'channel': c,
-            'disable': [],
-            }
         self.write_cmd('JOIN ', c['channel'])
 
     def log(self, prefix, p_text):
@@ -110,11 +119,21 @@ class Server:
     def process_message(self, sp):
         if sp.iscode('endmotd') and not self.properties['joined']:
             self.initjoin()
-        elif sp.sender == 'PING':
-            self.write_cmd('PONG', sp.message.split()[1])
+        self.do_base_hook('recv', fullparse.FullParse(self, sp))
+
+    def do_base_hook(self, name, *args, **kwargs):
         for m in self.modules:
-            for f in m.get_base_hooks('recv'):
-                f(fullparse.FullParse(self, sp))
+            for f in m.get_base_hooks(name):
+                f(*args, **kwargs)
+
+    def load_commands(self):
+        self.commands = {}
+        for m in self.modules:
+            for k in list(m.command_hooks.keys()):
+                v = m.command_hooks[k]
+                if k not in self.commands:
+                    self.commands[k] = {}
+                self.commands[k][m.name] = v
 
     class ServerConnectException:
 

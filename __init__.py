@@ -19,8 +19,7 @@ if __name__ == '__main__':
             s['address']['port'],
             s['id']['nick'],
             s['id']['name'],
-            s['channels'],
-            s['moduleset'])
+            s['channels'], s)
         server.connect()
         working_servers.append(server)
     while True:
