@@ -4,8 +4,8 @@ from configs.module import Module
 
 
 def init():
-    m = Module('modhelp')
-    m.set_help('Display module help.')
+    m = Module('help')
+    m.set_help('Display  help.')
     m.add_command_hook('help',
         {
             'function': showhelp,

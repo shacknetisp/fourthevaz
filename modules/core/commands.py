@@ -67,17 +67,23 @@ def recv(fp):
         modcall = False
         usedtext = ""
         wmodule = text[1:].split(' ')[0].split('.')[0].split(' ')[0]
+        waswcommand = False
         try:
             wcommand = text[1:].split(' ')[0].split('.')[1].split(' ')[0]
+            waswcommand = True
         except IndexError:
             wcommand = ""
         for m in fp.server.modules:
+            if not waswcommand:
+                break
             if mcdisabled(m.name):
                 fp.reply("This module is disabled here.")
                 continue
             if wmodule == m.name:
                 modcall = True
                 usedtext = wmodule
+                if not wcommand and wmodule in m.command_hooks:
+                    wcommand = wmodule
                 try:
                     if len(m.command_hooks) == 1 and not wcommand:
                         command = m.command_hooks[

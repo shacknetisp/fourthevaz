@@ -18,7 +18,7 @@ def init():
                     'name': 'expr',
                     'optional': False,
                     'end': True,
-                    'help': 'The expression to evaluate..',
+                    'help': 'The expression to evaluate.',
                     },
                 ],
             })

@@ -48,5 +48,8 @@ def reload_list(fp, args):
             except ImportError:
                 badlist.append(i)
         server.load_commands()
-    fp.reply('Reloaded: %s, could not reload: %s.' % (goodlist, badlist))
+    bt = ', could not reload: %s' % badlist
+    if not badlist:
+        bt = ''
+    fp.reply('Reloaded: %s%s.' % (goodlist, bt))
 

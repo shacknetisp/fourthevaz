@@ -44,7 +44,10 @@ def remove(fp, args):
             else:
                 badlist.append(i)
         server.load_commands()
-    fp.reply('Removed: %s, could not remove: %s.' % (goodlist, badlist))
+    bt = ', could not remove: %s' % badlist
+    if not badlist:
+        bt = ''
+    fp.reply('Removed: %s%s.' % (goodlist, bt))
 
 
 def add(fp, args):
@@ -59,5 +62,8 @@ def add(fp, args):
             except ImportError:
                 badlist.append(i)
         server.load_commands()
-    fp.reply('Added: %s, could not add: %s.' % (goodlist, badlist))
+    bt = ', could not add: %s' % badlist
+    if not badlist:
+        bt = ''
+    fp.reply('Added: %s%s.' % (goodlist, bt))
 
