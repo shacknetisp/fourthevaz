@@ -14,6 +14,7 @@ else:
     raise ValueError('OS not supported.')
 if len(overridehome) > 0:
     userdata = overridehome
-cmoddir = userdata + '/modules'
+cmoddir = userdata + '/mlocal'
 os.makedirs(userdata, exist_ok=True)
 os.makedirs(cmoddir, exist_ok=True)
+open(cmoddir + '/__init__.py', 'w').write('\n')

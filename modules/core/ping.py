@@ -12,3 +12,4 @@ def init():
 def recv(fp):
     if fp.sp.splitmessage[0].upper() == 'PING':
         fp.server.write_cmd('PONG', fp.sp.splitmessage[1])
+

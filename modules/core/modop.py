@@ -34,21 +34,30 @@ def init():
 
 
 def remove(fp, args):
-    rlist = ['tests']
-    flist = []
+    rlist = args.getlinstr('modules').split(',')
+    goodlist = []
+    badlist = []
     for server in running.working_servers:
         for i in rlist:
             if server.delete_module(i):
-                flist.append(i)
+                goodlist.append(i)
+            else:
+                badlist.append(i)
         server.load_commands()
-    fp.reply('Removed: %s.' % flist)
+    fp.reply('Removed: %s, could not remove: %s.' % (goodlist, badlist))
 
 
 def add(fp, args):
-    rlist = ['tests']
+    rlist = args.getlinstr('modules').split(',')
+    goodlist = []
+    badlist = []
     for server in running.working_servers:
         for i in rlist:
-            server.add_module(i)
+            try:
+                server.add_module(i)
+                goodlist.append(i)
+            except ImportError:
+                badlist.append(i)
         server.load_commands()
-    fp.reply('Added: %s.' % rlist)
+    fp.reply('Added: %s, could not add: %s.' % (goodlist, badlist))
 

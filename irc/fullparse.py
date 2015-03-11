@@ -22,9 +22,8 @@ class FullParse():
         else:
             return self.sp.target
 
-    def reply(self, message, command='NOTICE'):
-        self.server.write_cmd(command, self.outtarget() + str(' %s' % (
-            ':' if command.upper() == 'NOTICE' else '')) + message)
+    def reply(self, message, command='PRIVMSG'):
+        self.server.write_cmd(command, self.outtarget() + str(' :') + message)
 
     class Channel:
 

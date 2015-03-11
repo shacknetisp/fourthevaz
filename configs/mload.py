@@ -3,8 +3,8 @@ import importlib
 import os
 import sys
 import configs.locs as locs
-if locs.cmoddir not in sys.path:
-    sys.path.append(locs.cmoddir)
+if locs.userdata not in sys.path:
+    sys.path.append(locs.userdata)
 
 
 class DDRException(Exception):
@@ -30,7 +30,7 @@ def serverinit(server):
 
 
 def import_module(name, moduleset=""):
-    possible = ['', 'modules.core.', 'modules.%s.' % moduleset]
+    possible = ['mlocal.', 'modules.core.', 'modules.%s.' % moduleset]
     m = None
     err = None
     for i in possible:

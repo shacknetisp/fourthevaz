@@ -16,8 +16,14 @@ def init():
     m.add_command_hook('reload',
         {
             'function': reload_list,
-            'help': 'Reload some modules.',
-            'args': [],
+            'help': 'Reload a comma seperated list of modules.',
+            'args': [
+                {
+                    'name': 'modules',
+                    'optional': False,
+                    'help': 'Modules to reload.'
+                    },
+                ],
         })
     return m
 
@@ -27,13 +33,20 @@ def reloadall(fp, args):
     moduleregistry.reload_all()
     for server in running.working_servers:
         server.reinit()
-    fp.reply('Reloading all registered modules.')
+    fp.reply(('Reloaded all registered modules.'))
 
 
 def reload_list(fp, args):
-    rlist = ['tests', 'reloader']
+    rlist = args.getlinstr('modules').split(',')
+    badlist = []
+    goodlist = []
     for server in running.working_servers:
         for i in rlist:
-            server.add_module(i)
-    fp.reply('Reloading: %s.' % rlist)
+            try:
+                server.add_module(i)
+                goodlist.append(i)
+            except ImportError:
+                badlist.append(i)
+        server.load_commands()
+    fp.reply('Reloaded: %s, could not reload: %s.' % (goodlist, badlist))
 
