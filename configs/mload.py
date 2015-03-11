@@ -1,35 +1,55 @@
 # -*- coding: utf-8 -*-
 import importlib
 import os
-import moduleregistry
-globalmodules = []
+import sys
+import configs.locs as locs
+if locs.cmoddir not in sys.path:
+    sys.path.append(locs.cmoddir)
+
+
+class DDRException(Exception):
+
+    def __init__(self, m):
+        self.m = m
+
+    def __str__(self):
+        return "Module %s was deleted while running." % self.m
 
 
 def serverinit(server):
-    server.modules += globalmodules
+    server.modules = []
+    for f in os.listdir(locs.cmoddir):
+        if f[0] != '_':
+            server.add_module(os.path.splitext(f)[0])
+    for f in os.listdir('modules/%s/' % "core"):
+        if f[0] != '_':
+            server.add_module(os.path.splitext(f)[0])
     for f in os.listdir('modules/%s/' % server.entry['moduleset']):
         if f[0] != '_':
-            m = import_module(
-                os.path.splitext(f)[0], server.entry['moduleset'])
-            server.modules.append(m)
+            server.add_module(os.path.splitext(f)[0])
 
 
 def import_module(name, moduleset=""):
-    m = importlib.import_module(
-        'modules.%s.' % moduleset + name)
-    moduleregistry.delete_module(m)
-    moduleregistry.add_module(m)
-    m = m.init()
-    print(('Loaded: %s, Hooks: %s%s' % (
+    possible = ['', 'modules.core.', 'modules.%s.' % moduleset]
+    m = None
+    err = None
+    for i in possible:
+        try:
+            m = importlib.import_module(i + name)
+            break
+        except ImportError as e:
+            err = e
+    if not m:
+        raise err
+    if not os.path.exists(m.__file__):
+        raise DDRException(name)
+    importlib.reload(m)
+    mr = m.init()
+    mr.module = m
+    print(('Loaded: %s: %s, Hooks: %s%s' % (
         name,
-        str(list(m.base_hooks.keys())),
-        str(list(m.command_hooks.keys())),
+        str(m),
+        str(list(mr.base_hooks.keys())),
+        str(list(mr.command_hooks.keys())),
         )))
-    return m
-
-
-def loadcore():
-    for f in os.listdir('modules/core/'):
-        if f[0] != '_':
-            m = import_module(os.path.splitext(f)[0], "core")
-            globalmodules.append(m)
+    return mr

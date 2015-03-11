@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from importlib import reload
 registry = []
+reloadscheduled = False
 
 
 def delete_module(m):
@@ -13,10 +14,14 @@ def add_module(m):
     if m in registry:
         return
     registry.append(m)
+    if hasattr(m, '__noreload') and m.__noreload:
+        return
     reload(m)
 
 
 def reload_all():
     global registry
     for m in registry:
+        if hasattr(m, '__noreload') and m.__noreload:
+            continue
         reload(m)

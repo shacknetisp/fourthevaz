@@ -15,6 +15,11 @@ class Args:
 
 
 def recv(fp):
+    def mcdisabled(m):
+        if fp.channel:
+            if m in fp.channel.entry['disable']:
+                return True
+        return False
     if fp.sp.iscode('chat'):
         text = fp.sp.text
         prefix = fp.server.entry['prefix']
@@ -27,10 +32,17 @@ def recv(fp):
         function = None
         modcall = False
         for m in fp.server.modules:
+            if mcdisabled(m.name):
+                if 'mcd_message' in fp.server.entry:
+                    fp.reply(fp.server.entry['mcd_message'])
+                continue
             if text.split()[0] == prefix + m.name:
                 modcall = True
                 try:
-                    if text.split()[1] in m.command_hooks:
+                    if len(m.command_hooks) == 1 and len(text.split()) <= 1:
+                        function = m.command_hooks[
+                            list(m.command_hooks.keys())[0]]['function']
+                    elif text.split()[1] in m.command_hooks:
                         function = m.command_hooks[text.split()[1]]['function']
                     else:
                         if 'mnf_message' in fp.server.entry:
@@ -45,6 +57,10 @@ def recv(fp):
                 v = fp.server.commands[k]
                 if text.split()[0] == prefix + k:
                     if len(v) == 1:
+                        if mcdisabled(v[list(v.keys())[0]]['module'].name):
+                            if 'mcd_message' in fp.server.entry:
+                                fp.reply(fp.server.entry['mcd_message'])
+                            return
                         function = v[list(v.keys())[0]]['function']
                         break
                     else:

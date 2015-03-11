@@ -38,8 +38,8 @@ class Server:
         self.properties = {}
         self.properties['joined'] = False
         self.modules = []
-        mload.serverinit(self)
-        self.load_commands()
+        self.reinit()
+        self.reloaded = False
 
     def shortchannel(self, c):
         if type(c) is str:
@@ -49,6 +49,10 @@ class Server:
             'prefix': self.entry['prefix'],
             }
         return c
+
+    def reinit(self):
+        mload.serverinit(self)
+        self.load_commands()
 
     def initjoin(self):
         self.properties['joined'] = True
@@ -128,12 +132,35 @@ class Server:
 
     def load_commands(self):
         self.commands = {}
-        for m in self.modules:
+
+        def loadcommand(m):
             for k in list(m.command_hooks.keys()):
                 v = m.command_hooks[k]
                 if k not in self.commands:
                     self.commands[k] = {}
                 self.commands[k][m.name] = v
+        for m in self.modules:
+            loadcommand(m)
+
+    def delete_module(self, name):
+        index = -1
+        for i in self.modules:
+            if i.name == name:
+                index = self.modules.index(i)
+        if index >= 0:
+            print(('Removed Module: %s' % name))
+            del self.modules[index]
+            return True
+        return False
+
+    def add_module(self, name, mset=""):
+        if not mset:
+            mset = self.entry['moduleset']
+        self.delete_module(name)
+        m = mload.import_module(
+            name, mset)
+        self.modules.append(m)
+        print(('Added Module: %s' % name))
 
     class ServerConnectException:
 
