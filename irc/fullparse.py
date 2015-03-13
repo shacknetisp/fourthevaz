@@ -27,13 +27,15 @@ class FullParse():
 
     class Channel:
 
-        def __init__(self, fp):
+        def __init__(self, fp, name=""):
             self.fp = fp
-            self.findname()
+            self.findname(name)
 
-        def findname(self):
+        def findname(self, name=""):
+            if not name:
+                name = self.fp.sp.target
             for c in self.fp.server.channels:
-                if self.fp.sp.target == c['channel']:
+                if name == c['channel']:
                     self.entry = c
                     return
             self.entry = None

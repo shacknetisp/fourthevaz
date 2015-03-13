@@ -7,6 +7,7 @@ from . import splitparse
 from . import fullparse
 import configs.mload as mload
 import moduleregistry
+import random
 moduleregistry.add_module(splitparse)
 moduleregistry.add_module(fullparse)
 moduleregistry.add_module(mload)
@@ -19,6 +20,7 @@ class Server:
         self, address, port, nick, name, channels, entry, options={
         'print_log': True,
         'tick_min': 50,
+        'whois_tick_min': 500,
         'recv_size': pow(2, 12),
         }):
         self.options = options
@@ -29,6 +31,7 @@ class Server:
         self.outputbuffer = deque()
         self.logbuffer = []
         self.lasttick = 0
+        self.lastwhoistick = 0
         self.socket = None
         self.entry = entry
         self.channels = []
@@ -40,6 +43,13 @@ class Server:
         self.modules = []
         self.reinit()
         self.reloaded = False
+        if 'owner' not in entry:
+            raise ValueError('You must specify an owner.')
+        self.whoisbuffer = []
+        self.whoislist = {}
+
+    def whois(self, name):
+        self.whoisbuffer.append(name)
 
     def shortchannel(self, c):
         if type(c) is str:
@@ -104,21 +114,30 @@ class Server:
         regex = re.compile(
         "\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
         for ircmsg in ircmsg.strip().split('\n'):
+            ircmsg = ircmsg.strip('\r')
             ircmsg = regex.sub("", ircmsg)
             self.log('In', ircmsg)
             #Parse Message
             self.process_message(splitparse.SplitParser(ircmsg))
 
     def process(self):
+        for m in self.modules:
+            for t in m.timer_hooks:
+                if current_milli_time() - t['lasttime'] > t['time']:
+                    t['lasttime'] = current_milli_time()
+                    t['function']()
         if current_milli_time() - self.lasttick > self.options['tick_min']:
             self.lasttick = current_milli_time()
-            while self.outputbuffer:
+            if self.outputbuffer:
                 try:
                     out = self.outputbuffer.popleft()
                 except OSError:
                     raise Server.ServerConnectionException(self)
                 self.socket.send(out)
-                break
+            if self.whoisbuffer and (current_milli_time() -
+            self.lastwhoistick > self.options['whois_tick_min']):
+                self.lastwhoistick = current_milli_time()
+                self.write_cmd('WHOIS', random.choice(self.whoisbuffer))
 
     def process_message(self, sp):
         if sp.iscode('endmotd') and not self.properties['joined']:
@@ -127,7 +146,7 @@ class Server:
 
     def do_base_hook(self, name, *args, **kwargs):
         for m in self.modules:
-            for f in m.get_base_hooks(name):
+            for f in m.get_base_hook(name):
                 f(*args, **kwargs)
 
     def load_commands(self):

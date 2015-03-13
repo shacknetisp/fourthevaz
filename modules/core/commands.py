@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
 import shlex
+import inspect
 
 
 def init():
@@ -62,6 +63,8 @@ def recv(fp):
         elif fp.isquery():
             if text[0] != prefix:
                 text = prefix + text
+        if text.find(prefix) != 0:
+            return
         args = None
         command = None
         modcall = False
@@ -168,7 +171,17 @@ def recv(fp):
                         break
                 counter += 1
             try:
-                return command['function'](fp, args)
+                extra = {
+                    }
+                if command['function'].__code__.co_argcount == 3:
+                    return command['function'](fp, args, extra)
+                elif command['function'].__code__.co_argcount == 2:
+                    return command['function'](fp, args)
+                else:
+                    raise TypeError('Hook for command %s.%s is invalid!' % (
+                        command['module'].name,
+                        command['name'],
+                        ))
             except Args.ArgNotFoundError as e:
                 fp.reply('Missing "%s", Usage: %s %s' % (e.arg, usedtext,
                 Module.command_usage(command)))

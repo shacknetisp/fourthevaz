@@ -6,6 +6,7 @@ class Module:
     def __init__(self, name):
         self.base_hooks = {}
         self.command_hooks = {}
+        self.timer_hooks = []
         self.helptext = ""
         self.name = name
 
@@ -17,10 +18,17 @@ class Module:
             self.base_hooks[hook] = []
         self.base_hooks[hook].append(f)
 
-    def get_base_hooks(self, hook):
+    def get_base_hook(self, hook):
         if hook not in self.base_hooks:
             self.base_hooks[hook] = []
         return self.base_hooks[hook]
+
+    def add_timer_hook(self, time, f):
+        self.timer_hooks.append({
+            'time': time,
+            'lasttime': 0,
+            'function': f,
+            })
 
     def add_command_hook(self, hook, p_d):
         d = p_d

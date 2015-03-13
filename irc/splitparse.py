@@ -34,12 +34,15 @@ class SplitParser():
         elif c == 'kick':
             if self.command == 'KICK':
                 return True
+        elif c == 'names':
+            if self.command == '353':
+                return True
         elif c == 'ping':
             if self.command == 'PING':
                 return True
         elif c == 'chat':
             if self.command == 'NOTICE' or self.command == 'PRIVMSG':
                 return True
-        else:
-            raise ValueError('Invalid Value for "c".')
+        elif c.upper() == self.command:
+            return True
         return False
