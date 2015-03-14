@@ -62,16 +62,27 @@ def recv(fp):
         elif fp.isquery():
             if text[0] != prefix:
                 text = prefix + text
-        if text.find(prefix) != 0:
+        possible = [
+            prefix,
+            fp.server.nick + ', ',
+            fp.server.nick + ': ',
+            ]
+        for p in possible:
+            if text.find(p) == 0:
+                found = True
+                prefix = p
+                break
+        if not found:
             return
         args = None
         command = None
         modcall = False
         usedtext = ""
-        wmodule = text[1:].split(' ')[0].split('.')[0].split(' ')[0]
+        ptext = text[len(prefix):]
+        wmodule = ptext.split(' ')[0].split('.')[0].split(' ')[0]
         waswcommand = False
         try:
-            wcommand = text[1:].split(' ')[0].split('.')[1].split(' ')[0]
+            wcommand = ptext.split(' ')[0].split('.')[1].split(' ')[0]
             waswcommand = True
         except IndexError:
             wcommand = ""
@@ -129,7 +140,7 @@ def recv(fp):
                     return
             t = ""
             try:
-                t = text[len(usedtext) + 1:].strip()
+                t = text[len(usedtext) + len(prefix):].strip()
             except IndexError:
                 pass
             args = Args(t)
