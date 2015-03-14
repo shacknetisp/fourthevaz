@@ -34,6 +34,10 @@ class Module:
         d = p_d
         d['module'] = self
         d['name'] = hook
+        d['haskeyvalue'] = False
+        for i in d['args']:
+            if 'keyvalue' in i:
+                d['haskeyvalue'] = True
         self.command_hooks[hook] = d
 
     def command_single_usage(i):

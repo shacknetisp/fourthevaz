@@ -8,32 +8,11 @@ def init():
     m.add_command_hook('test',
         {
             'function': test,
-            'help': 'Test fp.reply(), echo if specfied.',
-            'args': [
-                {
-                    'name': 'echo2',
-                    'keyvalue': 'text',
-                    'optional': True,
-                    'help': 'Echo this as an option.',
-                    },
-                        {
-                    'name': 'echo3',
-                    'optional': False,
-                    'help': 'Echo this.',
-                    },
-                {
-                    'name': 'echo',
-                    'optional': True,
-                    'help': 'Echo this.',
-                    'end': True,
-                    }
-                ],
+            'help': 'Test stuff.',
+            'args': [],
             })
     return m
 
 
 def test(fp, args):
-    fp.reply('%s,%s,%s' % (
-        args.getlinstr('echo', ''),
-        args.getlinstr('echo3', ''),
-        args.getlinstr('echo2', '')))
+    fp.server.sock.shutdown()

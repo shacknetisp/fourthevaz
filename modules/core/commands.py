@@ -67,6 +67,7 @@ def recv(fp):
             fp.server.nick + ', ',
             fp.server.nick + ': ',
             ]
+        found = False
         for p in possible:
             if text.find(p) == 0:
                 found = True
@@ -156,37 +157,55 @@ def recv(fp):
                 raise Args.ArgConflict(None,
                     'Seperate optional and ending ' +
                     'linear arguments are not allowed.')
-            #Standard Linear Args
-            for a in command['args']:
-                if len(args.splittext) > counter:
-                    if ('end' not in a or not a['end']) and 'keyvalue' not in a:
-                        args.lin[a['name']] = args.splittext[counter]
-                counter += 1
-            #Keyvalue Args
-            for a in command['args']:
-                if 'end' in a and 'keyvalue' in a and a['end']:
-                    raise Args.ArgConflict(a['name'],
-                        'Cannot be both ending and a keyvalue.')
-                if 'keyvalue' in a:
-                    for vi in range(len(args.splittext)):
-                        if vi < counter:
-                            v = args.splittext[vi]
-                            if v.find('-' + a['name']) == 0:
-                                try:
-                                    args.lin[a['name']] = v[1:].split('=')[1]
-                                except IndexError:
-                                    pass
-            #Ending Args
-            counter = 0
-            for a in command['args']:
-                if len(args.splittext) > counter:
+            if command['haskeyvalue']:
+                #Option Args
+                lastval = ""
+                argsdefv = ""
+                ar = args.splittext
+                ok = True
+                fstr = ""
+                for i in ar:
+                    if i[0] == '-' and ok:
+                        var = i.split("=")[0][1:]
+                        try:
+                            val = i.split("=")[1]
+                            fstr += "-" + var + "=" + val + " "
+                        except IndexError:
+                            val = ""
+                            fstr += "-" + var + " "
+                        args.lin[var] = val
+                        lastval = i
+                    else:
+                        fstr += i + " "
+                    ok = False
+                fstr = fstr.strip()
+                argsv = fstr
+                if lastval:
+                    argsdefv = argsv[
+                    argsv.rfind(lastval) + len(lastval):]
+                    argsdefv = argsdefv[argsdefv.find('" ') + 2:]
+                else:
+                    argsdefv = argsv
+                if len(argsdefv) > 0:
+                    if argsdefv[0] == '"' or argsdefv[0] == "'":
+                        argsdefv = argsdefv[1:]
+                    if argsdefv[-1] == '"' or argsdefv[-1] == "'":
+                        argsdefv = argsdefv[:-1]
+                for a in command['args']:
                     if 'end' in a and a['end']:
-                        args.lin[a['name']] = ''
-                        for i in range(counter, len(args.splittext)):
-                            args.lin[a['name']] += ' ' + args.splittext[i]
-                        args.lin[a['name']] = args.lin[a['name']].strip()
-                        break
-                counter += 1
+                        if argsdefv:
+                            args.lin[a['name']] = argsdefv
+                    elif 'keyvalue' not in a:
+                        raise Args.ArgConflict(None,
+                        'All arguments must be ' +
+                        'either keyvalue or not.')
+            else:
+                #Standard Linear Args
+                for a in command['args']:
+                    if len(args.splittext) > counter:
+                        if ('end' not in a or not a['end']):
+                            args.lin[a['name']] = args.splittext[counter]
+                    counter += 1
             try:
                 extra = {
                     }

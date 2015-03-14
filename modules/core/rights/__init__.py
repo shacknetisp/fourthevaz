@@ -16,16 +16,17 @@ def init():
             'help': 'Get user rights.',
             'args': [
                 {
-                    'name': 'user',
-                    'optional': True,
-                    'help': 'The user to view, defaults to caller. ([<nick>]:'
-                    '[<hostname>]:[<NickServ Account>])'
-                    },
-                    {
                     'name': 'accesslist',
                     'optional': True,
                     'keyvalue': 'accesslist',
                     'help': 'The access list to get.'
+                    },
+                {
+                    'name': 'user',
+                    'optional': True,
+                    'end': True,
+                    'help': 'The user to view, defaults to caller. ([<nick>]:'
+                    '[<hostname>]:[<NickServ Account>])'
                     },
                 ],
             })
@@ -103,8 +104,8 @@ def getrights(fp, args):
     user = args.getlinstr('user', fp.accesslevelname)
     alist = args.getlinstr('accesslist', '')
     try:
-        fp.reply('%s%shas an access level of %d.' % (
-            user, ' (' + alist + ') ' if alist else '', access.getaccesslevel(
+        fp.reply('%s%s has an access level of %d.' % (
+            user, ' (' + alist + ')' if alist else '', access.getaccesslevel(
             fp.server, user, alist)))
     except access.AccessLevelError as e:
         fp.reply(e.msg)
