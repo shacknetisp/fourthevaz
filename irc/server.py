@@ -43,8 +43,6 @@ class Server:
         self.modules = []
         self.reinit()
         self.reloaded = False
-        if 'owner' not in entry:
-            raise ValueError('You must specify an owner.')
         self.whoisbuffer = []
         self.whoislist = {}
 

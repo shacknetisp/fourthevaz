@@ -16,6 +16,11 @@ class SplitParser():
         self.target = self.getsplit(2)
         self.object = self.getsplit(3)
         try:
+            self.host = self.sender[
+                self.sender.index('~'):]
+        except ValueError:
+            self.host = ""
+        try:
             self.text = self.message[self.message.index(' :') + 2:]
         except ValueError:
             self.text = ""

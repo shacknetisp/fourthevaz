@@ -10,12 +10,14 @@ def init():
     m.add_command_hook('reloadall',
         {
             'function': reloadall,
+            'level': 50,
             'help': 'Reload all possible modules.',
             'args': [],
         })
     m.add_command_hook('reload',
         {
             'function': reload_list,
+            'level': 50,
             'help': 'Reload a comma seperated list of modules.',
             'args': [
                 {

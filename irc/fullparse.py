@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import configs.mload
+access = configs.mload.import_module_py('rights.access')
 
 
 class FullParse():
@@ -12,6 +14,14 @@ class FullParse():
             self.channel = FullParse.Channel(self)
             if not self.channel.entry:
                 self.channel = None
+        authed = ""
+        user = self.sp.sendernick
+        if user in self.server.whoislist and 'done' in self.server.whoislist[
+            user]:
+            t = self.server.whoislist[user]
+            authed = t['authed'] if 'authed' in t and t['authed'] else ''
+        self.accesslevelname = "%s:%s:%s" % (
+            self.sp.sendernick, self.sp.host, authed)
 
     def isquery(self):
         return self.sp.target == self.server.nick
@@ -21,6 +31,9 @@ class FullParse():
             return self.sp.sendernick
         else:
             return self.sp.target
+
+    def accesslevel(self):
+        return access.getaccesslevel(self.server, self.accesslevelname)
 
     def reply(self, message, command='PRIVMSG'):
         self.server.write_cmd(command, self.outtarget() + str(' :') + message)

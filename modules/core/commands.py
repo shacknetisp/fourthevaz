@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
 import shlex
-import inspect
 
 
 def init():
@@ -121,6 +120,13 @@ def recv(fp):
                             k, list(v.keys()), k))
                         return
         if command:
+            if 'level' in command:
+                if command['level'] > fp.accesslevel():
+                    fp.reply('You are level %d, but must be at least %d.' % (
+                        fp.accesslevel(),
+                        command['level']
+                        ))
+                    return
             t = ""
             try:
                 t = text[len(usedtext) + 1:].strip()

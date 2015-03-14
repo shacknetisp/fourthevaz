@@ -5,13 +5,21 @@ import configs
 import time
 import configs.module as module
 import configs.mload as mload
+import configs.locs as locs
+import db.text
 import moduleregistry
 import running
+import os
 moduleregistry.add_module(irc)
 moduleregistry.add_module(module)
 moduleregistry.add_module(configs)
 moduleregistry.add_module(mload)
+moduleregistry.add_module(db.text)
 if __name__ == '__main__':
+    running.accesslist = db.text.DB(locs.userdata + '/access.py')
+    if os.path.exists(running.accesslist.filename):
+        running.accesslist.load()
+    running.accesslist.save()
     for s in configs.servers.servers:
         server = irc.server.Server(
             s['address']['host'],
