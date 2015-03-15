@@ -5,11 +5,11 @@ from configs.module import Module
 
 def init():
     m = Module('help')
-    m.set_help('Display  help.')
+    m.set_help('Display help.')
     m.add_command_hook('help',
         {
             'function': showhelp,
-            'help': 'Display help for a command',
+            'help': 'Display help for a command.',
             'args': [
                 {
                     'name': 'command',
@@ -20,6 +20,18 @@ def init():
                     'name': 'option',
                     'optional': True,
                     'help': 'Option to use.',
+                    },
+                ],
+            })
+    m.add_command_hook('modhelp',
+        {
+            'function': modhelp,
+            'help': 'Display help for a module.',
+            'args': [
+                {
+                    'name': 'module',
+                    'optional': False,
+                    'help': 'Module to use.',
                     },
                 ],
             })
@@ -90,4 +102,12 @@ def showhelp(fp, args):
         command['help'],
         command['name'],
         Module.command_usage(command))))
+
+
+def modhelp(fp, args):
+    for m in fp.server.modules:
+        if m.name == args.getlinstr('module'):
+            fp.reply('%s' % m.helptext)
+            return
+    fp.reply('Unable to find module.')
 

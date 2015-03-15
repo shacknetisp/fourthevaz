@@ -1,0 +1,16 @@
+# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+from configs.module import Module
+
+
+def init():
+    m = Module('nicktrouble')
+    m.set_help('Handle when the nick is taken.')
+    m.add_base_hook('recv', recv)
+    return m
+
+
+def recv(fp):
+    if fp.sp.iscode('433'):
+        fp.server.nick += '_'
+        fp.server.setuser()

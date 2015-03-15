@@ -15,4 +15,4 @@ def init():
 
 
 def test(fp, args):
-    fp.server.sock.shutdown()
+    fp.server.socket.close()

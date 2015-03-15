@@ -55,6 +55,8 @@ def recv(fp):
                 return True
         return False
     if fp.sp.iscode('chat'):
+        if fp.sp.sendernick in ['ChanServ', 'NickServ']:
+            return
         text = fp.sp.text
         prefix = fp.server.entry['prefix']
         if fp.channel:
@@ -221,7 +223,7 @@ def recv(fp):
             except Args.ArgNotFoundError as e:
                 fp.reply('Missing "%s", Usage: %s %s' % (e.arg, usedtext,
                 Module.command_usage(command)))
-        elif text[0] == prefix or fp.isquery():
+        elif text.find(prefix) == 0 or fp.isquery():
             fp.reply("?")
 
 

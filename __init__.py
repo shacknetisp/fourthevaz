@@ -32,8 +32,15 @@ if __name__ == '__main__':
     while True:
         inr = []
         for server in running.working_servers:
-            if server.socket:
+            if server.socket and server.socket.fileno() > 0:
                 inr.append(server.socket)
+            elif server.socket and server.socket.fileno() < 0:
+                try:
+                    server.connect()
+                    server.initjoin()
+                except type(server).ServerConnectException as e:
+                    print((str(e)))
+                    server.socket = None
         readyr, readyw, readyx = select.select(
             inr, [], [], 0.2)
         for sock in readyr:

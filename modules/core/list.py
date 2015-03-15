@@ -6,14 +6,14 @@ from configs.module import Module
 
 def init():
     m = Module('list')
-    m.set_help('Display  command lists.')
+    m.set_help('Display command lists.')
     m.add_command_hook('list',
         {
             'function': clist,
             'help': 'Display a command/module list.',
             'args': [
                 {
-                    'name': 'module',
+                    'name': 'modules',
                     'optional': True,
                     'help': 'Module(s) to list.',
                     },
@@ -29,8 +29,8 @@ def init():
 
 
 def clist(fp, args):
-    wmodules = args.getlinstr('module', '').split(',')
-    if not args.getlinstr('module', ''):
+    wmodules = args.getlinstr('modules', '').split(',')
+    if not args.getlinstr('modules', ''):
         wmodules = []
     output = []
     if wmodules:

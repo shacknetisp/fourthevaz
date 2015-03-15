@@ -38,6 +38,9 @@ class Module:
         for i in d['args']:
             if 'keyvalue' in i:
                 d['haskeyvalue'] = True
+        for i in d['args']:
+            if 'end' in i and i['end']:
+                d['haskeyvalue'] = True
         self.command_hooks[hook] = d
 
     def command_single_usage(i):

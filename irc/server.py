@@ -68,7 +68,7 @@ class Server:
             self.join_channel(channel)
 
     def join_channel(self, c):
-        self.write_cmd('JOIN ', c['channel'])
+        self.write_cmd('JOIN ', self.shortchannel(c)['channel'])
 
     def log(self, prefix, p_text):
         text = prefix + ': ' + p_text
@@ -88,14 +88,21 @@ class Server:
         message = text
         self.write_raw(message.encode('utf-8', 'ignore') + b"\n")
 
+    def setuser(self):
+        self.log('Init', 'USER and NICK: %s:%s' % (self.nick, self.name))
+        self.write_cmd('USER', '%s 8 * :%s' % (self.nick, self.name))
+        self.write_cmd('NICK', self.nick)
+
+    def reconnect(self):
+        self.socket.close()
+        self.connect()
+
     def connect(self):
         try:
             self.socket = socket.socket()
             self.log('Init', 'Connecting to %s:%d' % (self.address, self.port))
             self.socket.connect((self.address, self.port))
-            self.log('Init', 'USER and NICK: %s:%s' % (self.nick, self.name))
-            self.write_cmd('USER', '%s 8 * :%s' % (self.nick, self.name))
-            self.write_cmd('NICK', self.nick)
+            self.setuser()
             self.log('Init', 'Connection succeded.')
         except OSError:
             raise Server.ServerConnectException(self)
