@@ -46,7 +46,10 @@ if __name__ == '__main__':
         for sock in readyr:
             for server in running.working_servers:
                 if sock == server.socket:
-                    server.socketready()
+                    try:
+                        server.socketready()
+                    except type(server).ServerConnectionException:
+                        server.socket.close()
         time.sleep(0.1)
         for server in running.working_servers:
             server.process()

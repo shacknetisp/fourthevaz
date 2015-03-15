@@ -186,7 +186,7 @@ class Server:
         self.modules.append(m)
         print(('Added Module: %s' % name))
 
-    class ServerConnectException:
+    class ServerConnectException(Exception):
 
         def __init__(self, server):
             self.server = server
@@ -195,7 +195,7 @@ class Server:
             return '%s:%d failed to connect.' % (
                 self.server.address, self.server.port)
 
-    class ServerConnectionException:
+    class ServerConnectionException(Exception):
 
         def __init__(self, server):
             self.server = server
