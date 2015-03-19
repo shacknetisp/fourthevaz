@@ -29,7 +29,7 @@ def serverinit(server):
             server.add_module(os.path.splitext(f)[0])
 
 
-def import_module_py(name, moduleset=""):
+def import_module_py(name, moduleset="", doreload=True):
     possible = ['mlocal.', 'modules.core.', 'modules.%s.' % moduleset]
     m = None
     err = None
@@ -43,13 +43,15 @@ def import_module_py(name, moduleset=""):
         raise err
     if not os.path.exists(m.__file__):
         raise DDRException(name)
-    importlib.reload(m)
+    if doreload:
+        importlib.reload(m)
     return m
 
 
-def import_module(name, moduleset=""):
-    m = import_module_py(name, moduleset)
+def import_module(name, moduleset="", doreload=True):
+    m = import_module_py(name, moduleset, doreload)
     mr = m.init()
+
     mr.module = m
     print(('Loaded: %s: %s, Hooks: %s%s' % (
         name,

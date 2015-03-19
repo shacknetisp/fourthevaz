@@ -28,7 +28,7 @@ def init():
 def calc(fp, args):
     arg = args.getlinstr('expr')
     try:
-        fp.reply('(%s) = (%s)' % (
+        return('(%s) = (%s)' % (
         arg, str(float(safeeval.domath(arg)))))
     except Exception as e:
-        fp.reply('Error: ' + str(e))
+        return('Error: ' + str(e))

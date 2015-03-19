@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 from configs.module import Module
 
 
@@ -42,7 +40,7 @@ def clist(fp, args):
     else:
         for m in fp.server.modules:
             output.append(m.name)
-    fp.reply('%s' % (
+    return('%s' % (
         output
         ))
 
@@ -53,7 +51,7 @@ def commands(fp, args):
         for a in m.command_hooks:
             if a not in commands:
                 commands.append(a)
-    fp.reply('%s' % (
+    return('%s' % (
         commands
         ))
 

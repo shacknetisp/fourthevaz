@@ -31,10 +31,12 @@ class Args:
                 return '%s.' % (self.message)
             return '%s: %s.' % (self.arg, self.message)
 
-    def __init__(self, t):
+    def __init__(self, t, noshlex):
         self.text = t
-        self.splittext = shlex.split(t)
-        self.ssplittext = t.split()
+        if noshlex:
+            self.splittext = t.split(' ')
+        else:
+            self.splittext = shlex.split(t)
         self.lin = {}
 
     def getidxstr(self, n):
@@ -48,12 +50,164 @@ class Args:
         return self.lin[n]
 
 
-def recv(fp):
+def doptext(fp, p_ptext):
     def mcdisabled(m):
         if fp.channel:
             if m in fp.channel.entry['disable']:
                 return True
         return False
+    args = None
+    command = None
+    modcall = False
+    usedtext = ""
+    ptext = p_ptext
+    wmodule = ptext.split(' ')[0].split('.')[0].split(' ')[0]
+    waswcommand = False
+    try:
+        wcommand = ptext.split(' ')[0].split('.')[1].split(' ')[0]
+        waswcommand = True
+    except IndexError:
+        wcommand = ""
+    for m in fp.server.modules:
+        if not waswcommand:
+            break
+        if mcdisabled(m.name):
+            fp.reply("This module is disabled here.")
+            continue
+        if wmodule == m.name:
+            modcall = True
+            usedtext = wmodule
+            if not wcommand and wmodule in m.command_hooks:
+                wcommand = wmodule
+            try:
+                if len(m.command_hooks) == 1 and not wcommand:
+                    command = m.command_hooks[
+                        list(m.command_hooks.keys())[0]]
+                elif wcommand in m.command_hooks:
+                    command = m.command_hooks[wcommand]
+                    usedtext += '.' + wcommand
+                elif not wcommand:
+                    fp.reply("You must specify a command.")
+                    return
+                else:
+                    fp.reply("%s is not in %s." % (wcommand, m.name))
+                    return
+            except IndexError:
+                fp.reply("This module is invalid.")
+                return
+            break
+    if not modcall:
+        wcommand = wmodule
+        for k in list(fp.server.commands.keys()):
+            v = fp.server.commands[k]
+            if wcommand == k:
+                if len(v) == 1:
+                    if mcdisabled(v[list(v.keys())[0]]['module'].name):
+                        fp.reply("This module is disabled here.")
+                        return
+                    command = v[list(v.keys())[0]]
+                    usedtext = wcommand
+                    break
+                else:
+                    fp.reply('%s is provided by: %s, use <module>.%s.' % (
+                        k, list(v.keys()), k))
+                    return
+    if command:
+        if 'level' in command:
+            if command['level'] > fp.accesslevel():
+                fp.reply('You are level %d, but must be at least %d.' % (
+                    fp.accesslevel(),
+                    command['level']
+                    ))
+                return
+        t = ""
+        try:
+            t = ptext[len(usedtext):].strip()
+        except IndexError:
+            pass
+        args = Args(t, command['noshlex'] if 'noshlex' in command else False)
+        counter = 0
+        hasend = False
+        hasoptional = False
+        for a in command['args']:
+            if 'end' in a and a['end']:
+                hasend = True
+            elif a['optional'] and 'keyvalue' not in a:
+                hasoptional = True
+        if hasend and hasoptional:
+            raise Args.ArgConflict(None,
+                'Seperate optional and ending ' +
+                'linear arguments are not allowed.')
+        if command['haskeyvalue']:
+            #Option Args
+            lastval = ""
+            argsdefv = ""
+            ar = args.splittext
+            ok = True
+            fstr = ""
+            for i in ar:
+                if i[0] == '-' and ok:
+                    var = i.split("=")[0][1:]
+                    try:
+                        val = i.split("=")[1]
+                        fstr += "-" + var + "=" + val + " "
+                    except IndexError:
+                        val = ""
+                        fstr += "-" + var + " "
+                    args.lin[var] = val
+                    lastval = i
+                else:
+                    fstr += i + " "
+                ok = False
+            fstr = fstr.strip()
+            argsv = fstr
+            if lastval:
+                argsdefv = argsv[
+                argsv.rfind(lastval) + len(lastval):]
+                argsdefv = argsdefv[argsdefv.find('" ') + 2:]
+            else:
+                argsdefv = argsv
+            if len(argsdefv) > 0:
+                if argsdefv[0] == '"' or argsdefv[0] == "'":
+                    argsdefv = argsdefv[1:]
+                if argsdefv[-1] == '"' or argsdefv[-1] == "'":
+                    argsdefv = argsdefv[:-1]
+            for a in command['args']:
+                if 'end' in a and a['end']:
+                    if argsdefv:
+                        args.lin[a['name']] = argsdefv
+                elif 'keyvalue' not in a:
+                    raise Args.ArgConflict(None,
+                    'All arguments must be ' +
+                    'either keyvalue or not.')
+        else:
+            #Standard Linear Args
+            for a in command['args']:
+                if len(args.splittext) > counter:
+                    if ('end' not in a or not a['end']):
+                        args.lin[a['name']] = args.splittext[counter]
+                counter += 1
+        try:
+            extra = {
+                }
+            if command['function'].__code__.co_argcount == 3:
+                return command['function'](fp, args, extra)
+            elif command['function'].__code__.co_argcount == 2:
+                return command['function'](fp, args)
+            else:
+                raise TypeError('Hook for command %s.%s is invalid!' % (
+                    command['module'].name,
+                    command['name'],
+                    ))
+        except Args.ArgNotFoundError as e:
+            fp.reply('Missing "%s", Usage: %s %s' % (e.arg, usedtext,
+            Module.command_usage(command)))
+    elif fp.isquery():
+        fp.reply("?")
+    return None
+
+
+def recv(fp):
     if fp.sp.iscode('chat'):
         if fp.sp.sendernick in ['ChanServ', 'NickServ']:
             return
@@ -62,7 +216,7 @@ def recv(fp):
         if fp.channel:
             prefix = fp.channel.entry['prefix']
         elif fp.isquery():
-            if text[0] != prefix:
+            if text.find(prefix) != 0:
                 text = prefix + text
         possible = [
             prefix,
@@ -77,153 +231,9 @@ def recv(fp):
                 break
         if not found:
             return
-        args = None
-        command = None
-        modcall = False
-        usedtext = ""
         ptext = text[len(prefix):]
-        wmodule = ptext.split(' ')[0].split('.')[0].split(' ')[0]
-        waswcommand = False
-        try:
-            wcommand = ptext.split(' ')[0].split('.')[1].split(' ')[0]
-            waswcommand = True
-        except IndexError:
-            wcommand = ""
-        for m in fp.server.modules:
-            if not waswcommand:
-                break
-            if mcdisabled(m.name):
-                fp.reply("This module is disabled here.")
-                continue
-            if wmodule == m.name:
-                modcall = True
-                usedtext = wmodule
-                if not wcommand and wmodule in m.command_hooks:
-                    wcommand = wmodule
-                try:
-                    if len(m.command_hooks) == 1 and not wcommand:
-                        command = m.command_hooks[
-                            list(m.command_hooks.keys())[0]]
-                    elif wcommand in m.command_hooks:
-                        command = m.command_hooks[wcommand]
-                        usedtext += '.' + wcommand
-                    elif not wcommand:
-                        fp.reply("You must specify a command.")
-                        return
-                    else:
-                        fp.reply("%s is not in %s." % (wcommand, m.name))
-                        return
-                except IndexError:
-                    fp.reply("This module is invalid.")
-                    return
-                break
-        if not modcall:
-            wcommand = wmodule
-            for k in list(fp.server.commands.keys()):
-                v = fp.server.commands[k]
-                if wcommand == k:
-                    if len(v) == 1:
-                        if mcdisabled(v[list(v.keys())[0]]['module'].name):
-                            fp.reply("This module is disabled here.")
-                            return
-                        command = v[list(v.keys())[0]]
-                        usedtext = wcommand
-                        break
-                    else:
-                        fp.reply('%s is provided by: %s, use <module>.%s.' % (
-                            k, list(v.keys()), k))
-                        return
-        if command:
-            if 'level' in command:
-                if command['level'] > fp.accesslevel():
-                    fp.reply('You are level %d, but must be at least %d.' % (
-                        fp.accesslevel(),
-                        command['level']
-                        ))
-                    return
-            t = ""
-            try:
-                t = text[len(usedtext) + len(prefix):].strip()
-            except IndexError:
-                pass
-            args = Args(t)
-            counter = 0
-            hasend = False
-            hasoptional = False
-            for a in command['args']:
-                if 'end' in a and a['end']:
-                    hasend = True
-                elif a['optional'] and 'keyvalue' not in a:
-                    hasoptional = True
-            if hasend and hasoptional:
-                raise Args.ArgConflict(None,
-                    'Seperate optional and ending ' +
-                    'linear arguments are not allowed.')
-            if command['haskeyvalue']:
-                #Option Args
-                lastval = ""
-                argsdefv = ""
-                ar = args.splittext
-                ok = True
-                fstr = ""
-                for i in ar:
-                    if i[0] == '-' and ok:
-                        var = i.split("=")[0][1:]
-                        try:
-                            val = i.split("=")[1]
-                            fstr += "-" + var + "=" + val + " "
-                        except IndexError:
-                            val = ""
-                            fstr += "-" + var + " "
-                        args.lin[var] = val
-                        lastval = i
-                    else:
-                        fstr += i + " "
-                    ok = False
-                fstr = fstr.strip()
-                argsv = fstr
-                if lastval:
-                    argsdefv = argsv[
-                    argsv.rfind(lastval) + len(lastval):]
-                    argsdefv = argsdefv[argsdefv.find('" ') + 2:]
-                else:
-                    argsdefv = argsv
-                if len(argsdefv) > 0:
-                    if argsdefv[0] == '"' or argsdefv[0] == "'":
-                        argsdefv = argsdefv[1:]
-                    if argsdefv[-1] == '"' or argsdefv[-1] == "'":
-                        argsdefv = argsdefv[:-1]
-                for a in command['args']:
-                    if 'end' in a and a['end']:
-                        if argsdefv:
-                            args.lin[a['name']] = argsdefv
-                    elif 'keyvalue' not in a:
-                        raise Args.ArgConflict(None,
-                        'All arguments must be ' +
-                        'either keyvalue or not.')
-            else:
-                #Standard Linear Args
-                for a in command['args']:
-                    if len(args.splittext) > counter:
-                        if ('end' not in a or not a['end']):
-                            args.lin[a['name']] = args.splittext[counter]
-                    counter += 1
-            try:
-                extra = {
-                    }
-                if command['function'].__code__.co_argcount == 3:
-                    return command['function'](fp, args, extra)
-                elif command['function'].__code__.co_argcount == 2:
-                    return command['function'](fp, args)
-                else:
-                    raise TypeError('Hook for command %s.%s is invalid!' % (
-                        command['module'].name,
-                        command['name'],
-                        ))
-            except Args.ArgNotFoundError as e:
-                fp.reply('Missing "%s", Usage: %s %s' % (e.arg, usedtext,
-                Module.command_usage(command)))
-        elif text.find(prefix) == 0 or fp.isquery():
-            fp.reply("?")
+        r = doptext(fp, ptext)
+        if r:
+            fp.reply(r)
 
 

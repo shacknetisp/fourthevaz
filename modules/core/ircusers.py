@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 from configs.module import Module
 import irc.utils as utils
 
@@ -73,7 +72,7 @@ def whois(fp, args):
     user = args.getlinstr('user')
     if user in fp.server.whoislist and 'done' in fp.server.whoislist[user]:
         t = fp.server.whoislist[user]
-        fp.reply('%s!%s "%s" Authed: %s%s' % (
+        return('%s!%s "%s" Authed: %s%s' % (
             user,
             t['host'],
             t['name'],
@@ -81,15 +80,15 @@ def whois(fp, args):
             ', as ' + t['authed'] if 'authed' in t and t['authed'] else '',
             ))
     else:
-        fp.reply('No WHOIS information about %s.' % user)
+        return('No WHOIS information about %s.' % user)
 
 
 def names(fp, args):
     channel = fp.Channel(fp, args.getlinstr('channel'))
     if channel.entry:
-        fp.reply(str(channel.entry['names']))
+        return(str(channel.entry['names']))
     else:
-        fp.reply(
+        return(
             "That channel either doesn't exist or has no NAMES list yet.")
 
 

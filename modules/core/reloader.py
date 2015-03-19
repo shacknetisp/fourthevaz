@@ -35,7 +35,7 @@ def reloadall(fp, args):
     moduleregistry.reload_all()
     for server in running.working_servers:
         server.reinit()
-    fp.reply(('Reloaded all registered modules.'))
+    return(('Reloaded all registered modules.'))
 
 
 def reload_list(fp, args):
@@ -53,5 +53,5 @@ def reload_list(fp, args):
     bt = ', could not reload: %s' % badlist
     if not badlist:
         bt = ''
-    fp.reply('Reloaded: %s%s.' % (goodlist, bt))
+    return('Reloaded: %s%s.' % (goodlist, bt))
 

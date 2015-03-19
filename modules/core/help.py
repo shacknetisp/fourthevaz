@@ -62,14 +62,11 @@ def showhelp(fp, args):
                     command = m.command_hooks[wcommand]
                     usedtext += '.' + wcommand
                 elif not wcommand:
-                    fp.reply("You must specify a command.")
-                    return
+                    return("You must specify a command.")
                 else:
-                    fp.reply("%s isn't in %s." % (wcommand, m.name))
-                    return
+                    return("%s isn't in %s." % (wcommand, m.name))
             except IndexError:
-                fp.reply("This module is invalid.")
-                return
+                return("This module is invalid.")
             break
     if not modcall:
         wcommand = wmodule
@@ -81,22 +78,18 @@ def showhelp(fp, args):
                     usedtext = wcommand
                     break
                 else:
-                    fp.reply(
+                    return(
                         '%s is provided by: %s, use help <module>.%s.' % (
                         k, list(v.keys()), k))
-                    return
     if not command:
-        fp.reply('That command does not exist.')
-        return
+        return('That command does not exist.')
     if woption:
         for c in command['args']:
             if c['name'] == woption:
-                fp.reply('%s: %s' % (Module.command_single_usage(c), c['help']))
-                return
-        fp.reply('Cannot find option %s in %s.%s.' % (
+                return('%s: %s' % (Module.command_single_usage(c), c['help']))
+        return('Cannot find option %s in %s.%s.' % (
             woption, command['module'].name, command['name']))
-        return
-    fp.reply(('%s.%s: %s -- %s %s' % (
+    return(('%s.%s: %s -- %s %s' % (
         command['module'].name,
         command['name'],
         command['help'],
@@ -107,7 +100,6 @@ def showhelp(fp, args):
 def modhelp(fp, args):
     for m in fp.server.modules:
         if m.name == args.getlinstr('module'):
-            fp.reply('%s' % m.helptext)
-            return
-    fp.reply('Unable to find module.')
+            return('%s' % m.helptext)
+    return('Unable to find module.')
 

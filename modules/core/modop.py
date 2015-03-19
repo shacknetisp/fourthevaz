@@ -49,7 +49,7 @@ def remove(fp, args):
     bt = ', could not remove: %s' % badlist
     if not badlist:
         bt = ''
-    fp.reply('Removed: %s%s.' % (goodlist, bt))
+    return('Removed: %s%s.' % (goodlist, bt))
 
 
 def add(fp, args):
@@ -67,5 +67,5 @@ def add(fp, args):
     bt = ', could not add: %s' % badlist
     if not badlist:
         bt = ''
-    fp.reply('Added: %s%s.' % (goodlist, bt))
+    return('Added: %s%s.' % (goodlist, bt))
 

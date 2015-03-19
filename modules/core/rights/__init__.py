@@ -81,34 +81,34 @@ def init():
 
 
 def accesslists(fp, args):
-    fp.reply(str(fp.server.entry['access']))
+    return(str(fp.server.entry['access']))
 
 
 def getusers(fp, args):
     search = args.getlinstr('search')
     if len(search.split(':')) != access.accesslen:
-        fp.reply('Malformed: %s' % search)
+        return('Malformed: %s' % search)
         return
     alist = args.getlinstr('accesslist', fp.server.entry['access'][0])
     results = []
     if alist not in running.accesslist.db:
-        fp.reply('Invalid Access List.')
+        return('Invalid Access List.')
         return
     for user in running.accesslist.db[alist]:
         if fnmatch.fnmatchcase(user, search):
             results.append(user)
-    fp.reply('%s: %s' % (alist, results))
+    return('%s: %s' % (alist, results))
 
 
 def getrights(fp, args):
     user = args.getlinstr('user', fp.accesslevelname)
     alist = args.getlinstr('accesslist', '')
     try:
-        fp.reply('%s%s has an access level of %d.' % (
+        return('%s%s has an access level of %d.' % (
             user, ' (' + alist + ')' if alist else '', access.getaccesslevel(
             fp.server, user, alist)))
     except access.AccessLevelError as e:
-        fp.reply(e.msg)
+        return(e.msg)
 
 
 def setrights(fp, args):
@@ -117,8 +117,7 @@ def setrights(fp, args):
     try:
         level = int(args.getlinstr('level'))
     except ValueError:
-        fp.reply('Invalid level.')
-        return
+        return('Invalid level.')
     required = max(access.getaccesslevel(
             fp.server, user, alist), level) + (
                 10 if 'leveladd' not in fp.server.entry else int(
@@ -126,17 +125,16 @@ def setrights(fp, args):
     sl = access.getaccesslevel(
             fp.server, fp.accesslevelname)
     if sl < required:
-        fp.reply('You are level %d, but you need at least level %d.' % (
+        return('You are level %d, but you need at least level %d.' % (
             sl,
             required
             ))
-        return
     try:
         access.setaccesslevel(alist, user, level)
-        fp.reply(
+        return(
             'The access level of %s (%s) is now %d.' % (
                 user, alist, access.getaccesslevel(
             fp.server, user)))
     except access.AccessLevelError as e:
-        fp.reply(e.msg)
+        return(e.msg)
 

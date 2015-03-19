@@ -49,7 +49,10 @@ class Module:
             base = base + '...'
         topt = '<' + base + '>'
         if 'keyvalue' in i:
-            topt = '-' + base + '=<' + i['keyvalue'] + '>'
+            if i['keyvalue']:
+                topt = '-' + base + '=<' + i['keyvalue'] + '>'
+            else:
+                topt = '-' + base
         else:
             topt = '<' + base + '>'
         if i['optional']:
