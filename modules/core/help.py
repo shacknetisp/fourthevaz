@@ -50,10 +50,15 @@ def showhelp(fp, args):
     #Logic
     command = None
     modcall = False
+    seealso = ""
     for m in fp.server.modules:
         if wmodule == m.name:
             modcall = True
             usedtext = wmodule
+            if not wcommand and wmodule in m.command_hooks:
+                wcommand = wmodule
+                seealso = " (See also: modhelp %s)" % m.command_hooks[
+                    wmodule]['name']
             try:
                 if len(m.command_hooks) == 1 and not wcommand:
                     command = m.command_hooks[
@@ -89,12 +94,12 @@ def showhelp(fp, args):
                 return('%s: %s' % (Module.command_single_usage(c), c['help']))
         return('Cannot find option %s in %s.%s.' % (
             woption, command['module'].name, command['name']))
-    return(('%s.%s: %s -- %s %s' % (
+    return(('%s.%s: %s -- %s %s %s' % (
         command['module'].name,
         command['name'],
         command['help'],
         command['name'],
-        Module.command_usage(command))))
+        Module.command_usage(command), seealso)))
 
 
 def modhelp(fp, args):
