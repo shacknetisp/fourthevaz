@@ -72,7 +72,6 @@ def init():
                     {
                     'name': 'accesslist',
                     'optional': True,
-                    'keyvalue': 'accesslist',
                     'help': 'The access list to get.'
                     },
                 ],
