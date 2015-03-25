@@ -22,6 +22,12 @@ def init():
                     'help': 'The access list to get.'
                     },
                 {
+                    'name': 'onlyvalue',
+                    'optional': True,
+                    'keyvalue': '',
+                    'help': 'Only display the value, not the name.'
+                    },
+                {
                     'name': 'user',
                     'optional': True,
                     'end': True,
@@ -104,9 +110,14 @@ def getrights(fp, args):
     user = args.getlinstr('user', fp.accesslevelname)
     alist = args.getlinstr('accesslist', '')
     try:
-        return('%s%s has an access level of %d.' % (
-            user, ' (' + alist + ')' if alist else '', access.getaccesslevel(
+        if 'onlyvalue' in args.lin:
+            return('%d' % (access.getaccesslevel(
             fp.server, user, alist)))
+        else:
+            return('%s%s has an access level of %d.' % (
+                user, ' (' + alist + ')' if alist else '',
+                access.getaccesslevel(
+                    fp.server, user, alist)))
     except access.AccessLevelError as e:
         return(e.msg)
 
