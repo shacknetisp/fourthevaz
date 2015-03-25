@@ -11,6 +11,11 @@ def init():
             'help': 'Test stuff.',
             'args': [
                 {
+                    'name': 'target',
+                    'optional': False,
+                    'help': 'target',
+                    },
+                {
                     'name': 'echo',
                     'optional': False,
                     'help': 'text to echo',
@@ -22,4 +27,4 @@ def init():
 
 
 def test(fp, args):
-    return args.getlinstr('echo')
+    return args.getlinstr('target') + ": " + args.getlinstr('echo')

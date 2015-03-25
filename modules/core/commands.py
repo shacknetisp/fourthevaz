@@ -148,7 +148,7 @@ def doptext(fp, p_ptext):
                     ac = t[ic + 1]
                 except IndexError:
                     ac = ''
-                if bc != '"' and bc != "'":
+                if bc != '"':
                     if c == '<' and ac == "*":
                         found = True
                         endi = t.rfind('>')
@@ -158,10 +158,11 @@ def doptext(fp, p_ptext):
                         if not result:
                             fp.reply('That command does not return.')
                             return
-                        t = t[0:ic] + '"' + (
-                            result + '"' + t[endi + 1:])
+                        t = t[0:ic] + (
+                            result + t[endi + 1:])
                         break
-        args = Args(t, command['noshlex'] if 'noshlex' in command else False)
+        noshlex = command['noshlex'] if 'noshlex' in command else False
+        args = Args(t, noshlex)
         counter = 0
         hasend = False
         hasoptional = False
@@ -175,10 +176,15 @@ def doptext(fp, p_ptext):
                 'Seperate optional and ending ' +
                 'linear arguments are not allowed.')
         if command['haskeyvalue']:
+            for a in command['args']:
+                if len(args.splittext) > counter:
+                    if ('end' not in a or not a['end']) and 'keyvalue' not in a:
+                        args.lin[a['name']] = args.splittext[counter]
+                        counter += 1
             #Option Args
             lastval = ""
             argsdefv = ""
-            ar = args.splittext
+            ar = args.splittext[counter:]
             ok = True
             fstr = ""
             for i in ar:
@@ -213,9 +219,11 @@ def doptext(fp, p_ptext):
                     if argsdefv:
                         args.lin[a['name']] = argsdefv
                 elif 'keyvalue' not in a:
-                    raise Args.ArgConflict(None,
-                    'All arguments must be ' +
-                    'either keyvalue or not.')
+                    if a['optional']:
+                        raise Args.ArgConflict(None,
+                        'All arguments must be ' +
+                        'either keyvalue or not optional.')
+
         else:
             #Standard Linear Args
             for a in command['args']:
