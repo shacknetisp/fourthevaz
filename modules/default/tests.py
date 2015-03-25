@@ -9,10 +9,17 @@ def init():
         {
             'function': test,
             'help': 'Test stuff.',
-            'args': [],
+            'args': [
+                {
+                    'name': 'echo',
+                    'optional': False,
+                    'help': 'text to echo',
+                    'end': True,
+                    }
+                ],
             })
     return m
 
 
 def test(fp, args):
-    fp.server.socket.close()
+    return args.getlinstr('echo')

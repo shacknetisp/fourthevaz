@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import irc
 import select
@@ -16,6 +17,7 @@ moduleregistry.add_module(configs)
 moduleregistry.add_module(mload)
 moduleregistry.add_module(db.text)
 if __name__ == '__main__':
+    print('Initializing Fourth Evaz')
     running.accesslist = db.text.DB(locs.userdata + '/access.py')
     if os.path.exists(running.accesslist.filename):
         running.accesslist.load()
@@ -53,3 +55,5 @@ if __name__ == '__main__':
         time.sleep(0.1)
         for server in running.working_servers:
             server.process()
+else:
+    raise EnvironmentError('__init__.py must be run as the main!')

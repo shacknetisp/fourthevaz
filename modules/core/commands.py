@@ -10,6 +10,15 @@ def init():
     return m
 
 
+class NoEndToken(Exception):
+
+        def __init__(self, arg):
+            self.arg = arg
+
+        def __str(self):
+            return 'Missing parser token ending "%s".' % self.arg
+
+
 class Args:
 
     class ArgNotFoundError(Exception):
@@ -125,6 +134,32 @@ def doptext(fp, p_ptext):
             t = ptext[len(usedtext):].strip()
         except IndexError:
             pass
+        found = True
+        while found:
+            found = False
+            for ic in range(len(t)):
+                try:
+                    bc = t[ic - 1]
+                except IndexError:
+                    bc = ''
+                c = t[ic]
+                try:
+                    ac = t[ic + 1]
+                except IndexError:
+                    ac = ''
+                if bc != '"' and bc != "'":
+                    if c == '<' and ac == "*":
+                        found = True
+                        endi = t.rfind('>')
+                        if endi == -1:
+                            raise NoEndToken('>')
+                        result = doptext(fp, t[ic + 2:endi])
+                        if not result:
+                            fp.reply('That command does not return.')
+                            return
+                        t = t[0:ic] + '"' + (
+                            result + '"' + t[endi + 1:])
+                        break
         args = Args(t, command['noshlex'] if 'noshlex' in command else False)
         counter = 0
         hasend = False
