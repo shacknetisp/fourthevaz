@@ -14,9 +14,10 @@ class NoEndToken(Exception):
 
         def __init__(self, arg):
             self.arg = arg
+            self.msg = 'Missing parser token ending "%s".' % self.arg
 
         def __str(self):
-            return 'Missing parser token ending "%s".' % self.arg
+            return self.msg
 
 
 class Args:
@@ -267,7 +268,10 @@ def recv(fp):
         if not found:
             return
         ptext = text[len(prefix):]
-        r = doptext(fp, ptext)
+        try:
+            r = doptext(fp, ptext)
+        except NoEndToken as e:
+            r = e.msg
         if r:
             fp.reply(r)
 
