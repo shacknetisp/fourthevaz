@@ -48,9 +48,12 @@ def import_module_py(name, moduleset="", doreload=True):
     return m
 
 
-def import_module(name, moduleset="", doreload=True):
+def import_module(name, moduleset="", doreload=True, options={}):
     m = import_module_py(name, moduleset, doreload)
-    mr = m.init()
+    if m.init.__code__.co_argcount == 1:
+        mr = m.init(options)
+    else:
+        mr = m.init()
 
     mr.module = m
     print(('Loaded: %s: %s, Hooks: %s%s' % (

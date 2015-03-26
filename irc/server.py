@@ -6,8 +6,11 @@ from collections import deque
 from . import splitparse
 from . import fullparse
 import configs.mload as mload
+import configs.locs as locs
 import moduleregistry
 import random
+import db.text
+import os
 moduleregistry.add_module(splitparse)
 moduleregistry.add_module(fullparse)
 moduleregistry.add_module(mload)
@@ -23,6 +26,12 @@ class Server:
         'whois_tick_min': 500,
         'recv_size': pow(2, 12),
         }):
+        self.db = db.text.DB(
+            locs.userdata + '/serverdb.%s.py' % entry['settings'])
+        if os.path.exists(self.db.filename):
+            self.db.load()
+        self.db.save()
+        self.state = {}
         self.options = options
         self.address = address
         self.port = port
@@ -134,11 +143,13 @@ class Server:
         if current_milli_time() - self.lasttick > self.options['tick_min']:
             self.lasttick = current_milli_time()
             if self.outputbuffer:
+                out = self.outputbuffer.popleft()
                 try:
-                    out = self.outputbuffer.popleft()
+                    self.socket.send(out)
                 except OSError:
+                    if self.socket.fileno() < 0:
+                        return
                     raise Server.ServerConnectionException(self)
-                self.socket.send(out)
             if self.whoisbuffer and (current_milli_time() -
             self.lastwhoistick > self.options['whois_tick_min']):
                 self.lastwhoistick = current_milli_time()
@@ -182,7 +193,7 @@ class Server:
             mset = self.entry['moduleset']
         self.delete_module(name)
         m = mload.import_module(
-            name, mset)
+            name, mset, options={'server': self})
         self.modules.append(m)
         print(('Added Module: %s' % name))
 
