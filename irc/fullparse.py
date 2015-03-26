@@ -33,7 +33,13 @@ class FullParse():
             return self.sp.target
 
     def accesslevel(self):
-        return access.getaccesslevel(self.server, self.accesslevelname)
+        return max(
+            access.getaccesslevel(self.server, self.accesslevelname),
+            access.getaccesslevel(self.server, self.accesslevelname,
+            str(self.server.entry[
+                'settings'] + ':' + self.channel.entry['channel'])
+            if self.channel is not None else
+            ""))
 
     def reply(self, message, command='PRIVMSG'):
         self.server.write_cmd(command, self.outtarget() + str(' :') + message)

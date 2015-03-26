@@ -11,6 +11,7 @@ import moduleregistry
 import random
 import db.text
 import os
+import running
 moduleregistry.add_module(splitparse)
 moduleregistry.add_module(fullparse)
 moduleregistry.add_module(mload)
@@ -78,6 +79,11 @@ class Server:
 
     def join_channel(self, c):
         self.write_cmd('JOIN ', self.shortchannel(c)['channel'])
+        name = self.entry['settings'] + ':' + self.shortchannel(c)['channel']
+        if name not in running.accesslist.db:
+            running.accesslist.db[name] = {}
+            running.accesslist.save()
+        self.entry['access'].append(name)
 
     def log(self, prefix, p_text):
         text = prefix + ': ' + p_text

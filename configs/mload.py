@@ -17,15 +17,17 @@ class DDRException(Exception):
 
 
 def serverinit(server):
+    def skipname(n):
+        return n[0] == '_' or n == 'share'
     server.modules = []
     for f in os.listdir(locs.cmoddir):
-        if f[0] != '_':
+        if not skipname(f):
             server.add_module(os.path.splitext(f)[0])
     for f in os.listdir('modules/%s/' % "core"):
-        if f[0] != '_':
+        if not skipname(f):
             server.add_module(os.path.splitext(f)[0])
     for f in os.listdir('modules/%s/' % server.entry['moduleset']):
-        if f[0] != '_':
+        if not skipname(f):
             server.add_module(os.path.splitext(f)[0])
 
 

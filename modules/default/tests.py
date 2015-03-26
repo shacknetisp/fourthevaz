@@ -25,5 +25,6 @@ def init():
             })
     return m
 
+
 def test(fp, args):
     return args.getlinstr('target') + ": " + args.getlinstr('echo')

@@ -93,12 +93,10 @@ def getusers(fp, args):
     search = args.getlinstr('search')
     if len(search.split(':')) != access.accesslen:
         return('Malformed: %s' % search)
-        return
     alist = args.getlinstr('accesslist', fp.server.entry['access'][0])
     results = []
     if alist not in running.accesslist.db:
         return('Invalid Access List.')
-        return
     for user in running.accesslist.db[alist]:
         if fnmatch.fnmatchcase(user, search):
             results.append(user)
