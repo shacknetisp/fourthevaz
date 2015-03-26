@@ -94,9 +94,10 @@ def showhelp(fp, args):
                 return('%s: %s' % (Module.command_single_usage(c), c['help']))
         return('Cannot find option %s in %s.%s.' % (
             woption, command['module'].name, command['name']))
-    return(('%s.%s: %s -- %s %s %s' % (
+    return(('%s.%s (%d): %s -- %s %s %s' % (
         command['module'].name,
         command['name'],
+        command['level'] if 'level' in command else 0,
         command['help'],
         command['name'],
         Module.command_usage(command), seealso)))
