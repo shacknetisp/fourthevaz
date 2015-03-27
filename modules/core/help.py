@@ -67,7 +67,8 @@ def showhelp(fp, args):
                     command = m.command_hooks[wcommand]
                     usedtext += '.' + wcommand
                 elif not wcommand:
-                    return("You must specify a command.")
+                    return(
+                        "You must specify a command or (modhelp %s)" % m.name)
                 else:
                     return("%s isn't in %s." % (wcommand, m.name))
             except IndexError:
