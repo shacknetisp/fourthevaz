@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
+import utils
 from configs.module import Module
 
 
@@ -86,7 +86,7 @@ def showhelp(fp, args):
                 else:
                     return(
                         '%s is provided by: %s, use help <module>.%s.' % (
-                        k, list(v.keys()), k))
+                        k, utils.ltos(list(v.keys())), k))
     if not command:
         return('That command does not exist.')
     if woption:

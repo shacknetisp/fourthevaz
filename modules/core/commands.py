@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
 import shlex
+import utils
+import traceback
 
 
 def init():
@@ -120,7 +122,7 @@ def doptext(fp, p_ptext):
                     break
                 else:
                     fp.reply('%s is provided by: %s, use <module>.%s.' % (
-                        k, list(v.keys()), k))
+                        k, utils.ltos(list(v.keys())), k))
                     return
     if command:
         if 'level' in command:
@@ -197,6 +199,12 @@ def doptext(fp, p_ptext):
                         val = ""
                         fstr += "-" + var + " "
                     args.lin[var] = val
+                    for arg in command['args']:
+                        aliases = arg['aliases'] if 'aliases' in arg else []
+                        if arg['name'] == var or var in aliases:
+                            args.lin[arg['name']] = val
+                            for al in aliases:
+                                args.lin[al] = val
                     lastval = i
                 else:
                     fstr += i + " "
@@ -280,6 +288,9 @@ def recv(fp):
             r = doptext(fp, ptext)
         except NoEndToken as e:
             r = e.msg
+        except Exception as e:
+            r = 'Uncaught ' + str(type(e).__name__) + '!'
+            print((traceback.format_exc()))
         if r:
             fp.reply(r)
 

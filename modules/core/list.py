@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
+import utils
 
 
 def init():
@@ -41,7 +42,7 @@ def clist(fp, args):
         for m in fp.server.modules:
             output.append(m.name)
     return('%s' % (
-        output
+        utils.ltos(output)
         ))
 
 
@@ -52,7 +53,7 @@ def commands(fp, args):
             if a not in commands:
                 commands.append(a)
     return('%s' % (
-        commands
+        utils.ltos(commands)
         ))
 
 

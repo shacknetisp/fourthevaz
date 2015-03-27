@@ -43,8 +43,16 @@ class Module:
                 d['haskeyvalue'] = True
         self.command_hooks[hook] = d
 
+    def add_command_alias(self, alias, hook):
+        self.command_hooks[alias] = self.command_hooks[hook]
+
     def command_single_usage(i):
         base = i['name']
+        if 'aliases' in i and i['aliases']:
+            base = "{"
+            base += i['name'] + ','
+            base += ','.join(i['aliases'])
+            base += "}"
         if 'end' in i and i['end']:
             base = base + '...'
         topt = '<' + base + '>'

@@ -8,7 +8,6 @@ from . import fullparse
 import configs.mload as mload
 import configs.locs as locs
 import moduleregistry
-import random
 import db.text
 import os
 import running
@@ -18,13 +17,17 @@ moduleregistry.add_module(mload)
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 
+def encode(inp):
+    return inp.encode()
+
+
 class Server:
 
     def __init__(
         self, address, port, nick, name, channels, entry, options={
         'print_log': True,
         'tick_min': 50,
-        'whois_tick_min': 500,
+        'whois_tick_min': 1000,
         'recv_size': pow(2, 12),
         }):
         self.db = db.text.DB(
@@ -97,11 +100,11 @@ class Server:
 
     def write_cmd(self, command, text):
         message = command + ' ' + text
-        self.write_raw(message.encode('utf-8', 'ignore') + b"\n")
+        self.write_raw(encode(message) + b"\n")
 
     def write_nocmd(self, text):
         message = text
-        self.write_raw(message.encode('utf-8', 'ignore') + b"\n")
+        self.write_raw(encode(message) + b"\n")
 
     def setuser(self):
         self.log('Init', 'USER and NICK: %s:%s' % (self.nick, self.name))
@@ -159,7 +162,7 @@ class Server:
             if self.whoisbuffer and (current_milli_time() -
             self.lastwhoistick > self.options['whois_tick_min']):
                 self.lastwhoistick = current_milli_time()
-                self.write_cmd('WHOIS', random.choice(self.whoisbuffer))
+                self.write_cmd('WHOIS', self.whoisbuffer.pop(0))
 
     def process_message(self, sp):
         if sp.iscode('endmotd') and not self.properties['joined']:

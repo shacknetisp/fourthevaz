@@ -11,7 +11,9 @@ import db.text
 import moduleregistry
 import running
 import os
+import utils
 moduleregistry.add_module(irc)
+moduleregistry.add_module(utils)
 moduleregistry.add_module(module)
 moduleregistry.add_module(configs)
 moduleregistry.add_module(mload)

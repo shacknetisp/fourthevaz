@@ -9,22 +9,10 @@ def init():
         {
             'function': test,
             'help': 'Test stuff.',
-            'args': [
-                {
-                    'name': 'target',
-                    'optional': False,
-                    'help': 'target',
-                    },
-                {
-                    'name': 'echo',
-                    'optional': False,
-                    'help': 'text to echo',
-                    'end': True,
-                    }
-                ],
+            'args': [],
             })
     return m
 
 
 def test(fp, args):
-    return args.getlinstr('target') + ": " + args.getlinstr('echo')
+    fp.reply('\2this may be bold\2', 'NOTICE')

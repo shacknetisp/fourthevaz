@@ -8,6 +8,12 @@ def init():
     m.set_help('Handle the User Lists.')
     m.add_base_hook('recv', recv)
     m.add_timer_hook(30 * 1000, timer)
+    m.add_command_hook('authme',
+        {
+            'function': authme,
+            'help': 'Force a WHOIS on yourself.',
+            'args': [],
+            })
     m.add_command_hook('whois',
         {
             'function': whois,
@@ -66,6 +72,11 @@ def recv(fp):
             fp.server.whoislist[fp.sp.object]['done'] = True
             del fp.server.whoisbuffer[fp.server.whoisbuffer.index(fp.sp.object)]
     pass
+
+
+def authme(fp, args):
+    fp.server.whoisbuffer = [fp.sp.sendernick] + fp.server.whoisbuffer
+    return 'Attempt processed, check your access with: getrights'
 
 
 def whois(fp, args):

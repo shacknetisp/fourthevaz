@@ -2,6 +2,7 @@
 from configs.module import Module
 import moduleregistry
 import running
+import utils
 
 
 def init():
@@ -50,8 +51,8 @@ def reload_list(fp, args):
             except ImportError:
                 badlist.append(i)
         server.load_commands()
-    bt = ', could not reload: %s' % badlist
+    bt = '; could not reload: %s' % utils.ltos(badlist)
     if not badlist:
         bt = ''
-    return('Reloaded: %s%s.' % (goodlist, bt))
+    return('Reloaded: %s%s.' % (utils.ltos(goodlist), bt))
 
