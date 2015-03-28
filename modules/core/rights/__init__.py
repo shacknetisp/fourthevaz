@@ -5,6 +5,7 @@ from . import access
 import fnmatch
 importlib.reload(access)
 import running
+import utils
 
 
 def init():
@@ -94,18 +95,26 @@ def getusers(fp, args):
     if len(search.split(':')) != access.accesslen:
         return('Malformed: %s' % search)
     alist = args.getlinstr('accesslist', fp.server.entry['access'][0])
+    if alist == '.':
+        if not fp.channel:
+            return 'Not in channel, cannot expand "."'
+        alist = fp.server.entry['settings'] + ':' + fp.channel.entry['channel']
     results = []
     if alist not in running.accesslist.db:
         return('Invalid Access List.')
     for user in running.accesslist.db[alist]:
         if fnmatch.fnmatchcase(user, search):
             results.append(user)
-    return('%s: %s' % (alist, results))
+    return('%s: %s' % (alist, utils.ltos(results)))
 
 
 def getrights(fp, args):
     user = args.getlinstr('user', fp.accesslevelname)
     alist = args.getlinstr('accesslist', '')
+    if alist == '.':
+        if not fp.channel:
+            return 'Not in channel, cannot expand "."'
+        alist = fp.server.entry['settings'] + ':' + fp.channel.entry['channel']
     try:
         if 'onlyvalue' in args.lin:
             return('%d' % (access.getaccesslevel(
@@ -122,6 +131,10 @@ def getrights(fp, args):
 def setrights(fp, args):
     user = args.getlinstr('user')
     alist = args.getlinstr('accesslist', fp.server.entry['access'][0])
+    if alist == '.':
+        if not fp.channel:
+            return 'Not in channel, cannot expand "."'
+        alist = fp.server.entry['settings'] + ':' + fp.channel.entry['channel']
     try:
         level = int(args.getlinstr('level'))
     except ValueError:

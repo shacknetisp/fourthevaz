@@ -12,6 +12,7 @@ import db.text
 import os
 import running
 import utils
+import ast
 moduleregistry.add_module(splitparse)
 moduleregistry.add_module(fullparse)
 moduleregistry.add_module(mload)
@@ -63,10 +64,15 @@ class Server:
     def updatealiases(self):
         if 'aliases' not in self.db.db:
             self.db.db['aliases'] = []
+        d = {}
+        try:
+            d = ast.literal_eval(open(locs.userdata + '/aliases.py').read())
+        except FileNotFoundError:
+            pass
         self.aliasdb = utils.merge_dicts(
             mload.import_module_py("share.aliases", "core").aliases,
                  mload.import_module_py(
-                     "share.aliases", self.entry['moduleset']).aliases,
+                     "share.aliases", self.entry['moduleset']).aliases, d,
                       self.db.db['aliases'])
 
     def whois(self, name):
