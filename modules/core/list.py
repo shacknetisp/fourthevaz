@@ -9,7 +9,7 @@ def init():
     m.add_command_hook('list',
         {
             'function': clist,
-            'help': 'Display a command/module list.',
+            'help': 'Display a command/module list..',
             'args': [
                 {
                     'name': 'modules',
@@ -22,6 +22,12 @@ def init():
         {
             'function': commands,
             'help': 'Display all commands.',
+            'args': [],
+            })
+    m.add_command_hook('aliases',
+        {
+            'function': aliases,
+            'help': 'Display all aliases.',
             'args': [],
             })
     return m
@@ -56,4 +62,12 @@ def commands(fp, args):
         utils.ltos(commands)
         ))
 
+
+def aliases(fp, args):
+    commands = []
+    for m in fp.get_aliases():
+        commands.append(m)
+    return('%s' % (
+        utils.ltos(commands)
+        ))
 

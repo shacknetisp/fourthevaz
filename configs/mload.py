@@ -32,7 +32,7 @@ def serverinit(server):
 
 
 def import_module_py(name, moduleset="", doreload=True):
-    possible = ['mlocal.', 'modules.core.', 'modules.%s.' % moduleset]
+    possible = ['mlocal.', 'modules.%s.' % moduleset, 'modules.core.']
     m = None
     err = None
     for i in possible:

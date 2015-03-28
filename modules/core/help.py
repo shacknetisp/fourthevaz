@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import utils
 from configs.module import Module
+import running
 
 
 def init():
@@ -88,6 +89,8 @@ def showhelp(fp, args):
                         '%s is provided by: %s, use help <module>.%s.' % (
                         k, utils.ltos(list(v.keys())), k))
     if not command:
+        if wcommand in fp.get_aliases():
+            return '<%s>' % (fp.get_aliases()[wcommand])
         return('That command does not exist.')
     if woption:
         for c in command['args']:

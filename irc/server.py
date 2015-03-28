@@ -11,6 +11,7 @@ import moduleregistry
 import db.text
 import os
 import running
+import utils
 moduleregistry.add_module(splitparse)
 moduleregistry.add_module(fullparse)
 moduleregistry.add_module(mload)
@@ -59,6 +60,15 @@ class Server:
         self.whoisbuffer = []
         self.whoislist = {}
 
+    def updatealiases(self):
+        if 'aliases' not in self.db.db:
+            self.db.db['aliases'] = []
+        self.aliasdb = utils.merge_dicts(
+            mload.import_module_py("share.aliases", "core").aliases,
+                 mload.import_module_py(
+                     "share.aliases", self.entry['moduleset']).aliases,
+                      self.db.db['aliases'])
+
     def whois(self, name):
         self.whoisbuffer.append(name)
 
@@ -72,6 +82,7 @@ class Server:
         return c
 
     def reinit(self):
+        self.updatealiases()
         mload.serverinit(self)
         self.load_commands()
 
@@ -87,6 +98,8 @@ class Server:
             running.accesslist.db[name] = {}
             running.accesslist.save()
         self.entry['access'].append(name)
+        if ('aliases:%s' % self.shortchannel(c)['channel']) not in self.db.db:
+            self.db.db['aliases:%s' % self.shortchannel(c)['channel']] = {}
 
     def log(self, prefix, p_text):
         text = prefix + ': ' + p_text

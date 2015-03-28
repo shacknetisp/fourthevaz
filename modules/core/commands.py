@@ -3,6 +3,7 @@ from configs.module import Module
 import shlex
 import utils
 import traceback
+import running
 
 
 def init():
@@ -62,7 +63,11 @@ class Args:
         return self.lin[n]
 
 
-def doptext(fp, p_ptext):
+def doptext(fp, p_ptext, count=100):
+    count -= 1
+    if count < 0:
+        raise RuntimeError('doptext recursion limit reached.')
+
     def mcdisabled(m):
         if fp.channel:
             if m in fp.channel.entry['disable']:
@@ -156,7 +161,7 @@ def doptext(fp, p_ptext):
                         endi = t.rfind('>')
                         if endi == -1:
                             raise NoEndToken('>')
-                        result = doptext(fp, t[ic + 2:endi])
+                        result = doptext(fp, t[ic + 2:endi], count)
                         if not result:
                             fp.reply('That command does not return.')
                             return
@@ -254,6 +259,53 @@ def doptext(fp, p_ptext):
         except Args.ArgNotFoundError as e:
             fp.reply('Missing "%s", Usage: %s %s' % (e.arg, usedtext,
             Module.command_usage(command)))
+    elif wcommand in fp.get_aliases():
+        t = fp.get_aliases()[wcommand]
+        try:
+            args = ' '.join(p_ptext.split(' ')[1:])
+        except IndexError:
+            args = ""
+        found = True
+        lastusedindex = 0
+        hadall = False
+        while found:
+            found = False
+            for ic in range(len(t)):
+                try:
+                    bc = t[ic - 1]
+                except IndexError:
+                    bc = ''
+                c = t[ic]
+                try:
+                    ac = t[ic + 1]
+                except IndexError:
+                    ac = ''
+                if bc != '"':
+                    if c == '$' and ac == "#":
+                        if hadall:
+                            return "Arguments after $* are not supported."
+                        found = True
+                        try:
+                            result = shlex.split(args)[lastusedindex]
+                            lastusedindex += 1
+                        except IndexError:
+                            return "Too few arguments!"
+                        t = t[0:ic] + (
+                            result + t[ic + 2:])
+                        print(t)
+                        break
+                    if c == '$' and ac == "*":
+                        found = True
+                        try:
+                            result = ' '.join(shlex.split(args)[
+                                lastusedindex:])
+                        except IndexError:
+                            pass
+                        hadall = True
+                        t = t[0:ic] + (
+                            result + t[ic + 2:])
+                        break
+        return doptext(fp, t, count)
     elif fp.isquery():
         fp.reply("?")
     return None

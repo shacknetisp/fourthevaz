@@ -52,3 +52,10 @@ def strip_html_tags(html):
 
 def strip_xml_ampcodes(text):
     return xml.sax.saxutils.unescape(text)
+
+
+def merge_dicts(*dict_args):
+    result = {}
+    for dictionary in dict_args:
+        result.update(dictionary)
+    return result

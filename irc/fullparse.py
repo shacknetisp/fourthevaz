@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import configs.mload
+import utils
 access = configs.mload.import_module_py('rights.access')
 
 
@@ -22,6 +23,21 @@ class FullParse():
             authed = t['authed'] if 'authed' in t and t['authed'] else ''
         self.accesslevelname = "%s:%s:%s" % (
             self.sp.sendernick, self.sp.host, authed)
+        self.channellevel = access.getaccesslevel(
+            self.server, self.accesslevelname,
+            str(self.server.entry[
+                'settings'] + ':' + self.channel.entry['channel'])
+            if self.channel is not None else
+            "")
+        self.serverlevel = access.getaccesslevel(
+            self.server, self.accesslevelname)
+
+    def get_aliases(self):
+        channeld = {}
+        if self.channel:
+            channeld = self.channel.aliases
+        return utils.merge_dicts(self.server.aliasdb,
+            channeld)
 
     def isquery(self):
         return self.sp.target == self.server.nick
@@ -34,12 +50,8 @@ class FullParse():
 
     def accesslevel(self):
         return max(
-            access.getaccesslevel(self.server, self.accesslevelname),
-            access.getaccesslevel(self.server, self.accesslevelname,
-            str(self.server.entry[
-                'settings'] + ':' + self.channel.entry['channel'])
-            if self.channel is not None else
-            ""))
+            self.serverlevel,
+            self.channellevel)
 
     def reply(self, message, command='PRIVMSG'):
         self.server.write_cmd(command, self.outtarget() + str(' :') + message)
@@ -56,5 +68,7 @@ class FullParse():
             for c in self.fp.server.channels:
                 if name == c['channel']:
                     self.entry = c
+                    self.aliases = self.fp.server.db.db['aliases:%s' % (
+                    c['channel'])]
                     return
             self.entry = None
