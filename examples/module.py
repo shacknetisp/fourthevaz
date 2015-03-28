@@ -78,7 +78,7 @@ def recv(fp):
 
 def joined(server):
     #The joined base hook is passed a server object
-    print(('Ready!'))
+    print('Ready!')
 
 
 def tensecondtimer():
