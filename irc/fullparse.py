@@ -53,6 +53,11 @@ class FullParse():
             self.serverlevel,
             self.channellevel)
 
+    def channelaccess(self, channel):
+        return max(self.server.get_channel_access(
+            access.getaccesslevel, self,
+            channel), self.serverlevel)
+
     def reply(self, message, command='PRIVMSG'):
         self.server.write_cmd(command, self.outtarget() + str(' :') + message)
 

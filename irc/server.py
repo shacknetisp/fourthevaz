@@ -93,6 +93,7 @@ class Server:
         self.load_commands()
 
     def initjoin(self):
+        self.do_base_hook('joined', self)
         self.properties['joined'] = True
         for channel in self.channels:
             self.join_channel(channel)

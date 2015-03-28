@@ -125,10 +125,10 @@ class LineDB:
             dt)
         if topic == "":
             return 'You must specify a topic.'
-        if channel and max(self.server.get_channel_access(
-            access.getaccesslevel, fp,
-            topic), fp.serverlevel) < 1:
+
+        if channel and fp.channelaccess(topic) < 1:
                 return 'You must be at least level 1 in the target channel.'
+
         if (topic not in fp.server.state['%s.db' % self.plural].db) or (
             not self.random):
             fp.server.state['%s.db' % self.plural].db[topic] = []
@@ -163,10 +163,10 @@ class LineDB:
         line = args.getlinstr(self.name, '')
         topic, line = self.splitline(line,
             dt)
-        if channel and max(self.server.get_channel_access(
-            access.getaccesslevel, fp,
-            topic), fp.serverlevel) < 1:
+
+        if channel and fp.channelaccess(topic) < 1:
                 return 'You must be at least level 1 in the target channel.'
+
         db = fp.server.state['%s.db' % self.plural].db
         if topic not in db or len(db[topic]) == 0:
             if not topic:

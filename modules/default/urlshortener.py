@@ -35,7 +35,7 @@ def urlshorten(fp, args):
     return(requests.get(
         "http://v.gd/create.php", params={
         'format': 'simple',
-        'url': urllib.parse.quote(args.getlinstr('url')),
-        'shorturl': urllib.parse.quote(args.getlinstr('ending', ''))
+        'url': (args.getlinstr('url')),
+        'shorturl': (args.getlinstr('ending', ''))
         }
         ).text)
