@@ -5,6 +5,7 @@ import select
 import configs
 import time
 import configs.module as module
+import configs.match as match
 import configs.mload as mload
 import configs.locs as locs
 import db.text
@@ -13,6 +14,7 @@ import running
 import os
 import utils
 moduleregistry.add_module(irc)
+moduleregistry.add_module(match)
 moduleregistry.add_module(utils)
 moduleregistry.add_module(module)
 moduleregistry.add_module(configs)

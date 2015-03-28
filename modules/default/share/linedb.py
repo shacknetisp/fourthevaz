@@ -11,7 +11,7 @@ commands = configs.mload.import_module_py('commands', '', False)
 class LineDB:
 
     def __init__(self, name, plural, seperprefix,
-        seper, add, main, remove, random):
+        seper, add, main, remove, random, eh=''):
         self.dbfolder = configs.locs.userdata + '/' + plural
         os.makedirs(self.dbfolder, exist_ok=True)
         self.name = name
@@ -23,8 +23,11 @@ class LineDB:
         self.f_remove = remove
         self.random = random
         self.randomtext = "random" if random else "single"
+        self.eh = eh
 
     def splitline(self, i1, i2=""):
+        if not self.seperprefix:
+            return (i1, i2)
         r1 = i2
         r2 = i1
         if i1 and i1[0].find(self.seperprefix) == 0:
@@ -52,8 +55,9 @@ class LineDB:
                     'name': '%s' % self.name,
                     'optional': False,
                     'help': str(
-                        'The %s, in this format: [%s%s] <%s>.' % (
-                        self.name, self.seperprefix, self.seper, self.name)),
+                        'The %s, in this format: [%s%s] <%s>.%s,' % (
+                        self.name, self.seperprefix, self.seper, self.name,
+                        self.eh)),
                     'end': True,
                     }
                     ]
@@ -85,8 +89,8 @@ class LineDB:
                     'name': self.name,
                     'optional': True,
                     'help': str(
-                        'The %s, in this format: [%s%s] <search>.' % (
-                        self.name, self.seperprefix, self.seper)),
+                        'The %s, in this format: [%s%s] <search>.%s' % (
+                        self.name, self.seperprefix, self.seper, self.eh)),
                     'end': True,
                     }
                     ]

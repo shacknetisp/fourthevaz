@@ -11,7 +11,8 @@ def init(options):
     server = options['server']
     linedb = configs.mload.import_module_py("share.linedb", "default")
     server.state['quotes.linedb'] = linedb.LineDB(
-        'quote', 'quotes', '#', 'channel', add, main, remove, True)
+        'quote', 'quotes', '#', 'channel', add, main, remove, True,
+        ' #target# and #joker# are the tokens.')
     ldb = server.state['quotes.linedb']
     ldb.initserver(server)
     m = configs.module.Module('quotes')
