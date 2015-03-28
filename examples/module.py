@@ -7,8 +7,7 @@ import configs.module
 #this will pass the server when the module registers.
 def init():
     #Create the class, the argument is the name of the module.
-    #It is important to keep the name of the module the same as the file.
-    m = configs.module.Module('module')
+    m = configs.module.Module(__name__)
     #This function sets the module help, returned by modhelp
     m.set_help('An example module.')
 

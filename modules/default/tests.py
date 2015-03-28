@@ -3,7 +3,7 @@ from configs.module import Module
 
 
 def init():
-    m = Module('tests')
+    m = Module(__name__)
     m.set_help('Run tests.')
     m.add_command_hook('test',
         {
