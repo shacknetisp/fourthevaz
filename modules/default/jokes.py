@@ -31,7 +31,7 @@ def init(options):
 
 def add(fp, args):
     return ldb.add(fp, args, fp.channel.entry[
-                'channel'] if fp.channel and fp.channel.entry else '')
+                'channel'] if fp.channel and fp.channel.entry else '', True)
 
 
 def main(fp, args):
@@ -47,5 +47,5 @@ def main(fp, args):
 
 def remove(fp, args):
     return ldb.remove(fp, args, fp.channel.entry[
-                'channel'] if fp.channel and fp.channel.entry else '')
+                'channel'] if fp.channel and fp.channel.entry else '', True)
 

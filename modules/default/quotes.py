@@ -11,8 +11,7 @@ def init(options):
     server = options['server']
     linedb = configs.mload.import_module_py("share.linedb", "default")
     server.state['quotes.linedb'] = linedb.LineDB(
-        'quote', 'quotes', '#', 'channel', add, main, remove, True,
-        ' #target# and #joker# are the tokens.')
+        'quote', 'quotes', '#', 'channel', add, main, remove, True)
     ldb = server.state['quotes.linedb']
     ldb.initserver(server)
     m = configs.module.Module('quotes')
@@ -21,16 +20,18 @@ def init(options):
 
 
 def add(fp, args):
-    return ldb.add(fp, args, fp.channel.entry[
-                'channel'] if fp.channel and fp.channel.entry else '')
+    c = fp.channel.entry[
+                'channel'] if fp.channel and fp.channel.entry else ''
+    return ldb.add(fp, args, c, True)
 
 
 def main(fp, args):
-    return ldb.main(fp, args, fp.channel.entry[
-                'channel'] if fp.channel and fp.channel.entry else '')
+    c = fp.channel.entry['channel'] if fp.channel and fp.channel.entry else ""
+    return ldb.main(fp, args, c)
 
 
 def remove(fp, args):
-    return ldb.remove(fp, args, fp.channel.entry[
-                'channel'] if fp.channel and fp.channel.entry else '')
+    c = fp.channel.entry[
+                'channel'] if fp.channel and fp.channel.entry else ""
+    return ldb.remove(fp, args, c, True)
 

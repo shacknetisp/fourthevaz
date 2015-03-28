@@ -162,6 +162,12 @@ class Server:
             #Parse Message
             self.process_message(splitparse.SplitParser(ircmsg))
 
+    def get_channel_access(self, galf, fp, channel):
+        return galf(
+            self, fp.accesslevelname,
+            str(self.entry[
+                'settings'] + ':' + channel), fp.channel)
+
     def process(self):
         for m in self.modules:
             for t in m.timer_hooks:

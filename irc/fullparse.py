@@ -23,14 +23,14 @@ class FullParse():
             authed = t['authed'] if 'authed' in t and t['authed'] else ''
         self.accesslevelname = "%s:%s:%s" % (
             self.sp.sendernick, self.sp.host, authed)
-        self.channellevel = access.getaccesslevel(
-            self.server, self.accesslevelname,
-            str(self.server.entry[
-                'settings'] + ':' + self.channel.entry['channel'])
+        c = (self.channel.entry['channel']
             if self.channel is not None else
             "")
+        self.channellevel = self.server.get_channel_access(
+            access.getaccesslevel, self,
+            c)
         self.serverlevel = access.getaccesslevel(
-            self.server, self.accesslevelname)
+            self.server, self.accesslevelname, c, self.channel)
 
     def get_aliases(self):
         channeld = {}

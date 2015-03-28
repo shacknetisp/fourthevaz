@@ -61,10 +61,23 @@ def recv(fp):
             pass
     elif fp.sp.iscode('311'):
         if fp.sp.object not in fp.server.whoislist:
-            fp.server.whoislist[fp.sp.object] = {}
+            fp.server.whoislist[fp.sp.object] = {
+                'op': [],
+                'voice': [],
+                }
         fp.server.whoislist[fp.sp.object]['ident'] = fp.sp.getsplit(4)
         fp.server.whoislist[fp.sp.object]['host'] = fp.sp.getsplit(5)
         fp.server.whoislist[fp.sp.object]['name'] = fp.sp.text
+    elif fp.sp.iscode('319'):
+        o = []
+        v = []
+        for c in fp.sp.text.split():
+            if c[0] == '@':
+                o.append(c[1:])
+            elif c[0] == '+':
+                v.append(c[1:])
+        fp.server.whoislist[fp.sp.object]['op'] = o
+        fp.server.whoislist[fp.sp.object]['voice'] = v
     elif fp.sp.iscode('330'):
         fp.server.whoislist[fp.sp.object]['authed'] = fp.sp.getsplit(4)
     elif fp.sp.iscode('318'):

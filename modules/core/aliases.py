@@ -85,8 +85,6 @@ def init():
 def delete(fp, args):
     alias = args.getlinstr('alias')
     if fp.channel and alias in fp.channel.aliases:
-        if fp.accesslevel() < 25:
-            return 'You must be level 25 or higher to modify aliases.'
         content = fp.channel.aliases[alias]
         del fp.channel.aliases[alias]
         return 'Deleted channel alias <%s>: %s' % (alias, content)
