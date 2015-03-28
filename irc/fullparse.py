@@ -30,7 +30,7 @@ class FullParse():
             access.getaccesslevel, self,
             c)
         self.serverlevel = access.getaccesslevel(
-            self.server, self.accesslevelname, c, self.channel)
+            self.server, self.accesslevelname, "", self.channel)
 
     def get_aliases(self):
         channeld = {}

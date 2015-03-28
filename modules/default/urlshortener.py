@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import configs.module
 import requests
+import urllib.parse
 
 
 def init():
@@ -16,6 +17,11 @@ def init():
                     'help': 'URL to shorten.',
                     'optional': False,
                     },
+                {
+                    'name': 'ending',
+                    'help': 'Custom ending.',
+                    'optional': True,
+                    },
                 ]
             }
         )
@@ -27,5 +33,9 @@ def init():
 
 def urlshorten(fp, args):
     return(requests.get(
-        "http://v.gd/create.php?format=simple&url=" + args.getlinstr('url'))
-        .text)
+        "http://v.gd/create.php", params={
+        'format': 'simple',
+        'url': urllib.parse.quote(args.getlinstr('url')),
+        'shorturl': urllib.parse.quote(args.getlinstr('ending', ''))
+        }
+        ).text)
