@@ -57,9 +57,9 @@ class Server:
         self.whoisbuffer = []
         self.whoislist = {}
 
-    def updatealiases(self):
-        if 'aliases' not in self.db:
-            self.db['aliases'] = []
+    def update_aliases(self):
+        if 'aliases' not in self.db or type(self.db['aliases']) is not dict:
+            self.db['aliases'] = {}
         d = {}
         try:
             d = ast.literal_eval(open(locs.userdata + '/aliases.py').read())
@@ -84,7 +84,7 @@ class Server:
         return c
 
     def reinit(self):
-        self.updatealiases()
+        self.update_aliases()
         mload.serverinit(self)
         self.load_commands()
 

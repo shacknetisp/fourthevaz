@@ -72,7 +72,10 @@ def suggest(fp, args):
     returnstring = "Recommendations from "
     for category in likedmedia:
         if not likedmedia[category] == []:
-            returnstring += category + 's: ' + str(likedmedia[
+            c = category
+            if c == 'music':
+                c = 'artist'
+            returnstring += c + 's: ' + str(likedmedia[
                     category])[1:-1].replace("'", "") + ', '
         returnstring = returnstring.strip(', ') + '; '
     returnstring = returnstring.strip(',; ')
