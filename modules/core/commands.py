@@ -3,7 +3,6 @@ from configs.module import Module
 import shlex
 import utils
 import traceback
-import running
 
 
 def init():

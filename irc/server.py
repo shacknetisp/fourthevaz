@@ -100,7 +100,7 @@ class Server:
 
     def join_channel(self, c):
         self.write_cmd('JOIN ', self.shortchannel(c)['channel'])
-        name = self.entry['settings'] + ':' + self.shortchannel(c)['channel']
+        name = self.entry['access'][0] + ':' + self.shortchannel(c)['channel']
         if name not in running.accesslist.db:
             running.accesslist.db[name] = {}
             running.accesslist.save()
