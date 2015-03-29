@@ -33,7 +33,7 @@ def suggest(fp, args):
     if fp.ltnserver():
         return "You cannot use this module from a server."
     params = {'q': args.getlinstr('things you like'),
-        'limit': 5, 'k': "129654-Fourthev-A789FB9C"}
+        'limit': 5, 'k': ""}
     if 'results' in args.lin:
         params['limit'] = args.getlinstr('results')
     suggestions = requests.get('http://www.tastekid.com/api/similar',
