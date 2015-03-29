@@ -40,7 +40,7 @@ def recv(fp):
     os.makedirs(folder, exist_ok=True)
     if (not fp.outtarget() or fp.outtarget() == '*'
     or fp.outtarget()[0] == ':'
-    or fp.sp.iscode('372')):
+    or fp.sp.iscode('372') or fp.sp.iscode('PONG') or fp.sp.iscode('PING')):
         with open(folder + '/' + 'serv.er', 'a') as f:
             f.write("[%s] <%s> %s\n" % (
             datetime.datetime.utcnow(),
