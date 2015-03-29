@@ -7,7 +7,7 @@ def init():
     m = Module('ircusers')
     m.set_help('Handle the User Lists.')
     m.add_base_hook('recv', recv)
-    m.add_timer_hook(30 * 1000, timer)
+    m.add_timer_hook(90 * 1000, timer)
     m.add_command_hook('authme',
         {
             'function': authme,
