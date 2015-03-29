@@ -48,14 +48,14 @@ def setkey(fp, args):
 
 
 def suggest(fp, args):
-    if fp.ltnserver():
-        return "You cannot use this module from a server."
     params = {'q': args.getlinstr('things you like'),
         'limit': 5, 'k':
             fp.server.db['suggest.apikey']
             if 'suggest.apikey' in fp.server.db else ''}
     if 'results' in args.lin:
         params['limit'] = args.getlinstr('results')
+    if fp.ltnserver() and params['limit'] > 10:
+        return "You cannot use this module from a server."
     suggestions = requests.get('http://www.tastekid.com/api/similar',
         params=params)
     suggestions = suggestions.json()["Similar"]
