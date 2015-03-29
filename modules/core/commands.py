@@ -168,7 +168,10 @@ def doptext(fp, p_ptext, count=100):
                             result + t[endi + 1:])
                         break
         noshlex = command['noshlex'] if 'noshlex' in command else False
-        args = Args(t, noshlex)
+        try:
+            args = Args(t, noshlex)
+        except ValueError as e:
+            return str(e)
         counter = 0
         hasend = False
         hasoptional = False
@@ -306,7 +309,7 @@ def doptext(fp, p_ptext, count=100):
                         break
         return doptext(fp, t, count)
     elif fp.isquery():
-        fp.reply("?")
+        return("?")
     return None
 
 
