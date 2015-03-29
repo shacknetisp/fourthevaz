@@ -71,13 +71,17 @@ class FullParse():
             channel), self.serverlevel)
 
     def reply(self, message, command='PRIVMSG'):
-        self.server.write_cmd(command, self.outtarget() + str(' :') + message)
+        self.server.do_base_hook('output', self, self.outtarget(), message)
+        for m in message.split('\n'):
+            self.server.write_cmd(command, self.outtarget() + str(' :') + m)
 
     def replyctcp(self, message):
         self.reply(ircutils.ctcp(message), "NOTICE")
 
     def replypriv(self, message, command='PRIVMSG'):
-        self.server.write_cmd(command, self.sp.sendernick + str(' :') + message)
+        self.server.do_base_hook('output', self, self.sp.sendernick, message)
+        for m in message.split('\n'):
+            self.server.write_cmd(command, self.sp.sendernick + str(' :') + m)
 
     class Channel:
 

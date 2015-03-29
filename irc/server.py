@@ -193,6 +193,7 @@ class Server:
     def process_message(self, sp):
         if sp.iscode('endmotd') and not self.properties['joined']:
             self.initjoin()
+        self.do_base_hook('prerecv', fullparse.FullParse(self, sp))
         self.do_base_hook('recv', fullparse.FullParse(self, sp))
 
     def do_base_hook(self, name, *args, **kwargs):
