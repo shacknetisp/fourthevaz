@@ -73,13 +73,13 @@ def recv(fp):
             fp.user = utils.find_between(fp.sp.text, '<', '> ')
             fp.setaccess("%s::" % fp.user.replace(':', '"'))
             text = fp.sp.text[fp.sp.text.index('> ') + 2:]
-            prefix = fp.channel.entry['prefix']
+            prefixt = fp.channel.entry['prefix'].split()
             possible = [
-                prefix,
                 fp.server.nick + ', ',
                 fp.server.nick + ': ',
-                ]
+                ] + prefixt
             found = False
+            prefix = prefixt[0]
             for p in possible:
                 if text.find(p) == 0:
                     found = True

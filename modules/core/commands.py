@@ -331,18 +331,20 @@ def recv(fp):
         if fp.ltnserver():
             return
         text = fp.sp.text
-        prefix = fp.server.entry['prefix']
+        prefixt = fp.server.entry['prefix'].split()
         if fp.channel:
-            prefix = fp.channel.entry['prefix']
+            prefixt = fp.channel.entry['prefix'].split()
         elif fp.isquery():
-            if text.find(prefix) != 0:
-                text = prefix + text
+            for prefix in prefixt:
+                if text.find(prefix) != 0:
+                    text = prefix + text
+                    break
         possible = [
-            prefix,
             fp.server.nick + ', ',
             fp.server.nick + ': ',
-            ]
+            ] + prefixt
         found = False
+        prefix = prefixt[0]
         for p in possible:
             if text.find(p) == 0:
                 found = True
