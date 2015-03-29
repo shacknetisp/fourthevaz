@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import configs.mload
 import utils
+from . import utils as ircutils
 access = configs.mload.import_module_py('rights.access')
 
 
@@ -60,6 +61,9 @@ class FullParse():
 
     def reply(self, message, command='PRIVMSG'):
         self.server.write_cmd(command, self.outtarget() + str(' :') + message)
+
+    def replyctcp(self, message):
+        self.reply(ircutils.ctcp(message), "NOTICE")
 
     class Channel:
 

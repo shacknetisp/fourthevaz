@@ -9,8 +9,13 @@ def init(options):
     m = Module('ping')
     m.set_help('Reply to PING messages from the IRC server.')
     m.add_base_hook('recv', recv)
+    m.add_base_hook('ctcp.ping', ctcp_ping)
     m.add_timer_hook(10 * 1000, timer)
     return m
+
+
+def ctcp_ping(fp):
+    fp.replyctcp('PING %s' % fp.ctcptext)
 
 
 def recv(fp):

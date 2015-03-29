@@ -214,9 +214,9 @@ class Server:
 
     def delete_module(self, name):
         index = -1
-        for i in self.modules:
-            if i.name == name:
-                index = self.modules.index(i)
+        for i in range(len(self.modules)):
+            if self.modules[i].name == name:
+                index = i
         if index >= 0:
             print(('Removed Module: %s' % name))
             del self.modules[index]
