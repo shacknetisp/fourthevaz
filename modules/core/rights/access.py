@@ -13,8 +13,7 @@ class AccessLevelError(Exception):
 
 
 def raiseifnotformeduser(u):
-    splitu = u.split(':')
-    if len(splitu) != accesslen:
+    if u.count(':') != accesslen - 1:
         raise AccessLevelError('The user %s is malformed!' % u)
 
 

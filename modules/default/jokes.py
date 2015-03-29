@@ -41,8 +41,8 @@ def main(fp, args):
         return r
     return r.replace(
                     '!target!', args.getlinstr(
-                        'target', fp.sp.sendernick)).replace(
-                            '!joker!', fp.sp.sendernick)
+                        'target', fp.user)).replace(
+                            '!joker!', fp.user)
 
 
 def remove(fp, args):

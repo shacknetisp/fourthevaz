@@ -328,6 +328,8 @@ def recv(fp):
             return
         if fp.sp.sendernick in ['ChanServ', 'NickServ']:
             return
+        if fp.ltnserver():
+            return
         text = fp.sp.text
         prefix = fp.server.entry['prefix']
         if fp.channel:
