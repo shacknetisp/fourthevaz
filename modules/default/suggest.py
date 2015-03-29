@@ -65,27 +65,19 @@ def suggest(fp, args):
                 'No results available; Please check your spelling')
         fp.replypriv('No results available; Please check your spelling')
         return
-    likedmedia = {
-        'book': [],
-        'game': [],
-        'music': [],
-        'author': [],
-        'movie': [],
-        'show': [],
-        }
+    likedmedia = {}
     for i in suggestions['Info']:
+        if i['Type'] not in likedmedia:
+            likedmedia[i['Type']] = []
         likedmedia[i['Type']].append(i['Name'])
-    returnstring = "Because you liked the "
+    returnstring = "Recommendations from "
     for category in likedmedia:
         if not likedmedia[category] == []:
-            if category == 'music':
-                returnstring += 'music of ' + str(likedmedia[
-                        category])[1:-1].replace("'", "") + ','
-            else:
-                returnstring += category + 's ' + str(likedmedia[
-                        category])[1:-1].replace("'", "") + ','
-    else:
-        returnstring += ' TasteKid suggests '
+            returnstring += category + 's: ' + str(likedmedia[
+                    category])[1:-1].replace("'", "") + ', '
+        returnstring = returnstring.strip(', ') + '; '
+    returnstring = returnstring.strip(',; ')
+    returnstring += ' -- '
     returnlist = []
     for i in suggestions['Results']:
         returnlist.append(i['Name'])
