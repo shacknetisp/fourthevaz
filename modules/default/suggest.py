@@ -1,6 +1,6 @@
 import configs.module
 import requests
-
+from urllib.parse import quote_plus
 
 def init():
     m = configs.module.Module(__name__)
@@ -31,11 +31,12 @@ def init():
 def suggest(fp, args):
     if fp.ltnserver():
         return "You cannot use this module from a server."
-    params = {'q': args.getlinstr('things you like'), 'limit': 5}
+    params = {'q': args.getlinstr('things you like'), 'limit': 5, 'k':"129654-Fourthev-A789FB9C"}
     if 'results' in args.lin:
         params['limit'] = args.getlinstr('results')
     suggestions = requests.get('http://www.tastekid.com/api/similar',
         params=params)
+    print (suggestions.url)
     suggestions = suggestions.json()["Similar"]
     if suggestions['Results'] == []:
         fp.replypriv('No results available; Please check your spelling')
@@ -56,9 +57,8 @@ def suggest(fp, args):
                 returnstring += 'music of ' + likedmedia[
                     'music'][1:-1].replace("'", "") + ','
             else:
-                returnstring += likedmedia[
-                    category] + 's ' + likedmedia[
-                        category][1:-1].replace("'", "") + ','
+                returnstring += category + 's ' + str(likedmedia[
+                        category])[1:-1].replace("'", "") + ','
     else:
         returnstring += ' TasteKid suggests '
     for i in suggestions['Results']:
