@@ -38,7 +38,9 @@ def donick(fp, channels):
 def recv(fp):
     folder = configs.locs.userdata + '/logs/' + fp.server.entry['settings']
     os.makedirs(folder, exist_ok=True)
-    if not fp.outtarget() or fp.outtarget() == '*' or fp.outtarget()[0] == ':':
+    if (not fp.outtarget() or fp.outtarget() == '*'
+    or fp.outtarget()[0] == ':'
+    or fp.sp.iscode('372')):
         with open(folder + '/' + 'serv.er', 'a') as f:
             f.write("[%s] <%s> %s\n" % (
             datetime.datetime.utcnow(),

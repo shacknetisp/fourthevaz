@@ -157,7 +157,8 @@ class Server:
             ircmsg = regex.sub("", ircmsg)
             self.log('In', ircmsg)
             #Parse Message
-            self.process_message(splitparse.SplitParser(ircmsg))
+            if ircmsg and ircmsg[0] == ':':
+                self.process_message(splitparse.SplitParser(ircmsg))
 
     def get_channel_access(self, galf, fp, channel):
         return galf(
