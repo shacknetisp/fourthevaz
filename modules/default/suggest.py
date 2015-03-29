@@ -1,6 +1,5 @@
 import configs.module
 import requests
-import json
 
 
 def init():
@@ -35,8 +34,9 @@ def suggest(fp, args):
     params = {'q': args.getlinstr('things you like'), 'limit': 5}
     if 'results' in args.lin:
         params['limit'] = args.getlinstr('results')
-    suggestions = requests.get('http://www.tastekid.com/api/similar', params)
-    suggestions = json.loads(suggestions.read().decode())["Similar"]
+    suggestions = requests.get('http://www.tastekid.com/api/similar',
+        params=params)
+    suggestions = suggestions.json()["Similar"]
     if suggestions['Results'] == []:
         fp.replypriv('No results available; Please check your spelling')
         return
