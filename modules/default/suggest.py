@@ -61,8 +61,7 @@ def suggest(fp, args):
     suggestions = suggestions.json()["Similar"]
     if suggestions['Results'] == []:
         if params['limit'] <= 10:
-            return fp.replypriv(
-                'No results available; Please check your spelling')
+            return('No results available; Please check your spelling')
         fp.replypriv('No results available; Please check your spelling')
         return
     likedmedia = {}
