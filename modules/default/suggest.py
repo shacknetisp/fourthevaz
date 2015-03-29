@@ -26,14 +26,34 @@ def init():
                 ]
             }
         )
+    m.add_command_hook('setsuggestkey',
+        {
+            'help': 'Set the API Key for suggest.',
+            'function': setkey,
+            'args': [
+                {
+                    'name': 'key',
+                    'help': 'API key',
+                    'optional': True,
+                    },
+                ]
+            }
+        )
     return m
+
+
+def setkey(fp, args):
+    fp.server.db['suggest.apikey'] = args.getlinstr('key', '')
+    return 'The key has been set to "%s"' % fp.server.db['suggest.apikey']
 
 
 def suggest(fp, args):
     if fp.ltnserver():
         return "You cannot use this module from a server."
     params = {'q': args.getlinstr('things you like'),
-        'limit': 5, 'k': ""}
+        'limit': 5, 'k':
+            fp.server.db['suggest.apikey']
+            if 'suggest.apikey' in fp.server.db else ''}
     if 'results' in args.lin:
         params['limit'] = args.getlinstr('results')
     suggestions = requests.get('http://www.tastekid.com/api/similar',
