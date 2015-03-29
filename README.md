@@ -5,3 +5,4 @@ All modules from the Core and Default modulesets (unless otherwise marked), as w
 #Module Dependancies
 * xmltodict
 * wikipedia
+* pytz

@@ -22,4 +22,4 @@ def matchnocase(string, regex, fullmatch):
         pass
     return (a and a.match(string) is not None) or (
         not fullmatch and string.lower().find(regex.lower()) != -1) or (
-            fnmatch.fnmatchcase(string, regex))
+            fnmatch.fnmatch(string.lower(), regex.lower()))
