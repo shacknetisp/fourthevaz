@@ -39,16 +39,16 @@ def init():
 
 
 def addserver(fp, args):
-    if 'ltnservers' not in fp.server.db.db:
-        fp.server.db.db['ltnservers'] = []
-    fp.server.db.db['ltnservers'].append(args.getlinstr('nick'))
+    if 'ltnservers' not in fp.server.db:
+        fp.server.db['ltnservers'] = []
+    fp.server.db['ltnservers'].append(args.getlinstr('nick'))
     return '%s is now in the server list.' % args.getlinstr('nick')
 
 
 def removeserver(fp, args):
     try:
-        del fp.server.db.db['ltnservers'][
-            fp.server.db.db['ltnservers'].index(args.getlinstr('nick'))]
+        del fp.server.db['ltnservers'][
+            fp.server.db['ltnservers'].index(args.getlinstr('nick'))]
         return '%s has been removed from the server list.' % args.getlinstr(
             'nick')
     except KeyError:
@@ -59,9 +59,9 @@ def removeserver(fp, args):
 
 
 def listservers(fp, args):
-    if 'ltnservers' not in fp.server.db.db:
-        fp.server.db.db['ltnservers'] = []
-    return 'Servers: ' + utils.ltos(fp.server.db.db['ltnservers'])
+    if 'ltnservers' not in fp.server.db:
+        fp.server.db['ltnservers'] = []
+    return 'Servers: ' + utils.ltos(fp.server.db['ltnservers'])
 
 
 def recv(fp):

@@ -88,11 +88,11 @@ def delete(fp, args):
         content = fp.channel.aliases[alias]
         del fp.channel.aliases[alias]
         return 'Deleted channel alias <%s>: %s' % (alias, content)
-    elif alias in fp.server.db.db['aliases']:
+    elif alias in fp.server.db['aliases']:
         if fp.serverlevel < 25:
             return 'You must be level 25 or higher to modify aliases.'
-        content = fp.server.db.db['aliases'][alias]
-        del fp.server.db.db['aliases'][alias]
+        content = fp.server.db['aliases'][alias]
+        del fp.server.db['aliases'][alias]
         fp.server.update_aliases()
         return 'Deleted server alias <%s>: %s' % (alias, content)
     else:
@@ -106,7 +106,7 @@ def setalias(fp, args):
     alias = args.getlinstr('alias')
     content = args.getlinstr('content', '')
     if scope == 'channel':
-        if alias in fp.server.db.db['aliases']:
+        if alias in fp.server.db['aliases']:
             return 'That alias already exists as a server alias.'
         if not fp.channel:
             return 'You are not in a channel.'
@@ -119,7 +119,7 @@ def setalias(fp, args):
             return 'That alias already exists as a channel alias.'
         if fp.serverlevel < 25:
             return 'You must be level 25 or higher to modify aliases.'
-        fp.server.db.db['aliases'][alias] = content
+        fp.server.db['aliases'][alias] = content
         fp.server.update_aliases()
         return 'Set server alias <%s> to: %s' % (alias, content)
     else:

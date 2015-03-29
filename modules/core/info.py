@@ -76,8 +76,8 @@ def ctcp_time(fp):
 
 def ctcp_userinfo(fp):
     try:
-        if fp.server.db.db['userinfo']:
-            fp.replyctcp('USERINFO %s' % fp.server.db.db['userinfo'])
+        if fp.server.db['userinfo']:
+            fp.replyctcp('USERINFO %s' % fp.server.db['userinfo'])
             return
     except KeyError:
         pass
@@ -85,8 +85,8 @@ def ctcp_userinfo(fp):
 
 
 def setuserinfo(fp, args):
-    fp.server.db.db['userinfo'] = args.getlinstr('text', '<No reply set>')
-    return 'CTCP USERINFO will now return "%s".' % fp.server.db.db['userinfo']
+    fp.server.db['userinfo'] = args.getlinstr('text', '<No reply set>')
+    return 'CTCP USERINFO will now return "%s".' % fp.server.db['userinfo']
 
 
 def ctcp_clientinfo(fp):

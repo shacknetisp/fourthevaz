@@ -34,8 +34,8 @@ class FullParse():
             channeld)
 
     def ltnserver(self):
-        if 'ltnservers' in self.server.db.db:
-            if self.sp.sendernick in self.server.db.db['ltnservers']:
+        if 'ltnservers' in self.server.db:
+            if self.sp.sendernick in self.server.db['ltnservers']:
                 return True
         return False
 
@@ -95,7 +95,7 @@ class FullParse():
             for c in self.fp.server.channels:
                 if name == c['channel']:
                     self.entry = c
-                    self.aliases = self.fp.server.db.db['aliases:%s' % (
+                    self.aliases = self.fp.server.db['aliases:%s' % (
                     c['channel'])]
                     return
             self.entry = None

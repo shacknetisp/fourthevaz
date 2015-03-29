@@ -23,11 +23,15 @@ moduleregistry.add_module(mload)
 moduleregistry.add_module(db.text)
 moduleregistry.add_module(version)
 if __name__ == '__main__':
-    print('Fourth Evaz %s' % version.versionstr())
+    print(('Fourth Evaz %s' % version.versionstr()))
     running.accesslist = db.text.DB(locs.userdata + '/access.py')
     if os.path.exists(running.accesslist.filename):
         running.accesslist.load()
     running.accesslist.save()
+    running.serverdb = db.text.DB(locs.userdata + '/serverdb.py')
+    if os.path.exists(running.serverdb.filename):
+        running.serverdb.load()
+    running.serverdb.save()
     for s in configs.servers.servers:
         server = irc.server.Server(
             s['address']['host'],
