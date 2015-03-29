@@ -8,8 +8,6 @@ from . import fullparse
 import configs.mload as mload
 import configs.locs as locs
 import moduleregistry
-import db.text
-import os
 import running
 import utils
 import ast
@@ -226,8 +224,12 @@ class Server:
         if not mset:
             mset = self.entry['moduleset']
         self.delete_module(name)
-        m = mload.import_module(
-            name, mset, options={'server': self})
+        try:
+            m = mload.import_module(
+                name, mset, options={'server': self})
+        except mload.DepException as e:
+            print(('Dependancy Exception in %s: %s' % (name, e.e)))
+            return
         self.modules.append(m)
         print(('Added Module: %s' % name))
 

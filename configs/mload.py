@@ -16,6 +16,15 @@ class DDRException(Exception):
         return "Module %s was deleted while running." % self.m
 
 
+class DepException(Exception):
+
+    def __init__(self, e):
+        self.e = e
+
+    def __str__(self):
+        return str(self.e)
+
+
 def serverinit(server):
     def skipname(n):
         return n[0] == '_' or n == 'share'
@@ -42,7 +51,7 @@ def import_module_py(name, moduleset="", doreload=True):
         except ImportError as e:
             err = e
             if e.name.split('.')[0] not in ['mlocal', 'modules']:
-                raise e
+                raise DepException(e)
     if not m:
         raise err
     if not os.path.exists(m.__file__):

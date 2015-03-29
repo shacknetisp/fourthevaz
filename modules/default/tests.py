@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
+import adjhkj
 
 
 def init():
