@@ -15,8 +15,8 @@
     'moduleset': 'default',
     #The nickserv password, accessable with %pass% in the nickserv module
     'nspassword': 'anickservpass',
-    #The default prefix for commands, each channel can define it's own
-    'prefix': '.',
+    #The default prefixes for commands, each channel can define it's own
+    'prefix': '. ! !! ~',
     #The access lists to use, the first list is the default.
     #They can be shared between servers
     'access': ['freenode'],
