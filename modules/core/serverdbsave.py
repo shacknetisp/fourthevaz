@@ -12,6 +12,5 @@ def init(options):
 
 
 def timer():
-    for server in running.working_servers:
-        server.db.save()
+    running.serverdb.save()
 

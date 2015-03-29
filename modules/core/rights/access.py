@@ -13,8 +13,7 @@ class AccessLevelError(Exception):
 
 
 def raiseifnotformeduser(u):
-    splitu = u.split(':')
-    if len(splitu) != accesslen:
+    if u.count(':') != accesslen - 1:
         raise AccessLevelError('The user %s is malformed!' % u)
 
 
@@ -40,7 +39,7 @@ def getaccesslevel(server, user, alist="", channel=None):
                         good = False
             if good:
                 highest = max(highest, d[k])
-    if channel and (not alist or alist == server.entry['settings'] + ':' +
+    if channel and (not alist or alist == server.entry['access'][0] + ':' +
     channel.entry['channel']):
         if splitu[0] in server.whoislist:
             if channel.entry['channel'] in server.whoislist[splitu[0]]['op']:

@@ -41,6 +41,8 @@ def import_module_py(name, moduleset="", doreload=True):
             break
         except ImportError as e:
             err = e
+            if e.name.split('.')[0] not in ['mlocal', 'modules']:
+                raise e
     if not m:
         raise err
     if not os.path.exists(m.__file__):

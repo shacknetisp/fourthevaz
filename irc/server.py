@@ -32,11 +32,9 @@ class Server:
         'whois_tick_min': 1000,
         'recv_size': pow(2, 12),
         }):
-        self.db = db.text.DB(
-            locs.userdata + '/serverdb.%s.py' % entry['settings'])
-        if os.path.exists(self.db.filename):
-            self.db.load()
-        self.db.save()
+        if entry['settings'] not in running.serverdb.db:
+            running.serverdb.db[entry['settings']] = {}
+        self.db = running.serverdb.db[entry['settings']]
         self.state = {}
         self.options = options
         self.address = address
@@ -62,8 +60,8 @@ class Server:
         self.whoislist = {}
 
     def updatealiases(self):
-        if 'aliases' not in self.db.db:
-            self.db.db['aliases'] = []
+        if 'aliases' not in self.db:
+            self.db['aliases'] = []
         d = {}
         try:
             d = ast.literal_eval(open(locs.userdata + '/aliases.py').read())
@@ -73,7 +71,7 @@ class Server:
             mload.import_module_py("share.aliases", "core").aliases,
                  mload.import_module_py(
                      "share.aliases", self.entry['moduleset']).aliases, d,
-                      self.db.db['aliases'])
+                      self.db['aliases'])
 
     def whois(self, name):
         self.whoisbuffer.append(name)
@@ -100,13 +98,13 @@ class Server:
 
     def join_channel(self, c):
         self.write_cmd('JOIN ', self.shortchannel(c)['channel'])
-        name = self.entry['settings'] + ':' + self.shortchannel(c)['channel']
+        name = self.entry['access'][0] + ':' + self.shortchannel(c)['channel']
         if name not in running.accesslist.db:
             running.accesslist.db[name] = {}
             running.accesslist.save()
         self.entry['access'].append(name)
-        if ('aliases:%s' % self.shortchannel(c)['channel']) not in self.db.db:
-            self.db.db['aliases:%s' % self.shortchannel(c)['channel']] = {}
+        if ('aliases:%s' % self.shortchannel(c)['channel']) not in self.db:
+            self.db['aliases:%s' % self.shortchannel(c)['channel']] = {}
 
     def log(self, prefix, p_text):
         text = prefix + ': ' + p_text
@@ -193,6 +191,7 @@ class Server:
     def process_message(self, sp):
         if sp.iscode('endmotd') and not self.properties['joined']:
             self.initjoin()
+        self.do_base_hook('prerecv', fullparse.FullParse(self, sp))
         self.do_base_hook('recv', fullparse.FullParse(self, sp))
 
     def do_base_hook(self, name, *args, **kwargs):
@@ -214,9 +213,9 @@ class Server:
 
     def delete_module(self, name):
         index = -1
-        for i in self.modules:
-            if i.name == name:
-                index = self.modules.index(i)
+        for i in range(len(self.modules)):
+            if self.modules[i].name == name:
+                index = i
         if index >= 0:
             print(('Removed Module: %s' % name))
             del self.modules[index]

@@ -42,49 +42,73 @@ def init():
 
 
 def recv(fp):
-    if fp.sp.iscode('names'):
-        channel = fp.Channel(fp, fp.sp.getsplit(4))
-        names = fp.sp.text.split(' ')
-        for i in range(len(names)):
-            names[i] = utils.stripuser(names[i])
-        if 'newnames' not in channel.entry:
-            channel.entry['newnames'] = []
-        channel.entry['newnames'] += names
-        for n in names:
-            fp.server.whois(n)
-    elif fp.sp.iscode('366'):
-        channel = fp.Channel(fp, fp.sp.object)
-        try:
-            channel.entry['names'] = channel.entry['newnames']
-            channel.entry['newnames'] = []
-        except KeyError:
-            pass
-    elif fp.sp.iscode('311'):
-        if fp.sp.object not in fp.server.whoislist:
-            fp.server.whoislist[fp.sp.object] = {
-                'op': [],
-                'voice': [],
-                }
-        fp.server.whoislist[fp.sp.object]['ident'] = fp.sp.getsplit(4)
-        fp.server.whoislist[fp.sp.object]['host'] = fp.sp.getsplit(5)
-        fp.server.whoislist[fp.sp.object]['name'] = fp.sp.text
-    elif fp.sp.iscode('319'):
-        o = []
-        v = []
-        for c in fp.sp.text.split():
-            if c[0] == '@':
-                o.append(c[1:])
-            elif c[0] == '+':
-                v.append(c[1:])
-        fp.server.whoislist[fp.sp.object]['op'] = o
-        fp.server.whoislist[fp.sp.object]['voice'] = v
-    elif fp.sp.iscode('330'):
-        fp.server.whoislist[fp.sp.object]['authed'] = fp.sp.getsplit(4)
-    elif fp.sp.iscode('318'):
-        if fp.sp.object in fp.server.whoisbuffer:
-            fp.server.whoislist[fp.sp.object]['done'] = True
-            del fp.server.whoisbuffer[fp.server.whoisbuffer.index(fp.sp.object)]
-    pass
+    try:
+        if fp.sp.iscode('names'):
+            channel = fp.Channel(fp, fp.sp.getsplit(4))
+            names = fp.sp.text.split(' ')
+            for i in range(len(names)):
+                names[i] = utils.stripuser(names[i])
+            if 'newnames' not in channel.entry:
+                channel.entry['newnames'] = []
+            channel.entry['newnames'] += names
+            for n in names:
+                fp.server.whois(n)
+        elif fp.sp.iscode('366'):
+            channel = fp.Channel(fp, fp.sp.object)
+            try:
+                channel.entry['names'] = channel.entry['newnames']
+                channel.entry['newnames'] = []
+            except KeyError:
+                pass
+        elif fp.sp.iscode('311'):
+            if fp.sp.object not in fp.server.whoislist:
+                fp.server.whoislist[fp.sp.object] = {
+                    'op': [],
+                    'voice': [],
+                    }
+            fp.server.whoislist[fp.sp.object]['ident'] = fp.sp.getsplit(4)
+            fp.server.whoislist[fp.sp.object]['host'] = fp.sp.getsplit(5)
+            fp.server.whoislist[fp.sp.object]['name'] = fp.sp.text
+        elif fp.sp.iscode('319'):
+            o = []
+            v = []
+            for c in fp.sp.text.split():
+                if c[0] == '@':
+                    o.append(c[1:])
+                elif c[0] == '+':
+                    v.append(c[1:])
+            fp.server.whoislist[fp.sp.object]['op'] = o
+            fp.server.whoislist[fp.sp.object]['voice'] = v
+        elif fp.sp.iscode('330'):
+            fp.server.whoislist[fp.sp.object]['authed'] = fp.sp.getsplit(4)
+        elif fp.sp.iscode('318'):
+            if fp.sp.object in fp.server.whoisbuffer:
+                fp.server.whoislist[fp.sp.object]['done'] = True
+                del fp.server.whoisbuffer[
+                    fp.server.whoisbuffer.index(fp.sp.object)]
+        elif fp.sp.iscode('join'):
+            fp.server.whois(fp.sp.sendernick)
+            fp.server.do_base_hook('join', fp)
+        elif fp.sp.iscode('part'):
+            fp.server.do_base_hook('part', fp)
+        elif fp.sp.iscode('quit'):
+            channels = []
+            for channel in fp.server.channels:
+                if 'names' in channel:
+                    if fp.sp.sendernick in channel['names']:
+                        channels.append(channel['channel'])
+            fp.server.do_base_hook('quit', fp, channels)
+            fp.server.whois(fp.sp.sendernick)
+        elif fp.sp.iscode('nick'):
+            channels = []
+            for channel in fp.server.channels:
+                if 'names' in channel:
+                    if fp.sp.sendernick in channel['names']:
+                        channels.append(channel['channel'])
+            fp.server.do_base_hook('nick', fp, channels)
+            fp.server.whois(fp.sp.sendernick)
+    except KeyError:
+        pass
 
 
 def authme(fp, args):

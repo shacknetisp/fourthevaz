@@ -3,7 +3,6 @@ from configs.module import Module
 import shlex
 import utils
 import traceback
-import running
 
 
 def init():
@@ -313,7 +312,23 @@ def doptext(fp, p_ptext, count=100):
 
 def recv(fp):
     if fp.sp.iscode('chat'):
+        try:
+            if fp.sp.text[0] == '\x01':
+                st = fp.sp.text.strip('\x01')
+                try:
+                    fp.ctcptext = " ".join(st.split()[1:])
+                except IndexError:
+                    fp.ctcptext = ""
+                fp.server.do_base_hook('ctcp.%s' % st.split()[0].lower(), fp)
+                return
+        except Exception as e:
+            r = 'Uncaught ' + str(type(e).__name__) + '!'
+            fp.reply(r)
+            print((traceback.format_exc()))
+            return
         if fp.sp.sendernick in ['ChanServ', 'NickServ']:
+            return
+        if fp.ltnserver():
             return
         text = fp.sp.text
         prefix = fp.server.entry['prefix']

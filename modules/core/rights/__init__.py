@@ -98,7 +98,7 @@ def getusers(fp, args):
     if alist == '.':
         if not fp.channel:
             return 'Not in channel, cannot expand "."'
-        alist = fp.server.entry['settings'] + ':' + fp.channel.entry['channel']
+        alist = fp.server.entry['access'][0] + ':' + fp.channel.entry['channel']
     results = []
     if alist not in running.accesslist.db:
         return('Invalid Access List.')
@@ -114,7 +114,7 @@ def getrights(fp, args):
     if alist == '.':
         if not fp.channel:
             return 'Not in channel, cannot expand "."'
-        alist = fp.server.entry['settings'] + ':' + fp.channel.entry['channel']
+        alist = fp.server.entry['access'][0] + ':' + fp.channel.entry['channel']
     try:
         if 'onlyvalue' in args.lin:
             return('%d' % (access.getaccesslevel(
@@ -134,7 +134,7 @@ def setrights(fp, args):
     if alist == '.':
         if not fp.channel:
             return 'Not in channel, cannot expand "."'
-        alist = fp.server.entry['settings'] + ':' + fp.channel.entry['channel']
+        alist = fp.server.entry['access'][0] + ':' + fp.channel.entry['channel']
     try:
         level = int(args.getlinstr('level'))
     except ValueError:

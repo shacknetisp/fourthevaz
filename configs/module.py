@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+ctcplist = []
 
 
 class Module:
@@ -8,7 +9,7 @@ class Module:
         self.command_hooks = {}
         self.timer_hooks = []
         self.helptext = ""
-        self.name = name
+        self.name = name.split('.')[-1]
 
     def set_help(self, helptext):
         self.helptext = helptext
@@ -17,6 +18,13 @@ class Module:
         if hook not in self.base_hooks:
             self.base_hooks[hook] = []
         self.base_hooks[hook].append(f)
+        try:
+            if hook.split('.')[0] == 'ctcp':
+                c = hook.split('.')[1].upper()
+                if c not in ctcplist:
+                    ctcplist.append(c)
+        except IndexError:
+            pass
 
     def get_base_hook(self, hook):
         if hook not in self.base_hooks:

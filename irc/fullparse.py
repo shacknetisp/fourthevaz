@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import configs.mload
 import utils
+from . import utils as ircutils
 access = configs.mload.import_module_py('rights.access')
 
 
@@ -21,8 +22,26 @@ class FullParse():
             user]:
             t = self.server.whoislist[user]
             authed = t['authed'] if 'authed' in t and t['authed'] else ''
-        self.accesslevelname = "%s:%s:%s" % (
-            self.sp.sendernick, self.sp.host, authed)
+        self.setaccess("%s:%s:%s" % (
+            self.sp.sendernick, self.sp.host, authed))
+        self.user = self.sp.sendernick
+
+    def get_aliases(self):
+        channeld = {}
+        if self.channel:
+            channeld = self.channel.aliases
+        return utils.merge_dicts(self.server.aliasdb,
+            channeld)
+
+    def ltnserver(self):
+        if 'ltnservers' in self.server.db:
+            if self.sp.sendernick in self.server.db['ltnservers']:
+                return True
+        return False
+
+    def setaccess(self, s=""):
+        if s:
+            self.accesslevelname = s
         c = (self.channel.entry['channel']
             if self.channel is not None else
             "")
@@ -31,13 +50,6 @@ class FullParse():
             c)
         self.serverlevel = access.getaccesslevel(
             self.server, self.accesslevelname, "", self.channel)
-
-    def get_aliases(self):
-        channeld = {}
-        if self.channel:
-            channeld = self.channel.aliases
-        return utils.merge_dicts(self.server.aliasdb,
-            channeld)
 
     def isquery(self):
         return self.sp.target == self.server.nick
@@ -59,7 +71,17 @@ class FullParse():
             channel), self.serverlevel)
 
     def reply(self, message, command='PRIVMSG'):
-        self.server.write_cmd(command, self.outtarget() + str(' :') + message)
+        self.server.do_base_hook('output', self, self.outtarget(), message)
+        for m in message.split('\n'):
+            self.server.write_cmd(command, self.outtarget() + str(' :') + m)
+
+    def replyctcp(self, message):
+        self.reply(ircutils.ctcp(message), "NOTICE")
+
+    def replypriv(self, message, command='PRIVMSG'):
+        self.server.do_base_hook('output', self, self.sp.sendernick, message)
+        for m in message.split('\n'):
+            self.server.write_cmd(command, self.sp.sendernick + str(' :') + m)
 
     class Channel:
 
@@ -73,7 +95,7 @@ class FullParse():
             for c in self.fp.server.channels:
                 if name == c['channel']:
                     self.entry = c
-                    self.aliases = self.fp.server.db.db['aliases:%s' % (
+                    self.aliases = self.fp.server.db['aliases:%s' % (
                     c['channel'])]
                     return
             self.entry = None
