@@ -142,8 +142,11 @@ def doptext(fp, p_ptext, count=100):
         except IndexError:
             pass
         found = True
+        noshlex = command['noshlex'] if 'noshlex' in command else False
         while found:
             found = False
+            pc = 0
+            lastfound = -1
             for ic in range(len(t)):
                 try:
                     bc = t[ic - 1]
@@ -156,18 +159,20 @@ def doptext(fp, p_ptext, count=100):
                     ac = ''
                 if bc != '"':
                     if c == '<' and ac == "*":
-                        found = True
-                        endi = t.rfind('>')
-                        if endi == -1:
-                            raise NoEndToken('>')
-                        result = doptext(fp, t[ic + 2:endi], count)
-                        if not result:
-                            fp.reply('That command does not return.')
-                            return
-                        t = t[0:ic] + (
-                            result + t[endi + 1:])
-                        break
-        noshlex = command['noshlex'] if 'noshlex' in command else False
+                        pc += 1
+                        lastfound = ic
+                    elif c == '>':
+                        pc -= 1
+                        if pc == 0 and lastfound != -1:
+                            found = True
+                            result = doptext(fp, t[lastfound + 2:ic], count)
+                            if not result:
+                                return ""
+                            t = t[0:lastfound] + (
+                                result + t[ic + 1:])
+                            lastfound = -1
+                            break
+
         try:
             args = Args(t, noshlex)
         except ValueError as e:
@@ -294,7 +299,6 @@ def doptext(fp, p_ptext, count=100):
                             return "Too few arguments!"
                         t = t[0:ic] + (
                             result + t[ic + 2:])
-                        print(t)
                         break
                     if c == '$' and ac == "*":
                         found = True
@@ -308,8 +312,14 @@ def doptext(fp, p_ptext, count=100):
                             result + t[ic + 2:])
                         break
         return doptext(fp, t, count)
-    elif fp.isquery():
-        return("?")
+    else:
+        if fp.isquery():
+            return("?")
+        if len(ptext.split(' ')[0].split('.')) == 1:
+            for m in fp.server.modules:
+                if ptext.split(' ')[0].split('.')[0] == m.name:
+                    return doptext(fp, 'echo <*modhelp %s> -- <*list %s>' % (
+                        m.name, m.name))
     return None
 
 
