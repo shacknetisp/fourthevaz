@@ -18,10 +18,10 @@ class FullParse():
                 self.channel = None
         authed = ""
         user = self.sp.sendernick
-        if user in self.server.whoislist and 'done' in self.server.whoislist[
-            user]:
-            t = self.server.whoislist[user]
-            authed = t['authed'] if 'authed' in t and t['authed'] else ''
+        if user in self.server.whoislist:
+            if 'done' in self.server.whoislist[user]:
+                t = self.server.whoislist[user]
+                authed = t['authed'] if 'authed' in t and t['authed'] else ''
         self.setaccess("%s:%s:%s" % (
             self.sp.sendernick, self.sp.host, authed))
         self.user = self.sp.sendernick
