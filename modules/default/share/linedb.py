@@ -125,13 +125,13 @@ class LineDB:
             dt)
         if topic == "":
             return 'You must specify a topic.'
-
         if channel and fp.channelaccess(topic) < 1:
                 return 'You must be at least level 1 in the target channel.'
-
         if (topic not in fp.server.state['%s.db' % self.plural].db) or (
             not self.random):
             fp.server.state['%s.db' % self.plural].db[topic] = []
+        if line in fp.server.state['%s.db' % self.plural].db[topic]:
+            return 'That line already exists.'
         fp.server.state['%s.db' % self.plural].db[topic].append(line)
         fp.server.state['%s.db' % self.plural].save()
         return '"%s" has been added to %s %s' % (line, self.seper, topic)
