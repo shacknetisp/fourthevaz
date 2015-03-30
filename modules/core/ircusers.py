@@ -36,7 +36,7 @@ def init(options):
     m.add_command_hook('lastseen',
         {
             'function': lastseen,
-            'help': 'Find when the nick was last seen.',
+            'help': 'Find when the nick was last active.',
             'args': [
                 {
                     'name': 'nick',
@@ -45,6 +45,7 @@ def init(options):
                     }
                 ],
             })
+    m.add_command_alias('lastactive', 'lastseen')
     m.add_command_hook('names',
         {
             'function': names,
@@ -123,7 +124,7 @@ def recv(fp):
                         channels.append(channel['channel'])
             fp.server.do_base_hook('nick', fp, channels)
             fp.server.whois(fp.sp.text)
-    except KeyError as e:
+    except KeyError:
         print((traceback.format_exc()))
 
     if fp.sp.sendernick:
