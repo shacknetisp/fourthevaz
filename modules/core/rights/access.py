@@ -23,7 +23,7 @@ def raiseifnotformeduser(u):
 def getaccesslevel(server, user, alist="", channel=None):
     highest = 0
     splitub = user.split(':')
-    splitu = [":".join(splitub[:-2]), splitub[-2], splitub[:-1]]
+    splitu = [":".join(splitub[:-2]), splitub[-2], splitub[-1]]
     raiseifnotformeduser(user)
     for l in server.entry['access']:
         if alist and l != alist:
@@ -32,7 +32,7 @@ def getaccesslevel(server, user, alist="", channel=None):
         for k in d:
             raiseifnotformeduser(k)
             splitkb = k.split(':')
-            splitk = [":".join(splitkb[:-2]), splitkb[-2], splitkb[:-1]]
+            splitk = [":".join(splitkb[:-2]), splitkb[-2], splitkb[-1]]
             good = True
             for i in range(accesslen):
                 if splitk[i]:
