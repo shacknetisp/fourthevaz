@@ -33,7 +33,7 @@ def init(options):
                     }
                 ],
             })
-    m.add_command_hook('lastseen',
+    m.add_command_hook('lastactive',
         {
             'function': lastseen,
             'help': 'Find when the nick was last active.',
@@ -45,7 +45,7 @@ def init(options):
                     }
                 ],
             })
-    m.add_command_alias('lastactive', 'lastseen')
+    m.add_command_alias('lastseen', 'lastactive')
     m.add_command_hook('names',
         {
             'function': names,
