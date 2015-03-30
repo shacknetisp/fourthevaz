@@ -29,7 +29,7 @@ def getaccesslevel(server, user, alist="", channel=None):
     for l in server.entry['access']:
         if alist and l != alist:
             continue
-        d = running.accesslist.db[l]
+        d = running.accesslist.db()[l]
         for k in d:
             raiseifnotformeduser(k)
             splitkb = k.split(':')

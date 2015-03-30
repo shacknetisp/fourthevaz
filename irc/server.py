@@ -30,9 +30,9 @@ class Server:
         'whois_tick_min': 1000,
         'recv_size': pow(2, 12),
         }):
-        if entry['settings'] not in running.serverdb.db:
-            running.serverdb.db[entry['settings']] = {}
-        self.db = running.serverdb.db[entry['settings']]
+        if entry['settings'] not in running.serverdb.db():
+            running.serverdb.db()[entry['settings']] = {}
+        self.db = running.serverdb.db()[entry['settings']]
         self.state = {}
         self.options = options
         self.address = address
@@ -97,8 +97,8 @@ class Server:
     def join_channel(self, c):
         self.write_cmd('JOIN ', self.shortchannel(c)['channel'])
         name = self.entry['access'][0] + ':' + self.shortchannel(c)['channel']
-        if name not in running.accesslist.db:
-            running.accesslist.db[name] = {}
+        if name not in running.accesslist.db():
+            running.accesslist.db()[name] = {}
             running.accesslist.save()
         self.entry['access'].append(name)
         if ('aliases:%s' % self.shortchannel(c)['channel']) not in self.db:

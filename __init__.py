@@ -20,7 +20,6 @@ moduleregistry.add_module(utils)
 moduleregistry.add_module(module)
 moduleregistry.add_module(configs)
 moduleregistry.add_module(mload)
-moduleregistry.add_module(db.text)
 moduleregistry.add_module(version)
 if __name__ == '__main__':
     print(('Fourth Evaz %s' % version.versionstr()))

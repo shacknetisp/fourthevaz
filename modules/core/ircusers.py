@@ -5,12 +5,18 @@ import time
 import datetime
 import calendar
 import traceback
+import os
+import db.text
+import configs.locs
 
 
 def init(options):
     server = options['server']
-    if 'lastseen' not in server.db:
-        server.db['lastseen'] = {}
+    path = configs.locs.userdata + '/lastseen.%s.py' % server.entry['settings']
+    server.state['lastseen'] = db.text.DB(path)
+    if os.path.exists(path):
+        server.state['lastseen'].load()
+    server.state['lastseen'].save()
     m = Module('ircusers')
     m.set_help('Handle the User Lists.')
     m.add_base_hook('recv', recv)
@@ -128,21 +134,21 @@ def recv(fp):
         print((traceback.format_exc()))
 
     if fp.sp.sendernick:
-        fp.server.db['lastseen'][fp.sp.sendernick] = {
+        fp.server.state['lastseen'].db()[fp.sp.sendernick] = {
             'time': calendar.timegm(time.gmtime()),
             }
-        fp.server.db['lastseen'][fp.sp.sendernick][
+        fp.server.state['lastseen'].db()[fp.sp.sendernick][
             'action'] = "doing something unknown."
         if fp.sp.iscode('chat'):
             if fp.isquery():
-                fp.server.db['lastseen'][fp.sp.sendernick][
+                fp.server.state['lastseen'].db()[fp.sp.sendernick][
                     'action'] = "talking privately to me."
             elif fp.channel:
-                fp.server.db['lastseen'][fp.sp.sendernick][
+                fp.server.state['lastseen'].db()[fp.sp.sendernick][
                 'action'] = "saying \"%s\" on %s." % (fp.sp.text,
                     fp.channel.entry['channel'])
         else:
-            fp.server.db['lastseen'][fp.sp.sendernick][
+            fp.server.state['lastseen'].db()[fp.sp.sendernick][
             'action'] = "using %s %s." % (fp.sp.command.upper(),
                 fp.sp.target if fp.sp.target else fp.sp.text)
 
@@ -178,13 +184,13 @@ def names(fp, args):
 
 def lastseen(fp, args):
     search = args.getlinstr('nick')
-    if search not in fp.server.db['lastseen']:
+    if search not in fp.server.state['lastseen'].db():
         return 'I have never seen %s.' % search
-    ts = fp.server.db['lastseen'][search]['time']
+    ts = fp.server.state['lastseen'].db()[search]['time']
     return "%s was last seen at %s UTC, %s" % (
         search,
         datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'),
-        fp.server.db['lastseen'][search]['action']
+        fp.server.state['lastseen'].db()[search]['action']
         )
 
 
