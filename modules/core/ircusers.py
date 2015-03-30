@@ -102,7 +102,7 @@ def recv(fp):
                 if fp.sp.sendernick in channel['names']:
                     channels.append(channel['channel'])
         fp.server.do_base_hook('nick', fp, channels)
-        fp.server.whois(fp.sp.sendernick)
+        fp.server.whois(fp.sp.text)
 
 
 def authme(fp, args):

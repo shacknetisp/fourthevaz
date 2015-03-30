@@ -146,7 +146,8 @@ def doptext(fp, p_ptext, count=100):
         while found:
             found = False
             pc = 0
-            lastfound = -1
+            lastfound = None
+            lfas = ''
             for ic in range(len(t)):
                 try:
                     bc = t[ic - 1]
@@ -158,20 +159,24 @@ def doptext(fp, p_ptext, count=100):
                 except IndexError:
                     ac = ''
                 if bc != '"':
-                    if c == '<' and ac == "*":
+                    if c == '<':
                         pc += 1
                         lastfound = ic
+                        lfas = ac
+                        print(lfas)
                     elif c == '>':
                         pc -= 1
-                        if pc == 0 and lastfound != -1:
-                            found = True
-                            result = doptext(fp, t[lastfound + 2:ic], count)
-                            if not result:
-                                return ""
-                            t = t[0:lastfound] + (
-                                result + t[ic + 1:])
-                            lastfound = -1
-                            break
+                        if pc == 0 and lastfound is not None:
+                            if lfas == '*' or True:
+                                found = True
+                                result = doptext(fp, t[lastfound + (
+                                    2 if lfas == '*' else 1):ic], count)
+                                if not result:
+                                    return ""
+                                t = t[0:lastfound] + (
+                                    result + t[ic + 1:])
+                                lastfound = None
+                                break
 
         try:
             args = Args(t, noshlex)
