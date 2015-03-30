@@ -55,7 +55,7 @@ def timer():
                         if configs.match.match(
                             name, n[0], True):
                                 server.write_cmd(
-                                    'PRIVMSG', '%s :%s' % (name, n[1]))
+                                    'NOTICE', '%s :%s' % (name, n[1]))
                                 tod.append(i)
                     server.db[
                         'messaging.tells'] = utils.remove_indices(

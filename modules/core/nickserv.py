@@ -42,6 +42,6 @@ def nickserv(fp, args):
 def recv(fp):
     if fp.sp.sendernick.lower() == 'nickserv':
         if 'nsuser' in fp.server.state:
-            fp.server.write_cmd('PRIVMSG', '%s :NickServ says: %s' % (
+            fp.server.write_cmd('NOTICE', '%s :NickServ says: %s' % (
                 fp.server.state['nsuser'], fp.sp.text))
 
