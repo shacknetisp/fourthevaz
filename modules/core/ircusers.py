@@ -3,6 +3,7 @@ from configs.module import Module
 import irc.utils as utils
 import time
 import datetime
+import calendar
 
 
 def init(options):
@@ -123,7 +124,7 @@ def recv(fp):
 
     if fp.sp.sendernick:
         fp.server.db['lastseen'][fp.sp.sendernick] = {
-            'time': time.time(),
+            'time': calendar.timegm(time.gmtime()),
             }
         fp.server.db['lastseen'][fp.sp.sendernick][
             'action'] = "doing something unknown."
