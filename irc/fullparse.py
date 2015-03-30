@@ -70,7 +70,13 @@ class FullParse():
             access.getaccesslevel, self,
             channel), self.serverlevel)
 
-    def reply(self, message, command='NOTICE'):
+    def reply(self, message, c=''):
+        command = c
+        if not command:
+            if self.channel:
+                command = 'PRIVMSG'
+            else:
+                command = 'NOTICE'
         self.server.do_base_hook('output', self, self.outtarget(), message)
         for m in message.split('\n'):
             self.server.write_cmd(command, self.outtarget() + str(' :') + m)
@@ -78,7 +84,13 @@ class FullParse():
     def replyctcp(self, message):
         self.reply(ircutils.ctcp(message), "NOTICE")
 
-    def replypriv(self, message, command='NOTICE'):
+    def replypriv(self, message, c=''):
+        command = c
+        if not command:
+            if self.channel:
+                command = 'PRIVMSG'
+            else:
+                command = 'NOTICE'
         self.server.do_base_hook('output', self, self.sp.sendernick, message)
         for m in message.split('\n'):
             self.server.write_cmd(command, self.sp.sendernick + str(' :') + m)
