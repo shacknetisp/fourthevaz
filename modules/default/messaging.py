@@ -34,17 +34,23 @@ def init(options):
 
 def tell(fp, args):
     nick = args.getlinstr('nick')
+    oldnicks = nick.split(',')
+    nicks = nick.split(',')
     message = '<%s tells you> %s' % (fp.user, args.getlinstr('message'))
     for channel in fp.server.channels:
         if 'names' in channel:
             for name in channel['names']:
-                if configs.match.match(
-                    name, nick, True):
-                        fp.server.write_cmd(
-                            'NOTICE', '%s :%s' % (name, message))
-                        return 'Sent "%s" to "%s"' % (message, name)
-    fp.server.db['messaging.tells'].append((nick, message))
-    return 'Will send "%s" to "%s"' % (message, nick)
+                tod = []
+                for nicki in range(len(nicks)):
+                    if configs.match.match(
+                        name, nicks[nicki], True):
+                            fp.server.write_cmd(
+                                'NOTICE', '%s :%s' % (name, message))
+                            tod.append(nicki)
+                nicks = utils.remove_indices(nicks, tod)
+    for nick in nicks:
+        fp.server.db['messaging.tells'].append((nick, message))
+    return 'Will send "%s" to "%s"' % (message, utils.ltos(oldnicks))
 
 
 def join(fp):
