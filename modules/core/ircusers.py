@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
 import irc.utils as utils
+import time
+import datetime
 
 
-def init():
+def init(options):
+    server = options['server']
+    if 'lastseen' not in server.db:
+        server.db['lastseen'] = {}
     m = Module('ircusers')
     m.set_help('Handle the User Lists.')
     m.add_base_hook('recv', recv)
@@ -23,6 +28,18 @@ def init():
                     'name': 'user',
                     'optional': False,
                     'help': 'The user to view.'
+                    }
+                ],
+            })
+    m.add_command_hook('lastseen',
+        {
+            'function': lastseen,
+            'help': 'Find when the nick was last seen.',
+            'args': [
+                {
+                    'name': 'nick',
+                    'optional': False,
+                    'help': 'The nick to view.'
                     }
                 ],
             })
@@ -104,6 +121,24 @@ def recv(fp):
         fp.server.do_base_hook('nick', fp, channels)
         fp.server.whois(fp.sp.text)
 
+    if fp.sp.sendernick:
+        fp.server.db['lastseen'][fp.sp.sendernick] = {
+            'time': time.time(),
+            }
+        fp.server.db['lastseen'][fp.sp.sendernick][
+            'action'] = "doing something unknown."
+        if fp.sp.iscode('chat'):
+            if fp.isquery():
+                fp.server.db['lastseen'][fp.sp.sendernick][
+                    'action'] = "talking privately to me."
+            elif fp.channel:
+                fp.server.db['lastseen'][fp.sp.sendernick][
+                'action'] = "speaking on %s." % fp.channel.entry['channel']
+        else:
+            fp.server.db['lastseen'][fp.sp.sendernick][
+            'action'] = "using %s %s." % (fp.sp.command.upper(),
+                fp.sp.target if fp.sp.target else fp.sp.text)
+
 
 def authme(fp, args):
     fp.server.whoisbuffer = [fp.sp.sendernick] + fp.server.whoisbuffer
@@ -132,6 +167,18 @@ def names(fp, args):
     else:
         return(
             "That channel either doesn't exist or has no NAMES list yet.")
+
+
+def lastseen(fp, args):
+    search = args.getlinstr('nick')
+    if search not in fp.server.db['lastseen']:
+        return 'I have never seen %s.' % search
+    ts = fp.server.db['lastseen'][search]['time']
+    return "%s was last seen at %s UTC, %s" % (
+        search,
+        datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'),
+        fp.server.db['lastseen'][search]['action']
+        )
 
 
 def timer():
