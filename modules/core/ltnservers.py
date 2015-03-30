@@ -71,7 +71,7 @@ def recv(fp):
         ptext = ""
         try:
             fp.user = utils.find_between(fp.sp.text, '<', '> ')
-            fp.setaccess("%s::" % fp.user.replace(':', '"'))
+            fp.setaccess("%s::" % fp.user)
             text = fp.sp.text[fp.sp.text.index('> ') + 2:]
             prefixt = fp.channel.entry['prefix'].split()
             possible = [

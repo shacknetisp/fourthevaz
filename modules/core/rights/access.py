@@ -11,9 +11,12 @@ class AccessLevelError(Exception):
         super(AccessLevelError, self).__init__()
         self.msg = msg
 
+    def __str__(self):
+        return self.msg
+
 
 def raiseifnotformeduser(u):
-    if u.count(':') != accesslen - 1:
+    if u.count(':') < accesslen - 1:
         raise AccessLevelError('The user %s is malformed!' % u)
 
 
@@ -27,7 +30,8 @@ def getaccesslevel(server, user, alist="", channel=None):
         d = running.accesslist.db[l]
         for k in d:
             raiseifnotformeduser(k)
-            splitk = k.split(':')
+            splitkb = k.split(':')
+            splitk = [":".join(splitkb[:-2]), splitkb[-2], splitkb[:-1]]
             good = True
             for i in range(accesslen):
                 if splitk[i]:
