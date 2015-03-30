@@ -2,6 +2,7 @@
 from configs.module import Module
 import utils
 import configs.match
+import running
 
 
 def init(options):
@@ -28,7 +29,7 @@ def init(options):
                     },
                 ],
             })
-    m.add_base_hook('join', join)
+    m.add_timer_hook(30 * 1000, timer)
     return m
 
 
@@ -37,28 +38,25 @@ def tell(fp, args):
     oldnicks = nick.split(',')
     nicks = nick.split(',')
     message = '<%s tells you> %s' % (fp.user, args.getlinstr('message'))
-    for channel in fp.server.channels:
-        if 'names' in channel:
-            for name in channel['names']:
-                tod = []
-                for nicki in range(len(nicks)):
-                    if configs.match.match(
-                        name, nicks[nicki], True):
-                            fp.server.write_cmd(
-                                'NOTICE', '%s :%s' % (name, message))
-                            tod.append(nicki)
-                nicks = utils.remove_indices(nicks, tod)
     for nick in nicks:
         fp.server.db['messaging.tells'].append((nick, message))
-    return 'Will send "%s" to "%s"' % (message, utils.ltos(oldnicks))
+    return 'Will send "%s" to "%s"' % (args.getlinstr('message'),
+        utils.ltos(oldnicks))
 
 
-def join(fp):
-    tod = []
-    for i in range(len(fp.server.db['messaging.tells'])):
-        n = fp.server.db['messaging.tells'][i]
-        if configs.match.match(fp.sp.sendernick, n[0], True):
-            fp.server.write_cmd('NOTICE', '%s :%s' % (fp.sp.sendernick, n[1]))
-            tod.append(i)
-    fp.server.db['messaging.tells'] = utils.remove_indices(
-        fp.server.db['messaging.tells'], tod)
+def timer():
+    for server in running.working_servers:
+        for channel in server.channels:
+            if 'names' in channel:
+                for name in channel['names']:
+                    tod = []
+                    for i in range(len(server.db['messaging.tells'])):
+                        n = server.db['messaging.tells'][i]
+                        if configs.match.match(
+                            name, n[0], True):
+                                server.write_cmd(
+                                    'PRIVMSG', '%s :%s' % (name, n[1]))
+                                tod.append(i)
+                    server.db[
+                        'messaging.tells'] = utils.remove_indices(
+                        server.db['messaging.tells'], tod)
