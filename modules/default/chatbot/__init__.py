@@ -14,7 +14,9 @@ def init(options):
     m.add_command_hook('chatbot',
         {
             'function': chatbot,
+            'level': 1,
             'help': 'Talk to the bot.',
+            'noshlex': True,
             'args': [
                 {
                     'name': 'fix',
