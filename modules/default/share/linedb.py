@@ -180,7 +180,7 @@ class LineDB:
         if not choices:
             return 'No matching lines found.'
         if len(choices) > 1 and 'force' not in args.lin:
-            return 'More than one line selected, use -force to delete.'
+            return '%d lines selected, use -force to delete.' % len(choices)
         todelete = db[topic][choices[0]]
         db[topic] = utils.remove_indices(db[topic], choices)
         fp.server.state['%s.db' % self.plural].save()
