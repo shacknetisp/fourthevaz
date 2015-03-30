@@ -12,7 +12,8 @@ def init(options):
     m.add_command_hook('tell',
         {
             'function': tell,
-            'help': 'Give <nick> <message> when <nick> is online.',
+            'help': 'Give <nick> <message> when <nick> is online. (No shlex.)',
+            'noshlex': True,
             'args': [
                 {
                     'name': 'nick',
