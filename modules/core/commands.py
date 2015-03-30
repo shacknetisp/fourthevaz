@@ -129,7 +129,7 @@ def doptext(fp, p_ptext, count=100):
                         k, utils.ltos(list(v.keys())), k))
                     return
     if command:
-        if 0 > fp.accesslevel():
+        if 0 > fp.serverlevel or 0 > fp.channellevel:
             return
         if 'level' in command:
             if command['level'] > fp.accesslevel():
