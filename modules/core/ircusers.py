@@ -134,7 +134,8 @@ def recv(fp):
                     'action'] = "talking privately to me."
             elif fp.channel:
                 fp.server.db['lastseen'][fp.sp.sendernick][
-                'action'] = "speaking on %s." % fp.channel.entry['channel']
+                'action'] = "saying \"%s\" on %s." % (fp.sp.text,
+                    fp.channel.entry['channel'])
         else:
             fp.server.db['lastseen'][fp.sp.sendernick][
             'action'] = "using %s %s." % (fp.sp.command.upper(),
