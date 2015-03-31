@@ -59,3 +59,12 @@ def merge_dicts(*dict_args):
     for dictionary in dict_args:
         result.update(dictionary)
     return result
+
+
+def boolstr(s):
+    if s.lower() in ['yes', 'y', 'true', 't', '1']:
+        return True
+    elif s.lower() in ['no', 'n', 'false', 'f', '0']:
+        return False
+    else:
+        raise ValueError('Invalid boolean value.')
