@@ -68,3 +68,11 @@ def boolstr(s):
         return False
     else:
         raise ValueError('Invalid boolean value.')
+
+
+def utcepoch():
+    import datetime
+
+    dt = datetime.datetime.utcnow()
+
+    return dt.timestamp()

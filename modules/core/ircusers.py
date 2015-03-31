@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
-import irc.utils as utils
-import time
+import irc.utils
+import utils
 import datetime
-import calendar
 import traceback
 import os
 import db.text
@@ -73,7 +72,7 @@ def recv(fp):
             channel = fp.Channel(fp, fp.sp.getsplit(4))
             names = fp.sp.text.split(' ')
             for i in range(len(names)):
-                names[i] = utils.stripuser(names[i])
+                names[i] = irc.utils.stripuser(names[i])
             if 'newnames' not in channel.entry:
                 channel.entry['newnames'] = []
             channel.entry['newnames'] += names
@@ -135,7 +134,7 @@ def recv(fp):
 
     if fp.sp.sendernick:
         fp.server.state['lastseen'].db()[fp.sp.sendernick] = {
-            'time': calendar.timegm(time.gmtime()),
+            'time': utils.utcepoch(),
             }
         fp.server.state['lastseen'].db()[fp.sp.sendernick][
             'action'] = "doing something unknown."

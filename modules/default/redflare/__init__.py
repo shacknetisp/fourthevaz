@@ -9,8 +9,6 @@ import db.text
 import configs.locs
 import os
 import requests
-import calendar
-import time
 import datetime
 
 
@@ -111,7 +109,7 @@ def timer():
                 dbd[url][player] = {
                     'server': server['description'],
                     'name': player,
-                    'time': calendar.timegm(time.gmtime()),
+                    'time': utils.utcepoch(),
                     }
     dbf.save()
 
