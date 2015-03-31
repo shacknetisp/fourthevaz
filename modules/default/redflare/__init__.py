@@ -14,11 +14,15 @@ import requests
 def init(options):
     if 'redflares' not in options['server'].db:
         options['server'].db['redflares'] = {}
-    options['server'].state['redflares'] = db.text.DB(
-        configs.locs.userdata + '/redflares.py', list())
-    if os.path.exists(configs.locs.userdata + '/redflares.py'):
-        options['server'].state['redflares'].load()
-    options['server'].state['redflares'].save()
+
+    options['server'].state['redflare'] = db.text.DB(
+        configs.locs.userdata + '/redflare.py')
+    if os.path.exists(configs.locs.userdata + '/redflare.py'):
+        options['server'].state['redflare'].load()
+    if 'list' not in options['server'].state['redflare'].db():
+        options['server'].state['redflare'].db()['list'] = []
+    options['server'].state['redflare'].save()
+
     m = configs.module.Module(__name__)
     m.set_help('Operate on RedFlares.')
     m.add_command_hook('redflare', {
@@ -89,7 +93,7 @@ def init(options):
 
 
 def redflares(fp, args):
-    db = fp.server.state['redflares'].db()
+    db = fp.server.state['redflare'].db()['list']
     if 'add' in args.lin:
         url = args.getlinstr('url')
         if url in db:
@@ -97,16 +101,16 @@ def redflares(fp, args):
         try:
             requests.get(url)
         except:
-            return 'Unaccessable URL.'
+            return 'Inaccessable URL.'
         db.append(url)
-        fp.server.state['redflares'].save()
+        fp.server.state['redflare'].save()
         return '%s is now registered.' % url
     elif 'remove' in args.lin:
         url = args.getlinstr('url')
         if url not in db:
             return 'That url is not registered.'
         del db[db.index(url)]
-        fp.server.state['redflares'].save()
+        fp.server.state['redflare'].save()
         return '%s is now unregistered.' % url
     else:
         return 'Redflares: ' + utils.ltos(db)
