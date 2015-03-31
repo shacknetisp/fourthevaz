@@ -62,7 +62,7 @@ def getaccesslevel(server, user, alist="", channel=None):
 def setaccesslevel(alist, user, level):
     raiseifnotformeduser(user)
     try:
-        d = running.accesslist.db[alist]
+        d = running.accesslist.db()[alist]
     except KeyError:
         raise AccessLevelError('Invalid alist.')
     d[user] = level

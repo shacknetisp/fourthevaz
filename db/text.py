@@ -2,6 +2,7 @@
 import ast
 import pprint
 import running
+import os
 
 
 class DB:
@@ -19,5 +20,10 @@ class DB:
             open(self.filename).read())
 
     def save(self):
-        open(self.filename, 'w').write(
-            pprint.pformat(running.dbs[self.filename]))
+        with open(self.filename + '.working', 'w') as f:
+            f.write(pprint.pformat(running.dbs[self.filename]))
+        try:
+            os.unlink(self.filename)
+        except:
+            pass
+        os.rename(self.filename + '.working', self.filename)
