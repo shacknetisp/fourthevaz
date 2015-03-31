@@ -164,14 +164,18 @@ def doptext(fp, p_ptext, count=100):
                     pc += 1
                     lastfound = ic
                     lfas = ac
-                    if lfas in ['*', '#']:
-                        lastfound += 1
                 elif c == '>':
                     pc -= 1
                     if pc >= 0:
+                        lfp = 0
+                        if lfas in ['*']:
+                            lfp = 1
                         found = True
-                        result = doptext(fp,
-                            t[lastfound + 1:ic], count)
+                        try:
+                            result = doptext(fp,
+                                t[lastfound + 1 + lfp:ic], count)
+                        except IndexError:
+                            result = ""
                         if not result:
                             result = ""
                         t = t[0:max(0, lastfound)] + (
@@ -209,24 +213,25 @@ def doptext(fp, p_ptext, count=100):
             ok = True
             fstr = ""
             for i in ar:
-                if i[0] == '-' and ok:
-                    var = i.split("=")[0][1:]
-                    try:
-                        val = i.split("=")[1]
-                        fstr += "-" + var + "=" + val + " "
-                    except IndexError:
-                        val = ""
-                        fstr += "-" + var + " "
-                    args.lin[var] = val
-                    for arg in command['args']:
-                        aliases = arg['aliases'] if 'aliases' in arg else []
-                        if arg['name'] == var or var in aliases:
-                            args.lin[arg['name']] = val
-                            for al in aliases:
-                                args.lin[al] = val
-                    lastval = i
-                else:
-                    fstr += i + " "
+                if i:
+                    if i[0] == '-' and ok:
+                        var = i.split("=")[0][1:]
+                        try:
+                            val = i.split("=")[1]
+                            fstr += "-" + var + "=" + val + " "
+                        except IndexError:
+                            val = ""
+                            fstr += "-" + var + " "
+                        args.lin[var] = val
+                        for arg in command['args']:
+                            aliases = arg['aliases'] if 'aliases' in arg else []
+                            if arg['name'] == var or var in aliases:
+                                args.lin[arg['name']] = val
+                                for al in aliases:
+                                    args.lin[al] = val
+                        lastval = i
+                    else:
+                        fstr += i + " "
                 ok = False
             fstr = fstr.strip()
             argsv = fstr
@@ -273,6 +278,7 @@ def doptext(fp, p_ptext, count=100):
         except Args.ArgNotFoundError as e:
             fp.reply('Missing "%s", Usage: %s %s' % (e.arg, usedtext,
             Module.command_usage(command)))
+            return '[Error!]'
     elif wcommand in fp.get_aliases():
         t = fp.get_aliases()[wcommand]
         try:
