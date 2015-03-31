@@ -148,7 +148,7 @@ def doptext(fp, p_ptext, count=100):
         while found:
             found = False
             pc = 0
-            lastfound = None
+            lastfound = -1
             lfas = ''
             for ic in range(len(t)):
                 try:
@@ -160,25 +160,25 @@ def doptext(fp, p_ptext, count=100):
                     ac = t[ic + 1]
                 except IndexError:
                     ac = ''
-                if bc != '"':
-                    if c == '<':
-                        pc += 1
-                        lastfound = ic
-                        lfas = ac
-                        print(lfas)
-                    elif c == '>':
-                        pc -= 1
-                        if pc == 0 and lastfound is not None:
-                            if lfas == '*' or True:
-                                found = True
-                                result = doptext(fp, t[lastfound + (
-                                    2 if lfas == '*' else 1):ic], count)
-                                if not result:
-                                    return ""
-                                t = t[0:lastfound] + (
-                                    result + t[ic + 1:])
-                                lastfound = None
-                                break
+                if c == '<' and bc != '"':
+                    pc += 1
+                    lastfound = ic
+                    lfas = ac
+                    if lfas in ['*', '#']:
+                        lastfound += 1
+                elif c == '>':
+                    pc -= 1
+                    if pc >= 0:
+                        found = True
+                        result = doptext(fp,
+                            t[lastfound + 1:ic], count)
+                        if not result:
+                            result = ""
+                        t = t[0:max(0, lastfound)] + (
+                            result + t[ic + 1:])
+                        print(t)
+                        lastfound = None
+                        break
 
         try:
             args = Args(t, noshlex)

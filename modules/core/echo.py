@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
-import shlex
 
 
 def init():
@@ -10,6 +9,7 @@ def init():
         {
             'function': echo,
             'help': 'Echo text.',
+            'noshlex': True,
             'args': [
                 {
                     'name': 'text',
@@ -23,25 +23,12 @@ def init():
         {
             'function': bold,
             'help': 'Echo bold text.',
+            'noshlex': True,
             'args': [
                 {
                     'name': 'text',
                     'optional': False,
                     'help': 'Text to echo bolded.',
-                    'end': True,
-                    },
-                ],
-            })
-    m.add_command_hook('noquote',
-        {
-            'function': noquote,
-            'noshlex': True,
-            'help': 'Quote text for shlex.',
-            'args': [
-                {
-                    'name': 'text',
-                    'optional': False,
-                    'help': 'Text to echo.',
                     'end': True,
                     },
                 ],
@@ -55,7 +42,3 @@ def echo(fp, args):
 
 def bold(fp, args):
     return "\2%s\2" % args.getlinstr('text', '')
-
-
-def noquote(fp, args):
-    return shlex.quote(args.getlinstr('text', ''))
