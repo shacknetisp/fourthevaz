@@ -177,7 +177,7 @@ def doptext(fp, p_ptext, count=100):
                             except IndexError:
                                 result = ""
                             if not result:
-                                result = ""
+                                return
                             t = t[0:max(0, lastfound)] + (
                                 result + t[ic + 1:])
                             print(t)
@@ -278,7 +278,6 @@ def doptext(fp, p_ptext, count=100):
         except Args.ArgNotFoundError as e:
             fp.reply('Missing "%s", Usage: %s %s' % (e.arg, usedtext,
             Module.command_usage(command)))
-            return '[Error!]'
     elif wcommand in fp.get_aliases():
         t = fp.get_aliases()[wcommand]
         try:
