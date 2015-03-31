@@ -19,6 +19,19 @@ def init():
                     },
                 ],
             })
+    m.add_command_hook('bold',
+        {
+            'function': bold,
+            'help': 'Echo bold text.',
+            'args': [
+                {
+                    'name': 'text',
+                    'optional': False,
+                    'help': 'Text to echo bolded.',
+                    'end': True,
+                    },
+                ],
+            })
     m.add_command_hook('noquote',
         {
             'function': noquote,
@@ -38,6 +51,10 @@ def init():
 
 def echo(fp, args):
     return args.getlinstr('text', '')
+
+
+def bold(fp, args):
+    return "\2%s\2" % args.getlinstr('text', '')
 
 
 def noquote(fp, args):
