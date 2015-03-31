@@ -168,21 +168,21 @@ def doptext(fp, p_ptext, count=100):
                     pc -= 1
                     if pc >= 0:
                         lfp = 0
-                        if lfas in ['*']:
+                        if lfas == '*':
                             lfp = 1
-                        found = True
-                        try:
-                            result = doptext(fp,
-                                t[lastfound + 1 + lfp:ic], count)
-                        except IndexError:
-                            result = ""
-                        if not result:
-                            result = ""
-                        t = t[0:max(0, lastfound)] + (
-                            result + t[ic + 1:])
-                        print(t)
-                        lastfound = None
-                        break
+                            found = True
+                            try:
+                                result = doptext(fp,
+                                    t[lastfound + 1 + lfp:ic], count)
+                            except IndexError:
+                                result = ""
+                            if not result:
+                                result = ""
+                            t = t[0:max(0, lastfound)] + (
+                                result + t[ic + 1:])
+                            print(t)
+                            lastfound = None
+                            break
 
         try:
             args = Args(t, noshlex)
