@@ -243,7 +243,7 @@ def doptext(fp, p_ptext, count=100):
             argsv = fstr
             if lastval:
                 argsdefv = argsv[
-                argsv.rfind(lastval) + len(lastval):]
+                argsv.find(lastval) + len(lastval):]
                 argsdefv = argsdefv[argsdefv.find('" ') + 2:]
             else:
                 argsdefv = argsv
