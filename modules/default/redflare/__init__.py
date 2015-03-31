@@ -86,4 +86,6 @@ def doredflare(fp, args):
         rfes = 'redflare.enable.%s' % fp.channel.entry['channel']
         if fp.channel and rfes not in fp.server.db or not fp.server.db[rfes]:
             return 'Redflare is not enabled here.'
+        if not endresults:
+            return 'No results.'
         return '\n'.join(endresults)
