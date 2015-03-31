@@ -9,6 +9,9 @@ import db.text
 import configs.locs
 import os
 import requests
+import calendar
+import time
+import datetime
 
 
 def init(options):
@@ -89,7 +92,28 @@ def init(options):
                 },
             ]
         })
+    m.add_timer_hook(60 * 1000, timer)
     return m
+
+
+def timer():
+    dbf = db.text.DB(configs.locs.userdata + '/redflare.py')
+    dbd = dbf.db()
+    for url in dbd['list']:
+        if 'lastseen' not in dbd:
+            dbd['lastseen'] = {}
+        dbd = dbd['lastseen']
+        if url not in dbd:
+            dbd[url] = {}
+        rf = redflare.RedFlare(url)
+        for server in rf.servers:
+            for player in server['players']:
+                dbd[url][player] = {
+                    'server': server['description'],
+                    'name': player,
+                    'time': calendar.timegm(time.gmtime()),
+                    }
+    dbf.save()
 
 
 def redflares(fp, args):
@@ -133,6 +157,11 @@ def enableredflare(fp, args):
 
 def doredflare(fp, args):
     rf = redflare.RedFlare(args.getlinstr('url'))
+    try:
+        lsdb = fp.server.state['redflare'].db()[
+            'lastseen'][args.getlinstr('url')]
+    except KeyError:
+        lsdb = None
     if 'stats' in args.lin:
         totalservers = len(rf.servers)
         totalplayers = 0
@@ -140,7 +169,22 @@ def doredflare(fp, args):
             totalplayers += len(server['players'])
         return "Servers: %d, Players: %d" % (totalservers, totalplayers)
     elif 'lastseen' in args.lin:
-        return '"%s" was last seen on "%s" at %s.'
+        search = args.getlinstr('search')
+        if not lsdb:
+            return 'This URL is not registered.'
+        best = None
+        for k in lsdb:
+            if configs.match.matchnocase(k, search, False):
+                if not best or lsdb[k]['time'] > best['time']:
+                    best = lsdb[k]
+        if not best:
+            return 'I have never seen %s.' % search
+        return '"%s" was last seen on "%s" at %s.' % (
+            best['name'],
+            best['server'],
+            datetime.datetime.fromtimestamp(
+                best['time']).strftime('%Y-%m-%d %H:%M:%S UTC')
+            )
     else:
         search = args.getlinstr('search', '')
         endresults = []
