@@ -27,8 +27,6 @@ class LineDB:
         self.eh = eh
 
     def splitline(self, i1, i2=""):
-        if not self.seperprefix:
-            return (i1, i2)
         r1 = i2
         r2 = i1
         if i1 and i1[0].find(self.seperprefix) == 0:
