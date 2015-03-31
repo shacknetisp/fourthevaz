@@ -39,7 +39,7 @@ def tell(fp, args):
     nick = args.getlinstr('nick')
     oldnicks = nick.split(',')
     nicks = nick.split(',')
-    message = '<%s tells you> %s' % (fp.user, args.getlinstr('message'))
+    message = '<<%s>> %s' % (fp.user, args.getlinstr('message'))
     for nick in nicks:
         fp.server.db['messaging.tells'].append((nick, message))
     return 'Will send "%s" to "%s"' % (args.getlinstr('message'),
