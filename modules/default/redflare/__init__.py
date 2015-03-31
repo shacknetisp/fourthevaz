@@ -169,7 +169,7 @@ def doredflare(fp, args):
             totalplayers += len(server['players'])
         return "Servers: %d, Players: %d" % (totalservers, totalplayers)
     elif 'lastseen' in args.lin:
-        search = args.getlinstr('search')
+        search = args.getlinstr('search', '')
         if not lsdb:
             return 'This URL is not registered.'
         best = None
