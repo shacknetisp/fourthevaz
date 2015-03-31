@@ -5,11 +5,20 @@ from . import redflare
 import importlib
 importlib.reload(redflare)
 import utils
+import db.text
+import configs.locs
+import os
+import requests
 
 
 def init(options):
     if 'redflares' not in options['server'].db:
         options['server'].db['redflares'] = {}
+    options['server'].state['redflares'] = db.text.DB(
+        configs.locs.userdata + '/redflares.py', list())
+    if os.path.exists(configs.locs.userdata + '/redflares.py'):
+        options['server'].state['redflares'].load()
+    options['server'].state['redflares'].save()
     m = configs.module.Module(__name__)
     m.set_help('Operate on RedFlares.')
     m.add_command_hook('redflare', {
@@ -26,6 +35,12 @@ def init(options):
                 'keyvalue': '',
                 'optional': True,
                 'help': 'Show statistics.',
+                },
+            {
+                'name': 'lastseen',
+                'keyvalue': '',
+                'optional': True,
+                'help': 'Show last seen statistics.',
                 },
             {
                 'name': 'search',
@@ -46,7 +61,55 @@ def init(options):
                 },
             ]
         })
+    m.add_command_hook('redflares', {
+        'function': redflares,
+        'help': 'Manage redflares to get statistics from.',
+        'args': [
+            {
+                'name': 'add',
+                'keyvalue': '',
+                'optional': True,
+                'help': 'Add a redflare.',
+                },
+            {
+                'name': 'remove',
+                'keyvalue': '',
+                'optional': True,
+                'help': 'Remove a redflare.',
+                },
+            {
+                'name': 'url',
+                'optional': False,
+                'help': 'The url.',
+                'end': True,
+                },
+            ]
+        })
     return m
+
+
+def redflares(fp, args):
+    db = fp.server.state['redflares'].db()
+    if 'add' in args.lin:
+        url = args.getlinstr('url')
+        if url in db:
+            return 'That url is already registered.'
+        try:
+            requests.get(url)
+        except:
+            return 'Unaccessable URL.'
+        db.append(url)
+        fp.server.state['redflares'].save()
+        return '%s is now registered.' % url
+    elif 'remove' in args.lin:
+        url = args.getlinstr('url')
+        if url not in db:
+            return 'That url is not registered.'
+        del db[db.index(url)]
+        fp.server.state['redflares'].save()
+        return '%s is now unregistered.' % url
+    else:
+        return 'Redflares: ' + utils.ltos(db)
 
 
 def enableredflare(fp, args):
@@ -72,6 +135,8 @@ def doredflare(fp, args):
         for server in rf.servers:
             totalplayers += len(server['players'])
         return "Servers: %d, Players: %d" % (totalservers, totalplayers)
+    elif 'lastseen' in args.lin:
+        return '"%s" was last seen on "%s" at %s.'
     else:
         search = args.getlinstr('search', '')
         endresults = []
