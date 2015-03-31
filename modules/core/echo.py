@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
+import shlex
 
 
 def init():
@@ -22,7 +23,7 @@ def init():
         {
             'function': noquote,
             'noshlex': True,
-            'help': 'Echo text without shlex processing.',
+            'help': 'Quote text for shlex.',
             'args': [
                 {
                     'name': 'text',
@@ -40,4 +41,4 @@ def echo(fp, args):
 
 
 def noquote(fp, args):
-    return args.getlinstr('text', '')
+    return shlex.quote(args.getlinstr('text', ''))
