@@ -212,23 +212,29 @@ def doptext(fp, p_ptext, count=100):
             ar = args.splittext[counter:]
             ok = True
             fstr = ""
+            endop = False
             for i in ar:
                 if i:
-                    if i[0] == '-' and ok:
+                    if i[0] == '-' and ok and not endop:
                         var = i.split("=")[0][1:]
-                        try:
-                            val = i.split("=")[1]
-                            fstr += "-" + var + "=" + val + " "
-                        except IndexError:
-                            val = ""
-                            fstr += "-" + var + " "
-                        args.lin[var] = val
-                        for arg in command['args']:
-                            aliases = arg['aliases'] if 'aliases' in arg else []
-                            if arg['name'] == var or var in aliases:
-                                args.lin[arg['name']] = val
-                                for al in aliases:
-                                    args.lin[al] = val
+                        if var == '-':
+                            fstr += '--' + ' '
+                            endop = True
+                        else:
+                            try:
+                                val = i.split("=")[1]
+                                fstr += "-" + var + "=" + val + " "
+                            except IndexError:
+                                val = ""
+                                fstr += "-" + var + " "
+                            args.lin[var] = val
+                            for arg in command['args']:
+                                aliases = arg[
+                                    'aliases'] if 'aliases' in arg else []
+                                if arg['name'] == var or var in aliases:
+                                    args.lin[arg['name']] = val
+                                    for al in aliases:
+                                        args.lin[al] = val
                         lastval = i
                     else:
                         fstr += i + " "
