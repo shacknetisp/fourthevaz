@@ -35,7 +35,12 @@ def init(options):
                     'name': 'user',
                     'optional': False,
                     'help': 'The user to view.'
-                    }
+                    },
+                {
+                    'name': 'info',
+                    'optional': True,
+                    'help': 'Possible values: host'
+                    },
                 ],
             })
     m.add_command_hook('lastactive',
@@ -161,6 +166,11 @@ def whois(fp, args):
     user = args.getlinstr('user')
     if user in fp.server.whoislist and 'done' in fp.server.whoislist[user]:
         t = fp.server.whoislist[user]
+        if 'info' in args.lin:
+            if args.lin['info'] == 'host':
+                return t['host']
+            else:
+                return 'That information cannot be provided.'
         return('%s!%s "%s" Authed: %s%s' % (
             user,
             t['host'],
