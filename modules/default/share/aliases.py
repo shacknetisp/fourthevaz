@@ -1,2 +1,4 @@
 # -*- coding: utf-8 -*-
-aliases = {}
+aliases = {
+    'geoipnick': 'geoip <*whois $# host> $*'
+    }
