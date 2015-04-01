@@ -167,11 +167,6 @@ class Server:
                 'settings'] + ':' + channel), fp.channel)
 
     def process(self):
-        for m in self.modules:
-            for t in m.timer_hooks:
-                if current_milli_time() - t['lasttime'] > t['time']:
-                    t['lasttime'] = current_milli_time()
-                    t['function']()
         if current_milli_time() - self.lasttick > self.options['tick_min']:
             self.lasttick = current_milli_time()
             if self.outputbuffer:

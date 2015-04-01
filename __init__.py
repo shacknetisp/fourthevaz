@@ -23,6 +23,7 @@ moduleregistry.add_module(module)
 moduleregistry.add_module(configs)
 moduleregistry.add_module(mload)
 moduleregistry.add_module(version)
+current_milli_time = lambda: int(round(time.time() * 1000))
 
 
 def signal_handler(signal, frame):
@@ -73,6 +74,15 @@ if __name__ == '__main__':
                     except type(server).ServerConnectionException:
                         server.socket.close()
         time.sleep(0.1)
+        did = []
+        for server in running.working_servers:
+            for m in server.modules:
+                if m.name not in did:
+                    did.append(m.name)
+                    for t in m.timer_hooks:
+                        if current_milli_time() - t['lasttime'] > t['time']:
+                            t['lasttime'] = current_milli_time()
+                            t['function']()
         for server in running.working_servers:
             server.process()
 else:
