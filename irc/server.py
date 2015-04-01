@@ -217,6 +217,8 @@ class Server:
                 index = i
         if index >= 0:
             print(('Removed Module: %s' % name))
+            for f in self.modules[index].get_base_hook('unload'):
+                f(self)
             del self.modules[index]
             return True
         return False

@@ -14,6 +14,8 @@ import running
 import os
 import utils
 import version
+import signal
+import sys
 moduleregistry.add_module(irc)
 moduleregistry.add_module(match)
 moduleregistry.add_module(utils)
@@ -21,7 +23,16 @@ moduleregistry.add_module(module)
 moduleregistry.add_module(configs)
 moduleregistry.add_module(mload)
 moduleregistry.add_module(version)
+
+
+def signal_handler(signal, frame):
+    print('Going down from a signal!')
+    sys.exit(0)
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGQUIT, signal_handler)
+    print('Press Ctrl+C')
     print(('Fourth Evaz %s' % version.versionstr()))
     running.accesslist = db.text.DB(locs.userdata + '/access.py')
     if os.path.exists(running.accesslist.filename):
