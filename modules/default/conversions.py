@@ -80,18 +80,18 @@ def money(fp, args):
 
 def convert(fp, args):
     amount = args.getlinstr('amount')
-    fromc = args.getlinstr('from').lower()
-    toc = args.getlinstr('to').lower()
+    fromc = args.getlinstr('from')
+    toc = args.getlinstr('to')
     Q_ = ureg.Quantity
     try:
-        out = str(Q_(amount + "*" + fromc).to(toc))
+        out = str(Q_(float(amount), fromc).to(toc))
         return('%s [%s] = %.5f [%s]' % (
         amount, fromc, round(float(out.split()[0]), 5), toc))
-    except SyntaxError:
-        return("Invalid input.")
-    except pint.UndefinedUnitError:
-        return("Undefined unit.")
-    except pint.unit.DimensionalityError:
-        return("Invalid input.")
-    except ValueError:
-        return("Invalid input.")
+    except SyntaxError as e:
+        return(str(e))
+    except pint.UndefinedUnitError as e:
+        return(str(e))
+    except pint.unit.DimensionalityError as e:
+        return(str(e))
+    except ValueError as e:
+        return(str(e))
