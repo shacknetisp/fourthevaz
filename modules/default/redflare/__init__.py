@@ -96,14 +96,16 @@ def init(options):
 
 def timer():
     dbf = db.text.DB(configs.locs.userdata + '/redflare.py')
-    dbd = dbf.db()
-    for url in dbd['list']:
-        if 'lastseen' not in dbd:
-            dbd['lastseen'] = {}
-        dbd = dbd['lastseen']
+    dbdh = dbf.db()
+    for url in dbdh['list']:
+        rf = redflare.RedFlare(url)
+        if 'lastseen' not in dbdh:
+            dbdh['lastseen'] = {}
+        if 'ac.players' not in dbdh:
+            dbdh['ac.players'] = {}
+        dbd = dbdh['lastseen']
         if url not in dbd:
             dbd[url] = {}
-        rf = redflare.RedFlare(url)
         for server in rf.servers:
             for player in server['players']:
                 dbd[url][player] = {
@@ -111,6 +113,24 @@ def timer():
                     'name': player,
                     'time': utils.utcepoch(),
                     }
+        dbd = dbdh['ac.players']
+        if 'list' not in dbd:
+            dbd['list'] = {}
+        highest = 0
+        for server in rf.servers:
+            for player in server['players']:
+                if player not in dbd['list']:
+                    dbd['list'][player] = 0
+                dbd['list'][player] += 1
+                highest = max(highest, dbd['list'][player])
+        if highest > 60 * 24 * 8:
+            tod = []
+            for p in dbd['list']:
+                dbd['list'][p] = dbd['list'][p] / 2
+                if dbd['list'][p] < 60:
+                    tod.append(p)
+            for todi in tod:
+                del dbd['list'][todi]
     dbf.save()
 
 
@@ -183,6 +203,28 @@ def doredflare(fp, args):
             datetime.datetime.fromtimestamp(
                 best['time']).strftime('%Y-%m-%d %H:%M:%S UTC')
             )
+    elif 'playeractivity' in args.lin:
+        search = args.getlinstr('search', '')
+        try:
+            acdb = fp.server.state['redflare'].db()[
+                'ac.players']['list']
+            sorteddb = list(
+                reversed(sorted(list(acdb.items()), key=lambda x: x[1])))
+            if not sorteddb:
+                return 'No stats recorded.'
+            ret = []
+            number = 1
+            for player in sorteddb:
+                if configs.match.matchnocase(player[0], search, False):
+                    if len(ret) < 4 or(len(ret) >= 4 and len(
+                        utils.ltos(ret)) < 128):
+                        ret.append("%s (%d:%.2f)" % (player[0], number,
+                    round(player[1] / sorteddb[0][1], 2)))
+                number += 1
+            return utils.ltos(ret)
+        except KeyError:
+            return 'No stats recorded.'
+
     else:
         search = args.getlinstr('search', '')
         endresults = []

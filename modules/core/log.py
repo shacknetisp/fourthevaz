@@ -22,7 +22,8 @@ def doquit(fp, channels):
         with open(folder + '/' + logname, 'a') as f:
             f.write("[%s] <%s> %s\n" % (
                 datetime.datetime.utcnow(),
-                fp.sp.sendernick, fp.sp.message.strip()))
+                fp.sp.sendernick,
+                fp.sp.message.strip() if fp.sp.message else ''))
 
 
 def donick(fp, channels):
@@ -32,7 +33,8 @@ def donick(fp, channels):
         with open(folder + '/' + logname, 'a') as f:
             f.write("[%s] <%s> %s\n" % (
                 datetime.datetime.utcnow(),
-                fp.sp.sendernick, fp.sp.message.strip()))
+                fp.sp.sendernick,
+                fp.sp.message.strip() if fp.sp.message else ''))
 
 
 def recv(fp):
@@ -54,7 +56,8 @@ def recv(fp):
         else:
             f.write("[%s] <%s> %s\n" % (
                 datetime.datetime.utcnow(),
-                fp.sp.sendernick, fp.sp.message.strip()))
+                fp.sp.sendernick,
+                fp.sp.message.strip() if fp.sp.message else ''))
 
 
 def output(fp, target, message):
@@ -62,4 +65,5 @@ def output(fp, target, message):
     os.makedirs(folder, exist_ok=True)
     with open(folder + '/' + target, 'a') as f:
         f.write("[%s] <%s> %s\n" % (
-            datetime.datetime.utcnow(), fp.server.nick, message.strip()))
+            datetime.datetime.utcnow(), fp.server.nick,
+            message.strip() if message else ''))
