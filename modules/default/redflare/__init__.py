@@ -48,6 +48,12 @@ def init(options):
                 'help': 'Show last seen statistics.',
                 },
             {
+                'name': '{playerstats/serverstats}',
+                'keyvalue': '',
+                'optional': True,
+                'help': 'Show activity statistics.',
+                },
+            {
                 'name': 'search',
                 'optional': True,
                 'end': True,
@@ -103,6 +109,8 @@ def timer():
             dbdh['lastseen'] = {}
         if 'ac.players' not in dbdh:
             dbdh['ac.players'] = {}
+        if 'ac.servers' not in dbdh:
+            dbdh['ac.servers'] = {}
         dbd = dbdh['lastseen']
         if url not in dbd:
             dbd[url] = {}
@@ -113,6 +121,7 @@ def timer():
                     'name': player,
                     'time': utils.utcepoch(),
                     }
+        #Players
         dbd = dbdh['ac.players']
         if 'list' not in dbd:
             dbd['list'] = {}
@@ -124,6 +133,24 @@ def timer():
                 dbd['list'][player] += 1
                 highest = max(highest, dbd['list'][player])
         if highest > 60 * 24 * 8:
+            tod = []
+            for p in dbd['list']:
+                dbd['list'][p] = dbd['list'][p] / 2
+                if dbd['list'][p] < 60:
+                    tod.append(p)
+            for todi in tod:
+                del dbd['list'][todi]
+        #Servers
+        dbd = dbdh['ac.servers']
+        if 'list' not in dbd:
+            dbd['list'] = {}
+        highest = 0
+        for server in rf.servers:
+            if server['description'] not in dbd['list']:
+                dbd['list'][server['description']] = 0
+            dbd['list'][server['description']] += len(server['players'])
+            highest = max(highest, dbd['list'][server['description']])
+        if highest > (60 * 24 * 8) / 4:
             tod = []
             for p in dbd['list']:
                 dbd['list'][p] = dbd['list'][p] / 2
@@ -203,7 +230,7 @@ def doredflare(fp, args):
             datetime.datetime.fromtimestamp(
                 best['time']).strftime('%Y-%m-%d %H:%M:%S UTC')
             )
-    elif 'playeractivity' in args.lin:
+    elif 'playerstats' in args.lin:
         search = args.getlinstr('search', '')
         try:
             acdb = fp.server.state['redflare'].db()[
@@ -224,7 +251,27 @@ def doredflare(fp, args):
             return utils.ltos(ret)
         except KeyError:
             return 'No stats recorded.'
-
+    elif 'serverstats' in args.lin:
+        search = args.getlinstr('search', '')
+        try:
+            acdb = fp.server.state['redflare'].db()[
+                'ac.servers']['list']
+            sorteddb = list(
+                reversed(sorted(list(acdb.items()), key=lambda x: x[1])))
+            if not sorteddb:
+                return 'No stats recorded.'
+            ret = []
+            number = 1
+            for player in sorteddb:
+                if configs.match.matchnocase(player[0], search, False):
+                    if len(ret) < 4 or(len(ret) >= 4 and len(
+                        utils.ltos(ret)) < 128):
+                        ret.append("%s (%d:%.2f)" % (player[0], number,
+                    round(player[1] / sorteddb[0][1], 2)))
+                number += 1
+            return utils.ltos(ret)
+        except KeyError:
+            return 'No stats recorded.'
     else:
         search = args.getlinstr('search', '')
         endresults = []
