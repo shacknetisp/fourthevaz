@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
 import configs.mload
+import running
 commands = configs.mload.import_module_py('commands')
 
 
@@ -94,7 +95,7 @@ def delete(fp, args):
             return 'You must be level 25 or higher to modify aliases.'
         content = fp.server.db['aliases'][alias]
         del fp.server.db['aliases'][alias]
-        for server in server.working_servers:
+        for server in running.working_servers:
             server.update_aliases()
         return 'Deleted server alias <%s>: %s' % (alias, content)
     else:
@@ -122,7 +123,7 @@ def setalias(fp, args):
         if fp.serverlevel < 25:
             return 'You must be level 25 or higher to modify aliases.'
         fp.server.db['aliases'][alias] = content
-        for server in server.working_servers:
+        for server in running.working_servers:
             server.update_aliases()
         return 'Set server alias <%s> to: %s' % (alias, content)
     else:
