@@ -64,6 +64,7 @@ def init(options):
     m.add_command_hook('enableredflare', {
         'function': enableredflare,
         'help': 'Enable redflare in a channel.',
+        'level': 25,
         'args': [
             {
                 'name': 'enable?',
@@ -188,8 +189,6 @@ def redflares(fp, args):
 def enableredflare(fp, args):
     if not fp.channel:
         return 'You are not calling from a channel.'
-    if fp.accesslevel() < 25:
-        return 'You must be at least level 25.'
     try:
         fp.server.db[
             'redflare.enable.%s' % fp.channel.entry['channel']] = utils.boolstr(
