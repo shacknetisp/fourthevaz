@@ -145,7 +145,8 @@ def doptext(fp, p_ptext, count=100):
             pass
         found = True
         noshlex = command['noshlex'] if 'noshlex' in command else False
-        while found:
+        noltparse = command['noltparse'] if 'noltparse' in command else False
+        while found and not noltparse:
             found = False
             pc = 0
             lastfound = -1
