@@ -266,6 +266,8 @@ def doptext(fp, p_ptext, count=100):
                     if ((noquote and ch == '*' and lastch == '<') or
                     (not noquote and ch == '<')):
                         if not quotes:
+                            if (noquote and ch == '*' and lastch == '<'):
+                                t = t[0:-1]
                             inexec = True
                             execlevel += 1
                             continue
