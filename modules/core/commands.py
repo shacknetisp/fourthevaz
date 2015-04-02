@@ -279,9 +279,10 @@ def doptext(fp, p_ptext, count=100):
             return 'You are missing an ending quotation mark!'
         if inexec:
             return 'You are missing an ending ">"!'
-        for arg in command['args']:
-            if 'end' in arg and arg['end']:
-                args.lin[arg['name']] = t
+        if t:
+            for arg in command['args']:
+                if 'end' in arg and arg['end']:
+                    args.lin[arg['name']] = t
         try:
             extra = {
                 }
