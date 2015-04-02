@@ -320,6 +320,10 @@ def doptext(fp, p_ptext, count=100):
                 except IndexError:
                     ac = ''
                 if bc != '"':
+                    try:
+                        acint = int(ac)
+                    except ValueError:
+                        acint = 0
                     if c == '$' and ac == "#":
                         if hadall:
                             return "Arguments after $* are not supported."
@@ -344,6 +348,17 @@ def doptext(fp, p_ptext, count=100):
                         except ValueError:
                             return "Missing ending quote!"
                         hadall = True
+                        t = t[0:ic] + (
+                            result + t[ic + 2:])
+                        break
+                    if c == '$' and acint:
+                        found = True
+                        try:
+                            result = shlex.split(args)[acint - 1]
+                        except IndexError:
+                            return "Too few arguments!"
+                        except ValueError:
+                            return "Missing ending quote!"
                         t = t[0:ic] + (
                             result + t[ic + 2:])
                         break

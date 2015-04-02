@@ -24,6 +24,35 @@ def init(options):
                 },
             ]
         })
+    m.add_command_hook('kick', {
+        'function': kick,
+        'help': 'Kick a nick from the channel.',
+        'level': 50,
+        'args': [
+            {
+                'name': 'nick',
+                'optional': False,
+                'help': 'Nick to kick.',
+                },
+            {
+                'name': 'msg',
+                'optional': True,
+                'help': 'Message to send.',
+                },
+            ]
+        })
+    m.add_command_hook('ban', {
+        'function': ban,
+        'help': "Ban a nick from the channel.",
+        'level': 50,
+        'args': [
+            {
+                'name': 'nick',
+                'optional': False,
+                'help': 'Nick to ban.',
+                },
+            ]
+        })
     return m
 
 
@@ -100,3 +129,29 @@ def recv(fp):
                             ))
             db[fp.sp.sendernick]['lastmessage'] = time.time()
             db[fp.sp.sendernick]['lasttext'] = fp.sp.text
+
+
+def kick(fp, args):
+    if not fp.channel:
+        return 'You are not in a channel.'
+    fp.server.write_cmd('KICK', '%s %s :%s' % (
+        fp.channel.entry['channel'],
+        args.getlinstr('nick'),
+        args.getlinstr('msg', ''),
+        ))
+    return 'Attempted to kick %s' % args.getlinstr('nick')
+
+
+def ban(fp, args):
+    if not fp.channel:
+        return 'You are not in a channel.'
+    try:
+        host = fp.server.whoislist[args.getlinstr('nick')]['host']
+    except KeyError:
+        return "I don't have information about %s." % args.getlinstr('nick')
+    fp.server.write_cmd(
+        'MODE', '%s +b *!*@%s' % (
+            fp.channel.entry['channel'],
+            host,
+            ))
+    return 'Attempted to ban %s.' % args.getlinstr('nick')

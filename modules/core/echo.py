@@ -19,6 +19,24 @@ def init():
                     },
                 ],
             })
+    m.add_command_hook('absorb',
+        {
+            'function': absorb,
+            'help': 'Absorb text.',
+            'args': [
+                {
+                    'name': 'return',
+                    'optional': False,
+                    'help': 'Text to return.'
+                    },
+                {
+                    'name': 'text',
+                    'optional': False,
+                    'help': 'Text to echo.',
+                    'end': True,
+                    },
+                ],
+            })
     m.add_command_hook('qecho',
         {
             'function': echo,
@@ -51,6 +69,10 @@ def init():
 
 def echo(fp, args):
     return "%s" % (args.getlinstr('text', ''))
+
+
+def absorb(fp, args):
+    return "%s" % (args.getlinstr('return', ''))
 
 
 def bold(fp, args):
