@@ -10,6 +10,7 @@ def init(options):
         {
             'function': bf,
             'help': 'Execute Brainf**k.',
+            'noquote': True,
             'args': [
                 {
                     'name': 'input',
@@ -108,5 +109,8 @@ def bf(fp, args):
                 'code/input').split('!')[1]
         except IndexError:
             pass
-        return evaluate(args.getlinstr('code/input').split('!')[0],
-            fp.server.state['bf.input'])
+        try:
+            return evaluate(args.getlinstr('code/input').split('!')[0],
+                fp.server.state['bf.input'])
+        except IndexError:
+            return 'Invalid code.'
