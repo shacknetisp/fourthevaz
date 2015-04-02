@@ -197,7 +197,12 @@ def doptext(fp, p_ptext, count=100):
                         execlevel -= 1
                         if execlevel == 0:
                             inexec = False
-                            t += doptext(fp, execbuffer)
+                            r = doptext(fp, execbuffer)
+                            if r is None:
+                                return ("The command '%s' did not return." % (
+                                    execbuffer)
+                                + " Use quotes if you didn't want to run that.")
+                            t += r
                             execbuffer = ''
                             if useargs and t:
                                 args.lin[useargs[0]] = t
@@ -258,7 +263,8 @@ def doptext(fp, p_ptext, count=100):
                                     useargs.pop(0)
                                 t = ''
                                 continue
-                    if ch == '<':
+                    if ((noquote and ch == '*' and lastch == '<') or
+                    (not noquote and ch == '<')):
                         if not quotes:
                             inexec = True
                             execlevel += 1

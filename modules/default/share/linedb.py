@@ -64,6 +64,7 @@ class LineDB:
         m.add_command_hook(self.name,
             {
                 'function': self.f_main,
+                'noquote': True,
                 'help': 'Get a %s %s.' % (self.randomtext, self.name),
                 'args': [
                     {
