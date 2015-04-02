@@ -105,8 +105,8 @@ def bf(fp, args):
         return 'Input is now "%s"' % args.getlinstr('code/input')
     else:
         try:
-            fp.server.state['bf.input'] = args.getlinstr(
-                'code/input').split('!')[1]
+            fp.server.state['bf.input'] = '!'.join(args.getlinstr(
+                'code/input').split('!')[1:])
         except IndexError:
             pass
         try:
