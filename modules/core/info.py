@@ -15,6 +15,19 @@ def init():
             'help': 'Get link to source.',
             'args': [],
             })
+    m.add_command_hook('gitver',
+        {
+            'function': gitver,
+            'help': 'Git version.',
+            'args': [
+                {
+                    'name': 'nolink',
+                    'keyvalue': '',
+                    'help': 'Do not display the link.',
+                    'optional': True,
+                    },
+                ],
+            })
     m.add_base_hook('ctcp.source', ctcp_source)
     m.add_command_hook('version',
         {
@@ -48,6 +61,15 @@ def init():
 
 def source(fp, args):
     return version.source
+
+
+def gitver(fp, args):
+    if not version.gitstr():
+        return 'Cannot find a git repository.'
+    if 'nolink' in args.lin:
+        return version.gitstr()
+    return (version.gitstr() + ': ' +
+    version.source + '/compare/%s...master' % (version.gitstr()))
 
 
 def ctcp_source(fp):

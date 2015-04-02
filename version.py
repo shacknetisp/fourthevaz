@@ -5,13 +5,16 @@ version = (0, 1, 7)
 source = "https://github.com/shacknetisp/fourthevaz"
 
 
-def versionstr():
-    gitstr = ""
+def gitstr():
     try:
-        gitstr = "-%s" % (open('.git/refs/heads/master').read().strip()[0:10])
+        return "%s" % (open('.git/refs/heads/master').read().strip()[0:10])
     except FileNotFoundError:
-        pass
-    return "%d.%d.%d%s" % (version[0], version[1], version[2], gitstr)
+        return ""
+
+
+def versionstr():
+    return "%d.%d.%d%s" % (version[0], version[1], version[2],
+        '-' + gitstr() if gitstr() else '')
 
 
 def pythonversionstr():
