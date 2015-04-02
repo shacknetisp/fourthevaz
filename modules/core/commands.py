@@ -255,14 +255,18 @@ def doptext(fp, p_ptext, count=100):
                                     lastch = ' '
                                 continue
                     if ch == '-' and command['haskeyvalue']:
-                        if isbegin or lastch == ' ':
-                            if not quotes and not inkv:
-                                inkv = True
-                                if useargs and t:
-                                    args.lin[useargs[0]] = t
-                                    useargs.pop(0)
-                                t = ''
-                                continue
+                        try:
+                            if tt[chi + 1].isalpha():
+                                if isbegin or lastch == ' ':
+                                    if not quotes and not inkv:
+                                        inkv = True
+                                        if useargs and t:
+                                            args.lin[useargs[0]] = t
+                                            useargs.pop(0)
+                                        t = ''
+                                        continue
+                        except IndexError:
+                            pass
                     if ((noquote and ch == '*' and lastch == '<') or
                     (not noquote and ch == '<')):
                         if not quotes:
@@ -370,7 +374,7 @@ def doptext(fp, p_ptext, count=100):
             for m in fp.server.modules:
                 if ptext.split(' ')[0].split('.')[0] == m.name:
                     return doptext(fp,
-                        'echo <modhelp %s> <qecho "--"> <list %s>' % (
+                        'echo <*modhelp %s> <*qecho "--"> <*list %s>' % (
                         m.name, m.name))
     return None
 
