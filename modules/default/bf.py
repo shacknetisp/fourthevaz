@@ -79,7 +79,7 @@ def evaluate(code, intextp):
                 cells[cellptr] = 0
 
         codeptr += 1
-    return 'Output: ' + ''.join(outputlist)
+    return 'Output: ' + ''.join(outputlist).replace('\n', ' ')
 
 
 def cleanup(code):
