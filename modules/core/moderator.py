@@ -73,17 +73,24 @@ def recv(fp):
                 db[fp.sp.sendernick]['lastmessagetext'] == fp.sp.text
                 ):
                 db[fp.sp.sendernick]['evilness'] += 1
-            else:
+            elif time.time() - db[fp.sp.sendernick]['lastmessage'] > 3:
                 if db[fp.sp.sendernick]['evilness'] > 0:
                     db[fp.sp.sendernick]['evilness'] -= 1
             if db[fp.sp.sendernick]['evilness'] == 2:
                 fp.reply('%s: Stop spamming.' % fp.sp.sendernick)
-            if db[fp.sp.sendernick]['evilness'] >= 4:
+            if db[fp.sp.sendernick][
+                'evilness'] >= (4 if fp.accesslevel() < 25 else 6):
                 fp.server.write_cmd(
-                    'KICK', '%s %s :Your evilness is too much for me.' % (
+                    'KICK', '%s %s :Do not spam.%s' % (
                         fp.channel.entry['channel'],
                         fp.sp.sendernick,
+                        ' You will be banned soon!' if db[
+                            fp.sp.sendernick]['kicks'] == 1 else ''
                         ))
+                #Give a change to repent
+                db[fp.sp.sendernick]['evilness'] -= 1
+                if fp.accesslevel() < 25:
+                    db[fp.sp.sendernick]['evilness'] -= 2
                 db[fp.sp.sendernick]['kicks'] += 1
                 if db[fp.sp.sendernick]['kicks'] > 2:
                     fp.server.write_cmd(
