@@ -16,7 +16,7 @@ def init(options):
             'function': chatbot,
             'level': 1,
             'help': 'Talk to the bot.',
-            'noshlex': True,
+            'noquote': True,
             'args': [
                 {
                     'name': 'fix',

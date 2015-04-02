@@ -15,7 +15,7 @@ def init(options):
             'function': tell,
             'level': 1,
             'help': 'Give <nick> <message> when <nick> is online. (No shlex.)',
-            'noshlex': True,
+            'noquote': True,
             'args': [
                 {
                     'name': 'nick',

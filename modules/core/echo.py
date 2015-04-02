@@ -9,7 +9,7 @@ def init():
         {
             'function': echo,
             'help': 'Echo text.',
-            'noshlex': True,
+            'noquote': True,
             'args': [
                 {
                     'name': 'text',
@@ -17,17 +17,18 @@ def init():
                     'help': 'Text to echo.',
                     'end': True,
                     },
+                ],
+            })
+    m.add_command_hook('qecho',
+        {
+            'function': echo,
+            'help': 'Echo text with quote.',
+            'args': [
                 {
-                    'name': 'before',
-                    'optional': True,
+                    'name': 'text',
+                    'optional': False,
                     'help': 'Text to echo.',
-                    'keyvalue': 'string',
-                    },
-                {
-                    'name': 'after',
-                    'optional': True,
-                    'help': 'Text to echo.',
-                    'keyvalue': 'string',
+                    'end': True,
                     },
                 ],
             })
@@ -35,7 +36,7 @@ def init():
         {
             'function': bold,
             'help': 'Echo bold text.',
-            'noshlex': True,
+            'noquote': True,
             'args': [
                 {
                     'name': 'text',
@@ -49,9 +50,7 @@ def init():
 
 
 def echo(fp, args):
-    return "%s%s%s" % (args.getlinstr('before', ''),
-        args.getlinstr('text', ''),
-        args.getlinstr('after', ''))
+    return "%s" % (args.getlinstr('text', ''))
 
 
 def bold(fp, args):

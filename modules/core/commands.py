@@ -130,6 +130,7 @@ def doptext(fp, p_ptext, count=100):
                     command['level']
                     ))
                 return
+        noquote = command['noquote'] if 'noquote' in command else False
         tt = ""
         try:
             tt = ptext[len(usedtext):].strip()
@@ -177,7 +178,7 @@ def doptext(fp, p_ptext, count=100):
                 if elastch == '\\':
                     execbuffer += ch
                 else:
-                    if ch in ['"', "'"]:
+                    if ch in ['"', "'"] and not noquote:
                         if equotes:
                             if ch == equotes[-1]:
                                 execbuffer += ch
@@ -209,7 +210,7 @@ def doptext(fp, p_ptext, count=100):
                     if ch == '\\':
                         lastch = ch
                         continue
-                    if ch in ['"', "'"]:
+                    if ch in ['"', "'"] and not noquote:
                         if quotes:
                             if ch == quotes[-1]:
                                 quotes.pop(-1)
