@@ -200,7 +200,7 @@ def doptext(fp, p_ptext, count=100):
                             if useargs and t:
                                 args.lin[useargs[0]] = t
                                 useargs.pop(0)
-                            t = ''
+                                t = ''
                             continue
                     execbuffer += ch
                 elastch = ch
