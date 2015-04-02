@@ -220,6 +220,12 @@ def doptext(fp, p_ptext, count=100):
                                     t = ''
                                     inkv = False
                                     lastch = ' '
+                                if useargs and isend:
+                                    if t:
+                                        args.lin[useargs[0]] = t
+                                        useargs.pop(0)
+                                        t = ''
+                                        lastch = ' '
                                 continue
                             else:
                                 t += ch
@@ -237,10 +243,11 @@ def doptext(fp, p_ptext, count=100):
                             if useargs:
                                 if isend:
                                     t += ch
-                                args.lin[useargs[0]] = t
-                                useargs.pop(0)
-                                t = ''
-                                lastch = ' '
+                                if t:
+                                    args.lin[useargs[0]] = t
+                                    useargs.pop(0)
+                                    t = ''
+                                    lastch = ' '
                                 continue
                     if ch == '-':
                         if isbegin or lastch == ' ':

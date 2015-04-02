@@ -111,5 +111,5 @@ def modhelp(fp, args):
     for m in fp.server.modules:
         if m.name == args.getlinstr('module'):
             return('%s' % m.helptext)
-    return('Unable to find module.')
+    return('Unable to find module %s.' % args.getlinstr('module'))
 
