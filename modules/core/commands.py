@@ -254,7 +254,7 @@ def doptext(fp, p_ptext, count=100):
                                     t = ''
                                     lastch = ' '
                                 continue
-                    if ch == '-':
+                    if ch == '-' and command['haskeyvalue']:
                         if isbegin or lastch == ' ':
                             if not quotes and not inkv:
                                 inkv = True
