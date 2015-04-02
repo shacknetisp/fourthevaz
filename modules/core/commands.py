@@ -43,16 +43,8 @@ class Args:
                 return '%s.' % (self.message)
             return '%s: %s.' % (self.arg, self.message)
 
-    def __init__(self, t, noshlex):
-        self.text = t
-        if noshlex:
-            self.splittext = t.split(' ')
-        else:
-            self.splittext = shlex.split(t)
+    def __init__(self):
         self.lin = {}
-
-    def getidxstr(self, n):
-        return self.splittext[n]
 
     def getlinstr(self, n, d=None):
         if n not in self.lin and d is not None:
@@ -138,138 +130,140 @@ def doptext(fp, p_ptext, count=100):
                     command['level']
                     ))
                 return
-        t = ""
+        tt = ""
         try:
-            t = ptext[len(usedtext):].strip()
+            tt = ptext[len(usedtext):].strip()
         except IndexError:
             pass
-        found = True
-        noshlex = command['noshlex'] if 'noshlex' in command else False
-        noltparse = command['noltparse'] if 'noltparse' in command else False
-        while found and not noltparse:
-            found = False
-            pc = 0
-            lastfound = -1
-            lfas = ''
-            for ic in range(len(t)):
-                try:
-                    bc = t[ic - 1]
-                except IndexError:
-                    bc = ''
-                c = t[ic]
-                try:
-                    ac = t[ic + 1]
-                except IndexError:
-                    ac = ''
-                if c == '<' and bc != '"':
-                    pc += 1
-                    lastfound = ic
-                    lfas = ac
-                elif c == '>':
-                    pc -= 1
-                    if pc >= 0:
-                        lfp = 0
-                        if lfas == '*':
-                            lfp = 1
-                            found = True
-                            try:
-                                result = doptext(fp,
-                                    t[lastfound + 1 + lfp:ic], count)
-                            except IndexError:
-                                result = ""
-                            if not result:
-                                return
-                            t = t[0:max(0, lastfound)] + (
-                                result + t[ic + 1:])
-                            print(t)
-                            lastfound = None
-                            break
+        t = ""
+        lastch = ''
+        elastch = ''
+        quotes = []
+        equotes = []
+        inexec = False
+        execlevel = 0
+        inkv = False
+        useargs = []
+        args = Args()
 
-        try:
-            args = Args(t, noshlex)
-        except ValueError as e:
-            return str(e)
-        counter = 0
-        hasend = False
-        hasoptional = False
-        for a in command['args']:
-            if 'end' in a and a['end']:
-                hasend = True
-            elif a['optional'] and 'keyvalue' not in a:
-                hasoptional = True
-        if hasend and hasoptional:
-            raise Args.ArgConflict(None,
-                'Seperate optional and ending ' +
-                'linear arguments are not allowed.')
-        if command['haskeyvalue']:
-            for a in command['args']:
-                if len(args.splittext) > counter:
-                    if ('end' not in a or not a['end']) and 'keyvalue' not in a:
-                        args.lin[a['name']] = args.splittext[counter]
-                        counter += 1
-            #Option Args
-            lastval = ""
-            argsdefv = ""
-            ar = args.splittext[counter:]
-            ok = True
-            fstr = ""
-            endop = False
-            for i in ar:
-                if i:
-                    if i[0] == '-' and ok and not endop:
-                        var = i.split("=")[0][1:]
-                        if var == '-':
-                            fstr += '--' + ' '
-                            endop = True
-                        else:
-                            try:
-                                val = i.split("=")[1]
-                                fstr += "-" + var + "=" + val + " "
-                            except IndexError:
-                                val = ""
-                                fstr += "-" + var + " "
-                            args.lin[var] = val
-                            for arg in command['args']:
-                                aliases = arg[
-                                    'aliases'] if 'aliases' in arg else []
-                                if arg['name'] == var or var in aliases:
-                                    args.lin[arg['name']] = val
-                                    for al in aliases:
-                                        args.lin[al] = val
-                        lastval = i
-                    else:
-                        fstr += i + " "
-                ok = False
-            fstr = fstr.strip()
-            argsv = fstr
-            if lastval:
-                argsdefv = argsv[
-                argsv.find(lastval) + len(lastval):]
-                argsdefv = argsdefv[argsdefv.find('" ') + 2:]
+        def doinkv(isend, t):
+            if isend:
+                t += ch
+            var = t.split('=')[0]
+            try:
+                val = t.split('=')[1]
+            except IndexError:
+                val = ""
+            if var in possibleargs:
+                return 'You specified %s with a -' % var
+            args.lin[var] = val
+        for arg in command['args']:
+            if 'end' in arg and arg['end']:
+                continue
+            if 'keyvalue' in arg:
+                continue
+            useargs.append(arg['name'])
+        possibleargs = []
+        for arg in command['args']:
+            if 'keyvalue' in arg:
+                continue
+            possibleargs.append(arg['name'])
+        execbuffer = ''
+        for chi in range(len(tt)):
+            ch = tt[chi]
+            isbegin = (chi == 0)
+            isend = (chi == len(tt) - 1)
+            if inexec:
+                if elastch == '\\':
+                    execbuffer += ch
+                else:
+                    if ch in ['"', "'"]:
+                        if equotes:
+                            if ch == equotes[-1]:
+                                execbuffer += ch
+                                equotes.pop(-1)
+                                continue
+                            else:
+                                execbuffer += ch
+                                continue
+                        execbuffer += ch
+                        equotes.append(ch)
+                        continue
+                    if ch == '<' and not equotes:
+                        execlevel += 1
+                        continue
+                    elif ch == '>' and not equotes:
+                        execlevel -= 1
+                        if execlevel == 0:
+                            inexec = False
+                            t += doptext(fp, execbuffer)
+                            if useargs and t:
+                                args.lin[useargs[0]] = t
+                                useargs.pop(0)
+                            t = ''
+                            continue
+                    execbuffer += ch
+                elastch = ch
             else:
-                argsdefv = argsv
-            if len(argsdefv) > 0:
-                if argsdefv[0] == '"' or argsdefv[0] == "'":
-                    argsdefv = argsdefv[1:]
-                if argsdefv[-1] == '"' or argsdefv[-1] == "'":
-                    argsdefv = argsdefv[:-1]
-            for a in command['args']:
-                if 'end' in a and a['end']:
-                    if argsdefv:
-                        args.lin[a['name']] = argsdefv
-                elif 'keyvalue' not in a:
-                    if a['optional']:
-                        raise Args.ArgConflict(None,
-                        'All arguments must be ' +
-                        'either keyvalue or not optional.')
-
-        else:
-            #Standard Linear Args
-            for a in command['args']:
-                if len(args.splittext) > counter:
-                    if ('end' not in a or not a['end']):
-                        args.lin[a['name']] = args.splittext[counter]
-                counter += 1
+                if lastch != '\\':
+                    if ch == '\\':
+                        lastch = ch
+                        continue
+                    if ch in ['"', "'"]:
+                        if quotes:
+                            if ch == quotes[-1]:
+                                quotes.pop(-1)
+                                if inkv and isend:
+                                    doinkv(False, t)
+                                    t = ''
+                                    inkv = False
+                                    lastch = ' '
+                                continue
+                            else:
+                                t += ch
+                                continue
+                        quotes.append(ch)
+                        continue
+                    if ch == ' ' or isend:
+                        if not quotes:
+                            if inkv:
+                                doinkv(isend, t)
+                                t = ''
+                                inkv = False
+                                lastch = ' '
+                                continue
+                            if useargs:
+                                if isend:
+                                    t += ch
+                                args.lin[useargs[0]] = t
+                                useargs.pop(0)
+                                t = ''
+                                continue
+                    if ch == '-':
+                        if isbegin or lastch == ' ':
+                            if not quotes and not inkv:
+                                inkv = True
+                                if useargs and t:
+                                    args.lin[useargs[0]] = t
+                                    useargs.pop(0)
+                                t = ''
+                                continue
+                    if ch == '<':
+                        if not quotes:
+                            inexec = True
+                            execlevel += 1
+                            continue
+                    t += ch
+                else:
+                    t += ch
+                lastch = ch
+        if quotes:
+            return 'You are missing an ending quotation mark!'
+        if inexec:
+            return 'You are missing an ending ">"!'
+        for arg in command['args']:
+            if 'end' in arg and arg['end']:
+                args.lin[arg['name']] = t
         try:
             extra = {
                 }

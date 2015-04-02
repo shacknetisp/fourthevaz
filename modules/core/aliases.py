@@ -11,7 +11,6 @@ def init():
     m.add_command_hook('set',
         {
             'function': setalias,
-            'noltparse': True,
             'help': 'Set aliases.',
             'args': [
                 {

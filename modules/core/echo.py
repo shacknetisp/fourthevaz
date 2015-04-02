@@ -17,6 +17,18 @@ def init():
                     'help': 'Text to echo.',
                     'end': True,
                     },
+                {
+                    'name': 'before',
+                    'optional': True,
+                    'help': 'Text to echo.',
+                    'keyvalue': 'string',
+                    },
+                {
+                    'name': 'after',
+                    'optional': True,
+                    'help': 'Text to echo.',
+                    'keyvalue': 'string',
+                    },
                 ],
             })
     m.add_command_hook('bold',
@@ -37,7 +49,9 @@ def init():
 
 
 def echo(fp, args):
-    return args.getlinstr('text', '')
+    return "%s%s%s" % (args.getlinstr('before', ''),
+        args.getlinstr('text', ''),
+        args.getlinstr('after', ''))
 
 
 def bold(fp, args):

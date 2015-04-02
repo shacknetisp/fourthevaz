@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 aliases = {
-    'geoipnick': 'geoip <*whois $# host> $*'
+    'geoipnick': 'geoip <whois $# host> $*'
     }
