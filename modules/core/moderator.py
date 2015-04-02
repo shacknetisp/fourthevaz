@@ -60,7 +60,7 @@ def recv(fp):
         if not rfes in fp.server.db or not fp.server.db[rfes]:
             return
         if fp.sp.sendernick:
-            if fp.accesslevel() >= 40:
+            if fp.accesslevel() >= 50:
                 return
             if fp.sp.sendernick not in db:
                 db[fp.sp.sendernick] = {
