@@ -82,6 +82,19 @@ def enablemoderator(fp, args):
         return str(e)
 
 
+def getcharacterrepition(s):
+    if not s:
+        return 0
+    total = len(s)
+    highest = 0
+    tried = []
+    for c in s:
+        if c not in tried:
+            tried.append(c)
+            highest = max(highest, s.count(c))
+    return (highest / total) * 100
+
+
 def recv(fp):
     if fp.sp.iscode('chat') and fp.channel:
         db = fp.server.state['moderator']
@@ -102,6 +115,8 @@ def recv(fp):
                 db[fp.sp.sendernick]['lastmessagetext'] == fp.sp.text
                 ):
                 db[fp.sp.sendernick]['evilness'] += 1
+            elif getcharacterrepition(fp.sp.text) > 40 and len(fp.sp.text) > 10:
+                db[fp.sp.sendernick]['evilness'] += 2
             elif time.time() - db[fp.sp.sendernick]['lastmessage'] > 3:
                 if db[fp.sp.sendernick]['evilness'] > 0:
                     db[fp.sp.sendernick]['evilness'] -= 1
