@@ -345,7 +345,8 @@ def doptext(fp, p_ptext, count=100):
         if len(ptext.split(' ')[0].split('.')) == 1:
             for m in fp.server.modules:
                 if ptext.split(' ')[0].split('.')[0] == m.name:
-                    return doptext(fp, 'echo <*modhelp %s> -- <*list %s>' % (
+                    return doptext(fp,
+                        'echo <modhelp %s> <qecho "--"> <list %s>' % (
                         m.name, m.name))
     return None
 
