@@ -320,6 +320,8 @@ def doptext(fp, p_ptext, count=100):
                             lastusedindex += 1
                         except IndexError:
                             return "Too few arguments!"
+                        except ValueError:
+                            return "Missing ending quote!"
                         t = t[0:ic] + (
                             result + t[ic + 2:])
                         break
@@ -330,6 +332,8 @@ def doptext(fp, p_ptext, count=100):
                                 lastusedindex:])
                         except IndexError:
                             pass
+                        except ValueError:
+                            return "Missing ending quote!"
                         hadall = True
                         t = t[0:ic] + (
                             result + t[ic + 2:])
