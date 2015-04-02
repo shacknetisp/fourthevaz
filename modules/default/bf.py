@@ -19,7 +19,8 @@ def init(options):
                     },
                 {
                     'name': 'code/input',
-                    'help': 'Code to execute or input to set.',
+                    'help': 'Code to execute or input to set. ' +
+                    'Use ! in the code to start input.',
                     'optional': False,
                     'end': True,
                     },
@@ -65,6 +66,8 @@ def evaluate(code, intextp):
         if command == ".":
             try:
                 outputlist.append(chr(cells[cellptr]))
+                if len(outputlist) > 250:
+                    break
             except ValueError:
                 pass
         if command == ",":
@@ -100,5 +103,10 @@ def bf(fp, args):
         fp.server.state['bf.input'] = args.getlinstr('code/input')
         return 'Input is now "%s"' % args.getlinstr('code/input')
     else:
-        return evaluate(args.getlinstr('code/input'),
+        try:
+            fp.server.state['bf.input'] = args.getlinstr(
+                'code/input').split('!')[1]
+        except IndexError:
+            pass
+        return evaluate(args.getlinstr('code/input').split('!')[0],
             fp.server.state['bf.input'])
