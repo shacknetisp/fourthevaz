@@ -198,6 +198,7 @@ def doptext(fp, p_ptext, count=100):
                         if execlevel == 0:
                             inexec = False
                             t += doptext(fp, execbuffer)
+                            execbuffer = ''
                             if useargs and t:
                                 args.lin[useargs[0]] = t
                                 useargs.pop(0)
