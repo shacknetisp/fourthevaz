@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import configs.module
 import requests
-import urllib.parse
 
 
 def init():
