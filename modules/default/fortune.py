@@ -16,7 +16,8 @@ def init():
 
 
 def fortune(fp, args):
-    json = requests.get("http://ghostclanre.tk/cgi-bin/fortune.py?n=100").json()
+    json = requests.get("http://ghostclanre.tk/cgi-bin/fortune.py",
+        params={'n': 100}).json()
     if 'error' in json:
         return 'Error: %s.' % json['error']
     return json['fortune']
