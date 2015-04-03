@@ -46,6 +46,17 @@ def init():
             'args': [
                 {
                     #Name of the argument
+                    'name': 'kv1',
+                    #Help text
+                    'help': 'Display this.',
+                    #Optional?
+                    'optional': False,
+                    #Keyvalue (-kv1=<keyvalue>),
+                    #if it is '' then it's just a flag, otherwise it's a value
+                    'keyvalue': 'string',
+                    },
+                {
+                    #Name of the argument
                     'name': 'arg1',
                     #Help text
                     'help': 'Echo this.',
@@ -85,5 +96,8 @@ def tensecondtimer():
 
 
 def example(fp, args):
-    #Return a message with arg1 (no default) and arg2 (default empty string)
-    return args.getlinstr('arg1') + ' -- ' + args.getlinstr('arg2', '')
+    #Return a message with arg1 (no default) and arg2 (default '')
+    #Prefix of kv1 (default '')
+    kv1 = args.getlinstr('kv1', '')
+    return kv1 + ': ' + args.getlinstr(
+        'arg1') + ' -- ' + args.getlinstr('arg2', '')

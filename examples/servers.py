@@ -6,7 +6,6 @@
     #The database stores aliases and module settings.
     #You can use one database in several servers.
     'settings': 'freenode',
-    'log': 'freenode',
     #This is the server to connect to
     'address': {'host': 'irc.freenode.net', 'port': 6667},
     #The nick and name are defined here

@@ -359,6 +359,7 @@ def doptext(fp, p_ptext, count=100):
                         found = True
                         try:
                             result = shlex.split(args)[acint - 1]
+                            lastusedindex = acint
                         except IndexError:
                             return "Too few arguments!"
                         except ValueError:
