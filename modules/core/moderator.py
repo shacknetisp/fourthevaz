@@ -129,11 +129,13 @@ def recv(fp):
             if db[fp.sp.sendernick][
                 'evilness'] >= (4 if fp.accesslevel() < 25 else 6):
                 fp.server.write_cmd(
-                    'KICK', '%s %s :Do not spam.%s' % (
+                    'KICK', '%s %s :Do not spam. %s' % (
                         fp.channel.entry['channel'],
                         fp.sp.sendernick,
-                        ' You will be banned soon!' if db[
-                            fp.sp.sendernick]['kicks'] == 1 else ''
+                        'You will be banned soon!' if db[
+                            fp.sp.sendernick]['kicks'] == 1 else
+                            'Use http://0bin.net/ or another pastebin ' +
+                            'service if necessary.'
                         ))
                 #Give a change to repent
                 db[fp.sp.sendernick]['evilness'] -= 1
