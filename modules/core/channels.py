@@ -30,7 +30,37 @@ def init():
                     },
                 ],
             })
+    m.add_command_hook('enablebot', {
+        'function': enablebot,
+        'help': 'Enable bot functions in a channel. ' +
+        'A disabled bot will only log.',
+        'level': 50,
+        'args': [
+            {
+                'name': 'channel',
+                'optional': False,
+                'help': 'Channel to use.',
+                },
+            {
+                'name': 'enable?',
+                'optional': False,
+                'help': 'Enable or not.',
+                },
+            ]
+        })
     return m
+
+
+def enablebot(fp, args):
+    channel = args.getlinstr('channel')
+    try:
+        fp.server.db[
+            'bot.enable.%s' % channel] = utils.boolstr(
+                args.getlinstr('enable?'))
+        return 'Enabled: ' + str(
+            fp.server.db['bot.enable.%s' % channel])
+    except ValueError as e:
+        return str(e)
 
 
 def join(fp, args):

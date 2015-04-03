@@ -71,6 +71,10 @@ class FullParse():
             channel), self.serverlevel)
 
     def reply(self, message, c=''):
+        if self.channel:
+            if not self.server.db[
+                'bot.enable.%s' % self.channel.entry['channel']]:
+                return
         command = c
         if not command:
             if self.channel:

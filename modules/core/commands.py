@@ -382,6 +382,9 @@ def doptext(fp, p_ptext, count=100):
 
 def recv(fp):
     if fp.sp.iscode('chat'):
+        if fp.channel:
+            if not fp.server.db['bot.enable.%s' % fp.channel.entry['channel']]:
+                return
         try:
             if fp.sp.text[0] == '\x01':
                 st = fp.sp.text.strip('\x01')

@@ -95,6 +95,8 @@ class Server:
             self.join_channel(channel)
 
     def join_channel(self, c):
+        if 'bot.enable.%s' % self.shortchannel(c)['channel'] not in self.db:
+            self.db['bot.enable.%s' % self.shortchannel(c)['channel']] = True
         self.write_cmd('JOIN ', self.shortchannel(c)['channel'])
         name = self.entry['access'][0] + ':' + self.shortchannel(c)['channel']
         if name not in running.accesslist.db():
