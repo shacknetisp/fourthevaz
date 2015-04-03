@@ -12,7 +12,7 @@ access = configs.mload.import_module_py('rights.access')
 class LineDB:
 
     def __init__(self, name, plural, seperprefix,
-        seper, add, main, remove, random, eh=''):
+        seper, add, main, remove, showlist, random, eh=''):
         self.dbfolder = configs.locs.userdata + '/' + plural
         os.makedirs(self.dbfolder, exist_ok=True)
         self.name = name
@@ -22,6 +22,7 @@ class LineDB:
         self.f_add = add
         self.f_main = main
         self.f_remove = remove
+        self.f_list = showlist
         self.random = random
         self.randomtext = "random" if random else "single"
         self.eh = eh
@@ -60,6 +61,12 @@ class LineDB:
                     'end': True,
                     }
                     ]
+                })
+        m.add_command_hook('%stopics' % self.name,
+            {
+                'function': self.f_list,
+                'help': 'View %s topics.' % self.name,
+                'args': []
                 })
         m.add_command_hook(self.name,
             {
@@ -157,6 +164,10 @@ class LineDB:
         if not choices:
             return 'No matching lines found.'
         return random.choice(choices)
+
+    def showlist(self, fp, args):
+        return 'Topics: ' + utils.ltos(
+            fp.server.state['%s.db' % self.plural].db())
 
     def remove(self, fp, args, dt, channel=False):
         line = args.getlinstr(self.name, '')

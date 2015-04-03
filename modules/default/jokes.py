@@ -11,7 +11,7 @@ def init(options):
     server = options['server']
     linedb = configs.mload.import_module_py("share.linedb", "default")
     server.state['jokes.linedb'] = linedb.LineDB(
-        'joke', 'jokes', '#', 'channel', add, main, remove, True,
+        'joke', 'jokes', '#', 'channel', add, main, remove, showlist, True,
         ' !target! and !joker! are the tokens.')
     ldb = server.state['jokes.linedb']
     ldb.initserver(server)
@@ -43,6 +43,10 @@ def main(fp, args):
                     '!target!', args.getlinstr(
                         'target', fp.user)).replace(
                             '!joker!', fp.user)
+
+
+def showlist(fp, args):
+    return ldb.showlist(fp, args)
 
 
 def remove(fp, args):

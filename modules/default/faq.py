@@ -11,7 +11,7 @@ def init(options):
     server = options['server']
     linedb = configs.mload.import_module_py("share.linedb", "default")
     server.state['faq.linedb'] = linedb.LineDB(
-        'faq', 'faq', '', 'name', add, main, remove, False)
+        'faq', 'faq', '', 'name', add, main, remove, showlist, False)
     ldb = server.state['faq.linedb']
     ldb.initserver(server)
     m = configs.module.Module('faq')
@@ -25,6 +25,10 @@ def add(fp, args):
 
 def main(fp, args):
     return ldb.main(fp, args, '')
+
+
+def showlist(fp, args):
+    return ldb.showlist(fp, args)
 
 
 def remove(fp, args):

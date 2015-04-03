@@ -11,7 +11,7 @@ def init(options):
     server = options['server']
     linedb = configs.mload.import_module_py("share.linedb", "default")
     server.state['quotes.linedb'] = linedb.LineDB(
-        'quote', 'quotes', '#', 'channel', add, main, remove, True)
+        'quote', 'quotes', '#', 'channel', add, main, remove, showlist, True)
     ldb = server.state['quotes.linedb']
     ldb.initserver(server)
     m = configs.module.Module('quotes')
@@ -28,6 +28,10 @@ def add(fp, args):
 def main(fp, args):
     c = fp.channel.entry['channel'] if fp.channel and fp.channel.entry else ""
     return ldb.main(fp, args, c)
+
+
+def showlist(fp, args):
+    return ldb.showlist(fp, args)
 
 
 def remove(fp, args):
