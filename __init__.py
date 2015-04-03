@@ -33,7 +33,6 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
     signal.signal(signal.SIGQUIT, signal_handler)
-    print('Press Ctrl+C')
     print(('Fourth Evaz %s' % version.versionstr()))
     running.accesslist = db.text.DB(locs.userdata + '/access.py')
     if os.path.exists(running.accesslist.filename):
