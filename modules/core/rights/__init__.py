@@ -17,12 +17,6 @@ def init():
             'help': 'Get user rights.',
             'args': [
                 {
-                    'name': 'accesslist',
-                    'optional': True,
-                    'keyvalue': 'accesslist',
-                    'help': 'The access list to get.'
-                    },
-                {
                     'name': 'onlyvalue',
                     'optional': True,
                     'keyvalue': '',
@@ -31,9 +25,13 @@ def init():
                 {
                     'name': 'user',
                     'optional': True,
-                    'end': True,
                     'help': 'The user to view, defaults to caller. ([<nick>]:'
                     '[<hostname>]:[<NickServ Account>])'
+                    },
+                {
+                    'name': 'accesslist',
+                    'optional': True,
+                    'help': 'The access list to get.'
                     },
                 ],
             })
@@ -92,8 +90,10 @@ def accesslists(fp, args):
 
 def getusers(fp, args):
     search = args.getlinstr('search')
-    if len(search.split(':')) != access.accesslen:
-        return('Malformed: %s' % search)
+    try:
+        access.raiseifnotformeduser(search)
+    except access.AccessLevelError:
+        return "Malformed user!"
     alist = args.getlinstr('accesslist', fp.server.entry['access'][0])
     if alist == '.':
         if not fp.channel:
@@ -110,6 +110,10 @@ def getusers(fp, args):
 
 def getrights(fp, args):
     user = args.getlinstr('user', fp.accesslevelname)
+    try:
+        access.raiseifnotformeduser(user)
+    except access.AccessLevelError:
+        return "Malformed user!"
     alist = args.getlinstr('accesslist', '')
     if alist == '.':
         if not fp.channel:
@@ -130,6 +134,10 @@ def getrights(fp, args):
 
 def setrights(fp, args):
     user = args.getlinstr('user')
+    try:
+        access.raiseifnotformeduser(user)
+    except access.AccessLevelError:
+        return "Malformed user!"
     alist = args.getlinstr('accesslist', fp.server.entry['access'][0])
     if alist == '.':
         if not fp.channel:
