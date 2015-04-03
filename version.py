@@ -10,6 +10,8 @@ def gitstr():
         return "%s" % (open('.git/refs/heads/master').read().strip()[0:10])
     except FileNotFoundError:
         return ""
+    except IndexError:
+        return ""
 
 
 def versionstr():
