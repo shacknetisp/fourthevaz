@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import utils
 from configs.module import Module
-import running
 
 
 def init():
