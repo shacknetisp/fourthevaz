@@ -86,8 +86,10 @@ class FullParse():
                     'more.%s' % self.sp.sendernick] = messages[1:]
                 try:
                     if self.server.state['more.%s' % self.sp.sendernick]:
-                        message += ' \2(%d more)\2' % len(
+                        l = len(
                             self.server.state['more.%s' % self.sp.sendernick])
+                        message += ' \2(%d more message%s)\2' % (l,
+                            's' if l != 1 else '')
                 except KeyError:
                     pass
         self.server.do_base_hook('output', self, target, message)
