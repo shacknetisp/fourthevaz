@@ -96,6 +96,8 @@ class FullParse():
         for tm in message.split('\n'):
             i = 0
             for fm in textwrap.wrap(tm, 450):
+                if self.ltnserver():
+                    fm = fm.replace('\2', '')
                 self.server.write_cmd(command, target + str(' :') +
                 ('...' if i else '') + fm)
                 i += 1
