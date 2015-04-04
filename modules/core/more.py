@@ -17,7 +17,11 @@ def init():
 def more(fp, args):
     if ('more.' + fp.outtarget()) in fp.server.state:
         try:
-            return fp.server.state['more.' + fp.outtarget()].pop(0)
+            m = (fp.server.state['more.' + fp.outtarget()].pop(0))
+            if fp.server.state['more.%s' % fp.outtarget()]:
+                m += ' \2(%d more)\2' % len(
+                            fp.server.state['more.%s' % fp.outtarget()])
+            return m
         except IndexError:
             pass
     return 'No more messages.'

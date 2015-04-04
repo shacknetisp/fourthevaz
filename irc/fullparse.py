@@ -83,16 +83,19 @@ class FullParse():
             message = messages[0]
             if len(messages) > 1:
                 self.server.state['more.%s' % target] = messages[1:]
-            try:
-                if self.server.state['more.%s' % target]:
-                    message += ' \2(%d more)\2' % len(
-                        self.server.state['more.%s' % target])
-            except KeyError:
-                pass
+                try:
+                    if self.server.state['more.%s' % target]:
+                        message += ' \2(%d more)\2' % len(
+                            self.server.state['more.%s' % target])
+                except KeyError:
+                    pass
         self.server.do_base_hook('output', self, target, message)
         for tm in message.split('\n'):
+            i = 0
             for fm in textwrap.wrap(tm, 450):
-                self.server.write_cmd(command, target + str(' :') + fm)
+                self.server.write_cmd(command, target + str(' :') +
+                ('...' if i else '') + fm)
+                i += 1
 
     def reply(self, message, c=''):
         if self.channel:
