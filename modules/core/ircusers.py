@@ -97,11 +97,11 @@ def recv(fp):
             except KeyError:
                 pass
         elif fp.sp.iscode('311'):
-            if fp.sp.object not in fp.server.whoislist:
-                fp.server.whoislist[fp.sp.object] = {
-                    'op': [],
-                    'voice': [],
-                    }
+            fp.server.whoislist[fp.sp.object] = {
+                'op': [],
+                'voice': [],
+                'away': False,
+                }
             fp.server.whoislist[fp.sp.object]['ident'] = fp.sp.getsplit(4)
             fp.server.whoislist[fp.sp.object]['host'] = fp.sp.getsplit(5)
             fp.server.whoislist[fp.sp.object]['name'] = fp.sp.text
@@ -117,6 +117,8 @@ def recv(fp):
             fp.server.whoislist[fp.sp.object]['voice'] = v
         elif fp.sp.iscode('330'):
             fp.server.whoislist[fp.sp.object]['authed'] = fp.sp.getsplit(4)
+        elif fp.sp.iscode('301'):
+            fp.server.whoislist[fp.sp.object]['away'] = True
         elif fp.sp.iscode('318'):
             fp.server.whoislist[fp.sp.object]['done'] = True
         elif fp.sp.iscode('join'):
@@ -178,6 +180,10 @@ def authme(fp, args):
 
 def whois(fp, args):
     user = args.getlinstr('user')
+    for channel in fp.server.channels:
+        if 'names' in channel:
+            if user not in channel['names']:
+                return '%s is not online.' % user
     if user in fp.server.whoislist and 'done' in fp.server.whoislist[user]:
         t = fp.server.whoislist[user]
         if 'info' in args.lin:
@@ -185,8 +191,9 @@ def whois(fp, args):
                 return t['host']
             else:
                 return 'That information cannot be provided.'
-        return('%s!%s "%s" Authed: %s%s' % (
+        return('%s%s, Host: %s, Name: "%s", Authed: %s%s' % (
             user,
+            ' [Away]' if 'away' in t and t['away'] else '',
             t['host'],
             t['name'],
             'Yes' if 'authed' in t else 'No',
