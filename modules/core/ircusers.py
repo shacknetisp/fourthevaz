@@ -155,6 +155,7 @@ def recv(fp):
             fp.server.state['lastseen'].db()[fp.sp.sendernick][
             'action'] = "using %s %s." % (fp.sp.command.upper(),
                 fp.sp.target if fp.sp.target else fp.sp.text)
+        fp.server.state['lastseen'].save()
 
 
 def authme(fp, args):
