@@ -147,7 +147,8 @@ def recv(fp):
         if fp.sp.sendernick not in fp.server.state['lastseen'].db():
             fp.server.state['lastseen'].db()[fp.sp.sendernick] = {
                 }
-        fp.server.state['lastseen'].db()['time'] = utils.utcepoch()
+        fp.server.state['lastseen'].db()[
+            fp.sp.sendernick]['time'] = utils.utcepoch()
         fp.server.state['lastseen'].db()[fp.sp.sendernick][
             'action'] = "doing something unknown."
         if fp.sp.iscode('chat'):
