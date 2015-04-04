@@ -22,7 +22,7 @@ class FullParse():
             if 'done' in self.server.whoislist[user]:
                 t = self.server.whoislist[user]
                 authed = t['authed'] if 'authed' in t and t['authed'] else ''
-        self.setaccess("%s:%s:%s" % (
+        self.setaccess("%s=%s=%s" % (
             self.sp.sendernick, self.sp.host, authed))
         self.user = self.sp.sendernick
 
