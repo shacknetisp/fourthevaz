@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import configs.mload
 import utils
+import textwrap
 from . import utils as ircutils
 access = configs.mload.import_module_py('rights.access')
 
@@ -70,34 +71,39 @@ class FullParse():
             access.getaccesslevel, self,
             channel), self.serverlevel)
 
+    def reply_driver(self, target, message, c=''):
+        command = c
+        if not command:
+            if self.channel:
+                command = 'PRIVMSG'
+            else:
+                command = 'NOTICE'
+        messages = textwrap.wrap(message, 400)
+        message = messages[0]
+        if len(messages) > 1:
+            self.server.state['more.%s' % target] = messages[1:]
+        try:
+            if self.server.state['more.%s' % target]:
+                message += ' \2(%d more)\2' % len(
+                    self.server.state['more.%s' % target])
+        except KeyError:
+            pass
+        self.server.do_base_hook('output', self, target, message)
+        for m in message.split('\n'):
+            self.server.write_cmd(command, target + str(' :') + m)
+
     def reply(self, message, c=''):
         if self.channel:
             if not self.server.db[
                 'bot.enable.%s' % self.channel.entry['channel']]:
                 return
-        command = c
-        if not command:
-            if self.channel:
-                command = 'PRIVMSG'
-            else:
-                command = 'NOTICE'
-        self.server.do_base_hook('output', self, self.outtarget(), message)
-        for m in message.split('\n'):
-            self.server.write_cmd(command, self.outtarget() + str(' :') + m)
+        return self.reply_driver(self.outtarget(), message, c)
 
     def replyctcp(self, message):
         self.reply(ircutils.ctcp(message), "NOTICE")
 
     def replypriv(self, message, c=''):
-        command = c
-        if not command:
-            if self.channel:
-                command = 'PRIVMSG'
-            else:
-                command = 'NOTICE'
-        self.server.do_base_hook('output', self, self.sp.sendernick, message)
-        for m in message.split('\n'):
-            self.server.write_cmd(command, self.sp.sendernick + str(' :') + m)
+        return self.reply_driver(self.sp.sendernick, message, c)
 
     class Channel:
 
