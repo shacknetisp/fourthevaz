@@ -15,12 +15,12 @@ def init():
 
 
 def more(fp, args):
-    if ('more.' + fp.outtarget()) in fp.server.state:
+    if ('more.' + fp.sp.sendernick) in fp.server.state:
         try:
-            m = (fp.server.state['more.' + fp.outtarget()].pop(0))
-            if fp.server.state['more.%s' % fp.outtarget()]:
+            m = (fp.server.state['more.' + fp.sp.sendernick].pop(0))
+            if fp.server.state['more.%s' % fp.sp.sendernick]:
                 m += ' \2(%d more)\2' % len(
-                            fp.server.state['more.%s' % fp.outtarget()])
+                            fp.server.state['more.%s' % fp.sp.sendernick])
             return m
         except IndexError:
             pass

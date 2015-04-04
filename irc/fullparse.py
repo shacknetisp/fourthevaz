@@ -82,11 +82,12 @@ class FullParse():
             messages = textwrap.wrap(message, 400)
             message = messages[0]
             if len(messages) > 1:
-                self.server.state['more.%s' % target] = messages[1:]
+                self.server.state[
+                    'more.%s' % self.sp.sendernick] = messages[1:]
                 try:
-                    if self.server.state['more.%s' % target]:
+                    if self.server.state['more.%s' % self.sp.sendernick]:
                         message += ' \2(%d more)\2' % len(
-                            self.server.state['more.%s' % target])
+                            self.server.state['more.%s' % self.sp.sendernick])
                 except KeyError:
                     pass
         self.server.do_base_hook('output', self, target, message)
