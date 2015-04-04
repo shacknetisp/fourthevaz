@@ -90,8 +90,9 @@ class FullParse():
             except KeyError:
                 pass
         self.server.do_base_hook('output', self, target, message)
-        for m in message.split('\n'):
-            self.server.write_cmd(command, target + str(' :') + m)
+        for tm in message.split('\n'):
+            for fm in textwrap.wrap(tm, 400):
+                self.server.write_cmd(command, target + str(' :') + fm)
 
     def reply(self, message, c=''):
         if self.channel:

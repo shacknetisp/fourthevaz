@@ -48,6 +48,18 @@ def init(options):
                 'help': 'Show last seen statistics.',
                 },
             {
+                'name': 'noservers',
+                'keyvalue': '',
+                'optional': True,
+                'help': 'Show only players.',
+                },
+            {
+                'name': 'servers',
+                'keyvalue': '',
+                'optional': True,
+                'help': 'Search servers.',
+                },
+            {
                 'name': '{playerstats/serverstats}',
                 'keyvalue': '',
                 'optional': True,
@@ -273,15 +285,28 @@ def doredflare(fp, args):
             return 'No stats recorded.'
     else:
         search = args.getlinstr('search', '')
+        searchservers = ('servers' in args.lin)
+        if 'noservers' in args.lin:
+            results = []
+            for server in rf.servers:
+                for player in server['players']:
+                    if configs.match.matchnocase(player, search, False):
+                        results.append(player)
+            if not results:
+                return 'No results.'
+            return utils.ltos(results)
         endresults = []
         for server in rf.servers:
             results = []
-            for player in server['players']:
-                if configs.match.matchnocase(player, search, False):
-                    results.append(player)
-            if results:
-                desc = server['description']
-                endresults.append(desc + ': ' + ', '.join(results))
+            if (configs.match.matchnocase(server['description'],
+                search, False) or not searchservers):
+                for player in server['players']:
+                    if (configs.match.matchnocase(player, search, False) or
+                    searchservers):
+                        results.append(player)
+                if results:
+                    desc = server['description']
+                    endresults.append(desc + ': ' + ', '.join(results))
         if fp.channel and len(endresults) > 1:
             rfes = 'redflare.enable.%s' % fp.channel.entry['channel']
             if rfes not in fp.server.db or not fp.server.db[rfes]:
