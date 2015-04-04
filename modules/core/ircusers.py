@@ -49,6 +49,12 @@ def init(options):
             'help': 'Find when the nick was last active.',
             'args': [
                 {
+                    'name': 'chat',
+                    'optional': True,
+                    'keyvalue': '',
+                    'help': 'Chat messages have priority.'
+                    },
+                {
                     'name': 'nick',
                     'optional': False,
                     'help': 'The nick to view.'
@@ -138,9 +144,10 @@ def recv(fp):
         print((traceback.format_exc()))
 
     if fp.sp.sendernick:
-        fp.server.state['lastseen'].db()[fp.sp.sendernick] = {
-            'time': utils.utcepoch(),
-            }
+        if fp.sp.sendernick not in fp.server.state['lastseen'].db():
+            fp.server.state['lastseen'].db()[fp.sp.sendernick] = {
+                }
+        fp.server.state['lastseen'].db()['time'] = utils.utcepoch()
         fp.server.state['lastseen'].db()[fp.sp.sendernick][
             'action'] = "doing something unknown."
         if fp.sp.iscode('chat'):
@@ -148,9 +155,14 @@ def recv(fp):
                 fp.server.state['lastseen'].db()[fp.sp.sendernick][
                     'action'] = "talking privately to me."
             elif fp.channel:
-                fp.server.state['lastseen'].db()[fp.sp.sendernick][
-                'action'] = "saying \"%s\" on %s." % (fp.sp.text,
+                t = "saying \"%s\" on %s." % (fp.sp.text,
                     fp.channel.entry['channel'])
+                fp.server.state['lastseen'].db()[fp.sp.sendernick][
+                'action'] = t
+                fp.server.state['lastseen'].db()[fp.sp.sendernick][
+                'maction'] = t
+                fp.server.state['lastseen'].db()[fp.sp.sendernick][
+                    'mtime'] = utils.utcepoch()
         else:
             fp.server.state['lastseen'].db()[fp.sp.sendernick][
             'action'] = "using %s %s." % (fp.sp.command.upper(),
@@ -197,6 +209,15 @@ def lastseen(fp, args):
     if search not in fp.server.state['lastseen'].db():
         return 'I have never seen %s.' % search
     ts = fp.server.state['lastseen'].db()[search]['time']
+    if 'mtime' in fp.server.state[
+        'lastseen'].db()[search] and 'chat' in args.lin:
+            ts = fp.server.state['lastseen'].db()[search]['mtime']
+            return "%s was last seen chatting at %s UTC, %s" % (
+                search,
+                datetime.datetime.fromtimestamp(ts).strftime(
+                    '%Y-%m-%d %H:%M:%S'),
+                fp.server.state['lastseen'].db()[search]['maction']
+                )
     return "%s was last seen at %s UTC, %s" % (
         search,
         datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'),
