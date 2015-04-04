@@ -91,7 +91,7 @@ class FullParse():
                 pass
         self.server.do_base_hook('output', self, target, message)
         for tm in message.split('\n'):
-            for fm in textwrap.wrap(tm, 400):
+            for fm in textwrap.wrap(tm, 450):
                 self.server.write_cmd(command, target + str(' :') + fm)
 
     def reply(self, message, c=''):
