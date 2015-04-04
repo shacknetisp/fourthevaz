@@ -31,7 +31,9 @@ def joined(server):
 
 
 def nickserv(fp, args):
-    fp.server.state['nsuser'] = fp.sp.sendernick
+    if fp.ltnserver():
+        return "Must be called from IRC."
+    fp.server.state['nsuser'] = fp.user
     action = args.getlinstr('action')
     if 'nspassword' not in fp.server.entry:
         return 'This server does not have an nspassword entry.'

@@ -15,11 +15,11 @@ def init():
 
 
 def more(fp, args):
-    if ('more.' + fp.sp.sendernick) in fp.server.state:
+    if ('more.' + fp.user) in fp.server.state:
         try:
-            m = (fp.server.state['more.' + fp.sp.sendernick].pop(0))
-            if fp.server.state['more.%s' % fp.sp.sendernick]:
-                l = len(fp.server.state['more.%s' % fp.sp.sendernick])
+            m = (fp.server.state['more.' + fp.user].pop(0))
+            if fp.server.state['more.%s' % fp.user]:
+                l = len(fp.server.state['more.%s' % fp.user])
                 m += ' \2(%d more message%s)\2' % (l,
                     's' if l != 1 else '')
             return m
