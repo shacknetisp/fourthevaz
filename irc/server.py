@@ -81,6 +81,12 @@ class Server:
             'disable': [],
             'prefix': self.entry['prefix'],
             }
+        if 'disable' not in c:
+            c['disable'] = []
+        if 'prefix' not in c:
+            c['prefix'] = self.entry['prefix']
+        if 'disabled' not in c:
+            c['disabled'] = False
         return c
 
     def reinit(self):
@@ -97,6 +103,8 @@ class Server:
     def join_channel(self, c):
         if 'bot.enable.%s' % self.shortchannel(c)['channel'] not in self.db:
             self.db['bot.enable.%s' % self.shortchannel(c)['channel']] = True
+        if self.shortchannel(c)['disabled']:
+            self.db['bot.enable.%s' % self.shortchannel(c)['channel']] = False
         self.write_cmd('JOIN ', self.shortchannel(c)['channel'])
         name = self.entry['access'][0] + ':' + self.shortchannel(c)['channel']
         if name not in running.accesslist.db():
