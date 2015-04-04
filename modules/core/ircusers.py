@@ -180,10 +180,13 @@ def authme(fp, args):
 
 def whois(fp, args):
     user = args.getlinstr('user')
+    found = False
     for channel in fp.server.channels:
         if 'names' in channel:
-            if user not in channel['names']:
-                return '%s is not online.' % user
+            if user in channel['names']:
+                found = True
+    if not found:
+        return '%s is not online.' % user
     if user in fp.server.whoislist and 'done' in fp.server.whoislist[user]:
         t = fp.server.whoislist[user]
         if 'info' in args.lin:
