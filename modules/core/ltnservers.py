@@ -70,6 +70,7 @@ def recv(fp):
     if fp.ltnserver():
         ptext = ""
         try:
+            fp.sp.text = fp.sp.text.replace('\x0f', '')
             fp.user = utils.find_between(fp.sp.text, '<', '> ')
             fp.setaccess("%s==" % fp.user)
             text = fp.sp.text[fp.sp.text.index('> ') + 2:]
