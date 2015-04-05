@@ -201,7 +201,11 @@ class Server:
     def do_base_hook(self, name, *args, **kwargs):
         for m in self.modules:
             for f in m.get_base_hook(name):
-                f(*args, **kwargs)
+                try:
+                    f(*args, **kwargs)
+                except Exception:
+                    import traceback
+                    print((traceback.format_exc()))
 
     def load_commands(self):
         self.commands = {}
