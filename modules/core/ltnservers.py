@@ -95,7 +95,7 @@ def recv(fp):
                     0].split()[:-1])
                 fp.server.state['%s.authname.%s' % (
                     fp.sp.sendernick,
-                    fp.user)] = fp.sp.text.split()[-4].strip(')')
+                    fp.user)] = ':' + fp.sp.text.split()[-4].strip(')')
                 return
             if (fp.sp.text.find('has left the game') != -1 and
             fp.sp.text.count(')') == 2 and
@@ -123,7 +123,7 @@ def recv(fp):
                 s = fp.sp.text.split('identified as')
                 fp.server.state['%s.authname.%s' % (
                     fp.sp.sendernick,
-                    s[0][:-1])] = s[1][1:].split()[-3]
+                    s[0][:-1])] = ':' + s[1][1:].split()[-3]
                 return
             try:
                 authname = fp.server.state['%s.authname.%s' % (
