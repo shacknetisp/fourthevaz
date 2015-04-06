@@ -81,7 +81,11 @@ if __name__ == '__main__':
                     for t in m.timer_hooks:
                         if current_milli_time() - t['lasttime'] > t['time']:
                             t['lasttime'] = current_milli_time()
-                            t['function']()
+                            try:
+                                t['function']()
+                            except Exception:
+                                import traceback
+                                print((traceback.format_exc()))
         for server in running.working_servers:
             server.process()
 else:
