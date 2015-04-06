@@ -38,6 +38,12 @@ def init():
     return m
 
 
+def isredeclipse(fp):
+    user = fp.sp.sendernick
+    if user in fp.server.whoislist and 'done' in fp.server.whoislist[user]:
+        return fp.server.whoislist['ident'] == '~redeclips'
+
+
 def addserver(fp, args):
     if 'ltnservers' not in fp.server.db:
         fp.server.db['ltnservers'] = []
@@ -68,30 +74,79 @@ def recv(fp):
     commands = configs.mload.import_module_py(
         'commands', fp.server.entry['moduleset'], False)
     if fp.ltnserver():
+        if fp.sp.iscode('QUIT') or fp.sp.iscode('PART'):
+            for k in fp.server.state:
+                if k.find('%s.authname.' % fp.sp.sendernick) == 0:
+                    fp.server.state[k] = ''
         ptext = ""
+        fp.sp.text = fp.sp.text.replace('\x0f', '')
         try:
-            fp.sp.text = fp.sp.text.replace('\x0f', '')
             fp.user = utils.find_between(fp.sp.text, '<', '> ')
-            fp.setaccess("%s==" % fp.user)
-            text = fp.sp.text[fp.sp.text.index('> ') + 2:]
-            prefixt = fp.channel.entry['prefix'].split()
-            possible = [
-                fp.server.nick + ', ',
-                fp.server.nick + ': ',
-                ] + prefixt
-            found = False
-            prefix = prefixt[0]
-            for p in possible:
-                if text.find(p) == 0:
-                    found = True
-                    prefix = p
-                    break
-            if not found:
-                return
-            ptext = text[len(prefix):]
         except IndexError:
-            pass
-        except ValueError:
-            pass
+            fp.user = ''
+        fp.setaccess("%s==" % fp.user)
+        if isredeclipse(fp):
+            if (fp.sp.text.find('has joined the game') != -1 and
+            fp.sp.text.count(')') == 3 and
+            fp.sp.text.count('(') == 3 and
+            fp.sp.text[-1] == ')'):
+                fp.user = ' '.join(fp.sp.text.split(
+                    'has joined the game')[
+                    0].split()[:-1])
+                fp.server.state['%s.authname.%s' % (
+                    fp.sp.sendernick,
+                    fp.user)] = fp.sp.text.split()[-4].strip(')')
+                return
+            if (fp.sp.text.find('has left the game') != -1 and
+            fp.sp.text.count(')') == 2 and
+            fp.sp.text.count('(') == 2 and
+            fp.sp.text[-1] == ')'):
+                fp.user = ' '.join(fp.sp.text.split(
+                    'has left the game')[
+                    0].split()[:-1])
+                del fp.server.state['%s.authname.%s' % (
+                    fp.sp.sendernick,
+                    fp.user)]
+                return
+            if (fp.sp.text.find('is now known as') != -1):
+                s = fp.sp.text.split('is now known as')
+                fp.server.state['%s.authname.%s' % (
+                    fp.sp.sendernick,
+                    s[1][1:])] = fp.server.state['%s.authname.%s' % (
+                    fp.sp.sendernick,
+                    s[0][2:-1])]
+                del fp.server.state['%s.authname.%s' % (
+                    fp.sp.sendernick,
+                    s[0][2:-1])]
+                return
+            if (fp.sp.text.find('identified as') != -1):
+                s = fp.sp.text.split('identified as')
+                fp.server.state['%s.authname.%s' % (
+                    fp.sp.sendernick,
+                    s[0][:-1])] = s[1][1:].split()[-3]
+                return
+            try:
+                authname = fp.server.state['%s.authname.%s' % (
+                    fp.sp.sendernick,
+                    fp.user)]
+                fp.setaccess("%s==%s" % (fp.user, authname))
+            except KeyError:
+                pass
+        text = fp.sp.text[fp.sp.text.index('> ') + 2:]
+        prefixt = fp.channel.entry['prefix'].split()
+        possible = [
+            fp.server.nick + ', ',
+            fp.server.nick + ': ',
+            ] + prefixt
+        found = False
+        prefix = prefixt[0]
+        for p in possible:
+            if text.find(p) == 0:
+                found = True
+                prefix = p
+                break
+        if not found:
+            return
+        ptext = text[len(prefix):]
         if ptext:
             fp.reply(commands.doptext(fp, ptext))
