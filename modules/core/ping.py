@@ -32,6 +32,6 @@ def timer():
     for server in running.working_servers:
         if time.time() - server.state['lastpong'] > 15:
             server.write_cmd('PING', server.nick)
-        if time.time() - server.state['lastpong'] > 120:
-            server.socket.close()
+        if time.time() - server.state['lastpong'] > 30:
+            server.reconnect()
 

@@ -138,11 +138,13 @@ class Server:
         self.write_cmd('NICK', self.nick)
 
     def reconnect(self):
+        self.properties['joined'] = False
         self.socket.close()
         self.connect()
 
     def connect(self):
         try:
+            self.state['lastpong'] = time.time()
             self.socket = socket.socket()
             self.log('Init', 'Connecting to %s:%d' % (self.address, self.port))
             self.socket.connect((self.address, self.port))
