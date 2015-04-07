@@ -34,7 +34,20 @@ def init():
 
     #Command hooks are processed by the commands module
     #They define regular commands such as echo or google
-    m.add_command_hook('example',
+    #This is the short definition:
+    m.add_short_command_hook(
+        #Function
+        example,
+        #Command Name::Help text
+        'exampleshort::An example command, echoes text.',
+        #Arguments (see below for more information)
+        ['-kv1=string',
+            'arg1',
+            '[arg2...]'],
+        #Level, optional
+        0)
+    #This is the long definition:
+    m.add_command_hook('examplelong',
         {
             #Help text to be displayed with help
             'help': 'An example command, echoes text.',

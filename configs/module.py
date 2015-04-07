@@ -48,6 +48,37 @@ class Module:
                 d['haskeyvalue'] = True
         self.command_hooks[hook] = d
 
+    def add_short_command_hook(self, function, string, argstrs, level=0):
+        args = []
+        for arg in argstrs:
+            ad = {
+                'optional': False,
+                'help': arg.split('::')[1],
+                'end': False,
+                'level': level,
+                }
+            arg = arg.split('::')[0]
+            if arg[0] == '[':
+                ad['optional'] = True
+                arg = arg[1:-1]
+            if arg[0] == '-':
+                ad['keyvalue'] = arg.split('=')[1] if arg.count('=') else ''
+                arg = arg[1:].split('=')[0]
+            else:
+                try:
+                    if arg[-3:] == '...':
+                        ad['end'] = True
+                        arg = arg[:-3]
+                except IndexError:
+                    pass
+            ad['name'] = arg
+            args.append(ad)
+        self.add_command_hook(string.split('::')[0], {
+            'function': function,
+            'help': string.split('::')[1],
+            'args': args,
+            })
+
     def add_command_alias(self, alias, hook):
         self.command_hooks[alias] = self.command_hooks[hook]
 

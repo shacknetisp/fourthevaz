@@ -5,14 +5,11 @@ from configs.module import Module
 def init():
     m = Module(__name__)
     m.set_help('Run tests.')
-    m.add_command_hook('test',
-        {
-            'function': test,
-            'help': 'Test stuff.',
-            'args': [],
-            })
+    m.add_short_command_hook(test, 'test::Echo text.',
+        ["[-before=string]::Echo this before <text>.",
+        "text...::Echo this."])
     return m
 
 
 def test(fp, args):
-    fp.reply('\2this may be bold\2', 'NOTICE')
+    return args.getlinstr('before', '') + ':' + args.getlinstr('text')
