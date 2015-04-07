@@ -7,6 +7,7 @@ class RedFlare:
     def __init__(self, url):
         json = requests.get(url).json()
         self.servers = []
+        self.players = []
         for serverkey in json:
             server = json[serverkey]
             serverdata = {
@@ -19,7 +20,16 @@ class RedFlare:
                 'version': server['gameVersion'],
                 'description': server['description'],
                 'players': [],
+                'playerauths': [],
                 }
+            index = 0
             for playerName in server['playerNames']:
                 serverdata['players'].append(playerName['plain'])
+                try:
+                    serverdata['playerauths'].append([playerName['plain'],
+                        server['authNames'][index]['plain']])
+                except KeyError:
+                    pass
+                self.players.append(playerName['plain'])
+                index += 1
             self.servers.append(serverdata)

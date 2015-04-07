@@ -2,9 +2,15 @@
 import configs.module
 import configs.mload
 import utils
+from .redflare import redflare
+from . import geoip
 
 
-def init():
+def init(options):
+    server = options['server']
+    if 'ltnservers' not in server.db or type(server.db[
+        'ltnservers']) is not dict:
+        server.db['ltnservers'] = {}
     m = configs.module.Module(__name__)
     m.set_help('Parse commands from servers.')
     m.add_command_hook('addserver', {
@@ -15,6 +21,11 @@ def init():
                 'name': 'nick',
                 'optional': False,
                 'help': 'Nick to add to the list'
+                },
+            {
+                'name': 'address',
+                'optional': False,
+                'help': 'IP:port, use % for the IP to autodetect.'
                 }
             ]
         })
@@ -45,29 +56,32 @@ def isredeclipse(fp):
 
 
 def addserver(fp, args):
-    if 'ltnservers' not in fp.server.db:
-        fp.server.db['ltnservers'] = []
-    fp.server.db['ltnservers'].append(args.getlinstr('nick'))
+    if not ':'.join(args.getlinstr('address').split(':')[0:-1]):
+        return 'Invalid Address'
+    try:
+        int(args.getlinstr('address').split(':')[-1])
+    except ValueError:
+        return 'Invalid Port'
+    fp.server.db['ltnservers'][args.getlinstr('nick')] = args.getlinstr(
+        'address')
     return '%s is now in the server list.' % args.getlinstr('nick')
 
 
 def removeserver(fp, args):
     try:
-        del fp.server.db['ltnservers'][
-            fp.server.db['ltnservers'].index(args.getlinstr('nick'))]
+        del fp.server.db['ltnservers'][args.getlinstr('nick')]
         return '%s has been removed from the server list.' % args.getlinstr(
             'nick')
     except KeyError:
-        pass
-    except ValueError:
         pass
     return '%s is not in the server list.' % args.getlinstr('nick')
 
 
 def listservers(fp, args):
-    if 'ltnservers' not in fp.server.db:
-        fp.server.db['ltnservers'] = []
-    return 'Servers: ' + utils.ltos(fp.server.db['ltnservers'])
+    results = []
+    for k in fp.server.db['ltnservers']:
+        results.append('%s:%s' % (k, fp.server.db['ltnservers'][k]))
+    return 'Servers: ' + utils.ltos(results)
 
 
 def recv(fp):
@@ -86,52 +100,21 @@ def recv(fp):
             fp.user = ''
         fp.setaccess("%s==" % fp.user)
         if isredeclipse(fp):
-            if (fp.sp.text.find('has joined the game') != -1 and
-            fp.sp.text.count(')') == 3 and
-            fp.sp.text.count('(') == 3 and
-            fp.sp.text[-1] == ')'):
-                fp.user = ' '.join(fp.sp.text.split(
-                    'has joined the game')[
-                    0].split()[:-1])
-                fp.server.state['%s.authname.%s' % (
-                    fp.sp.sendernick,
-                    fp.user)] = ':' + fp.sp.text.split()[-4].strip(')')
-                return
-            if (fp.sp.text.find('has left the game') != -1 and
-            fp.sp.text.count(')') == 2 and
-            fp.sp.text.count('(') == 2 and
-            fp.sp.text[-1] == ')'):
-                fp.user = ' '.join(fp.sp.text.split(
-                    'has left the game')[
-                    0].split()[:-1])
-                del fp.server.state['%s.authname.%s' % (
-                    fp.sp.sendernick,
-                    fp.user)]
-                return
-            if (fp.sp.text.find('is now known as') != -1):
-                s = fp.sp.text.split('is now known as')
-                fp.server.state['%s.authname.%s' % (
-                    fp.sp.sendernick,
-                    s[1][1:])] = fp.server.state['%s.authname.%s' % (
-                    fp.sp.sendernick,
-                    s[0][2:-1])]
-                del fp.server.state['%s.authname.%s' % (
-                    fp.sp.sendernick,
-                    s[0][2:-1])]
-                return
-            if (fp.sp.text.find('identified as') != -1):
-                s = fp.sp.text.split('identified as')
-                fp.server.state['%s.authname.%s' % (
-                    fp.sp.sendernick,
-                    s[0][:-1])] = ':' + s[1][1:].split()[-3]
-                return
-            try:
-                authname = fp.server.state['%s.authname.%s' % (
-                    fp.sp.sendernick,
-                    fp.user)]
-                fp.setaccess("%s==%s" % (fp.user, authname))
-            except KeyError:
-                pass
+            authname = ""
+            rf = redflare.RedFlare('http://redflare.ofthings.net/reports')
+            entry = fp.server.db['ltnservers'][fp.sp.sendernick].split(':')
+            host = ':'.join(entry[0:-1])
+            if host == '%':
+                host = fp.sp.host.split('@')[1]
+            host = geoip.geoip(host)['query']
+            if not host:
+                host = ''
+            for server in rf.servers:
+                if server['host'] == host and server['port'] == int(entry[-1]):
+                    for player in server['playerauths']:
+                        if player[0] == fp.user:
+                            authname = player[1]
+            fp.setaccess("%s==:%s" % (fp.user, authname))
         text = fp.sp.text[fp.sp.text.index('> ') + 2:]
         prefixt = fp.channel.entry['prefix'].split()
         possible = [
