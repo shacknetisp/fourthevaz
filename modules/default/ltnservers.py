@@ -115,7 +115,10 @@ def recv(fp):
                         if player[0] == fp.user:
                             authname = player[1]
             fp.setaccess("%s==:%s" % (fp.user, authname))
-        text = fp.sp.text[fp.sp.text.index('> ') + 2:]
+        try:
+            text = fp.sp.text[fp.sp.text.index('> ') + 2:]
+        except ValueError:
+            return
         prefixt = fp.channel.entry['prefix'].split()
         possible = [
             fp.server.nick + ', ',
