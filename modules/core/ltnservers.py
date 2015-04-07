@@ -41,7 +41,7 @@ def init():
 def isredeclipse(fp):
     user = fp.sp.sendernick
     if user in fp.server.whoislist and 'done' in fp.server.whoislist[user]:
-        return fp.server.whoislist['ident'] == '~redeclips'
+        return (fp.server.whoislist[user]['ident'] == '~redeclips')
 
 
 def addserver(fp, args):
