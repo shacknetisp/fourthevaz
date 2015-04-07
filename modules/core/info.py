@@ -69,7 +69,8 @@ def gitver(fp, args):
     if 'nolink' in args.lin:
         return version.gitstr()
     return (version.gitstr() + ': ' +
-    version.source + '/compare/%s...master' % (version.gitstr()))
+    version.source + '/compare/%s...master' % (version.gitstr()) + ' ' +
+    version.source + '/commit/%s' % (version.gitstr()))
 
 
 def ctcp_source(fp):
