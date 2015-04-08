@@ -48,7 +48,8 @@ class Module:
                 d['haskeyvalue'] = True
         self.command_hooks[hook] = d
 
-    def add_short_command_hook(self, function, string, argstrs, level=0):
+    def add_short_command_hook(self, function, string, argstrs, level=0,
+        noquote=False):
         args = []
         for arg in argstrs:
             ad = {
@@ -76,6 +77,7 @@ class Module:
         self.add_command_hook(string.split('::')[0], {
             'function': function,
             'help': string.split('::')[1],
+            'noquote': noquote,
             'args': args,
             })
 

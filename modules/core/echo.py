@@ -67,17 +67,20 @@ def init():
             })
     m.add_short_command_hook(italic,
         'italic::Echo italic text.',
-        ['text...::Text to echo.'])
+        ['text...::Text to echo.'], noquote=True)
     m.add_short_command_hook(underline,
         'underline::Echo underlined text.',
-        ['text...::Text to echo.'])
+        ['text...::Text to echo.'], noquote=True)
     m.add_short_command_hook(strike,
         'strike::Echo strikthroughed text.',
-        ['text...::Text to echo.'])
+        ['text...::Text to echo.'], noquote=True)
     m.add_short_command_hook(color,
         'color::Echo colored text.',
         ['color::Color: fgnd,[bgnd].',
-        'text...::Text to echo.'])
+        'text...::Text to echo.'], noquote=True)
+    m.add_short_command_hook(lambda fp, args: formatcodes.reset,
+        'reset::Echo the reset code.',
+        [])
     return m
 
 
