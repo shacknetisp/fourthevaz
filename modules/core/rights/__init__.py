@@ -127,7 +127,7 @@ def getrights(fp, args):
             return('%s%s has an access level of %d.' % (
                 user, ' (' + alist + ')' if alist else '',
                 access.getaccesslevel(
-                    fp.server, user, alist, fp.channel)))
+                    fp.server, user, alist, fp.channel, ltn=fp.ltnserver())))
     except access.AccessLevelError as e:
         return(e.msg)
 
