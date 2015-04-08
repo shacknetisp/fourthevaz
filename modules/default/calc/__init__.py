@@ -65,7 +65,11 @@ def eq(fp, args):
     try:
         return str(float(args.getlinstr('a')) == float(args.getlinstr('b')))
     except ValueError:
-        return 'Not numbers!'
+        try:
+            return str(utils.boolstr(args.getlinstr('a')) ==
+            utils.boolstr(args.getlinstr('b')))
+        except ValueError:
+            return 'Not numbers!'
 
 
 def calc(fp, args):
