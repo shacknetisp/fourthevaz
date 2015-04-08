@@ -192,6 +192,7 @@ def doptext(fp, p_ptext, count=100):
                         continue
                     if ch == '<' and not equotes:
                         execlevel += 1
+                        execbuffer += ch
                         continue
                     elif ch == '>' and not equotes:
                         execlevel -= 1
@@ -209,6 +210,8 @@ def doptext(fp, p_ptext, count=100):
                                 useargs.pop(0)
                                 t = ''
                             continue
+                        else:
+                            execbuffer += ch
                     execbuffer += ch
                 elastch = ch
             else:
