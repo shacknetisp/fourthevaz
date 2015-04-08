@@ -109,7 +109,7 @@ def init(options):
                 },
             ]
         })
-    m.add_timer_hook(60 * 1000, timer)
+    m.add_timer_hook(5 * 1000, timer)
     return m
 
 
@@ -151,8 +151,7 @@ def timer():
                 dbd['list'][p] = dbd['list'][p] / 2
                 if dbd['list'][p] < 60:
                     tod.append(p)
-            for todi in tod:
-                del dbd['list'][todi]
+            dbd['list'] = utils.remove_indices(dbd['list'], tod)
         #Servers
         dbd = dbdh['ac.servers']
         if 'list' not in dbd:
@@ -169,8 +168,7 @@ def timer():
                 dbd['list'][p] = dbd['list'][p] / 2
                 if dbd['list'][p] < 60:
                     tod.append(p)
-            for todi in tod:
-                del dbd['list'][todi]
+            dbd['list'] = utils.remove_indices(dbd['list'], tod)
     dbf.save()
 
 
