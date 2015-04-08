@@ -155,7 +155,8 @@ def timer():
                 dbd['list'][p] = dbd['list'][p] / 2
                 if dbd['list'][p] < 60:
                     tod.append(p)
-            dbd['list'] = utils.remove_indices(dbd['list'], tod)
+            for todi in tod:
+                del dbd['list'][todi]
         #Servers
         if 'ac.servers' not in dbdh[url]:
             dbdh[url]['ac.servers'] = {}
@@ -174,7 +175,8 @@ def timer():
                 dbd['list'][p] = dbd['list'][p] / 2
                 if dbd['list'][p] < 60:
                     tod.append(p)
-            dbd['list'] = utils.remove_indices(dbd['list'], tod)
+            for todi in tod:
+                del dbd['list'][todi]
     dbf.save()
 
 
