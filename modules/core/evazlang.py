@@ -37,7 +37,21 @@ def init():
             'b::Value to test',
             ]
         )
+    m.add_short_command_hook(
+        not_f,
+        'not::Return not <a>',
+        [
+            'a::Value to reverse',
+            ]
+        )
     return m
+
+
+def not_f(fp, args):
+    try:
+        return str(not utils.boolstr(args.getlinstr('a')))
+    except ValueError:
+        return 'Invalid truth value.'
 
 
 def or_f(fp, args):
