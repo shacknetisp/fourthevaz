@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
+from irc.utils import formatcodes
 
 
 def init():
@@ -76,4 +77,5 @@ def absorb(fp, args):
 
 
 def bold(fp, args):
-    return "\2%s\2" % args.getlinstr('text', '')
+    return formatcodes.bold + "%s" % (
+        args.getlinstr('text', ''))

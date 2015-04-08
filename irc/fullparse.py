@@ -3,6 +3,7 @@ import configs.mload
 import utils
 import textwrap
 from . import utils as ircutils
+formatcodes = ircutils.formatcodes
 access = configs.mload.import_module_py('rights.access')
 
 
@@ -91,8 +92,9 @@ class FullParse():
                     if self.server.state['more.%s' % self.user]:
                         l = len(
                             self.server.state['more.%s' % self.user])
-                        message += ' \2(%d more message%s)\2' % (l,
-                            's' if l != 1 else '')
+                        message += (' ' + formatcodes.bold +
+                            '(%d more message%s)' % (l,
+                            's' if l != 1 else ''))
                 except KeyError:
                     pass
         self.server.do_base_hook('output', self, target, message)
@@ -100,7 +102,7 @@ class FullParse():
             i = 0
             for fm in textwrap.wrap(tm, 450):
                 if self.ltnserver():
-                    fm = fm.replace('\2', '')
+                    fm = fm.replace(formatcodes.bold, '')
                 self.server.write_cmd(command, target + str(' :') +
                 ('...' if i else '') + fm)
                 i += 1

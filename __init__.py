@@ -13,12 +13,14 @@ import moduleregistry
 import running
 import os
 import utils
+import irc.utils
 import version
 import signal
 import sys
 moduleregistry.add_module(irc)
 moduleregistry.add_module(match)
 moduleregistry.add_module(utils)
+moduleregistry.add_module(irc.utils)
 moduleregistry.add_module(module)
 moduleregistry.add_module(configs)
 moduleregistry.add_module(mload)
