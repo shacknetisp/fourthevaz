@@ -109,7 +109,7 @@ def init(options):
                 },
             ]
         })
-    m.add_timer_hook(5 * 1000, timer)
+    m.add_timer_hook(60 * 1000, timer)
     return m
 
 
