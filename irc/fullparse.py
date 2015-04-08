@@ -76,6 +76,7 @@ class FullParse():
     def reply_driver(self, target, message, c=''):
         if not message:
             return
+        message = message.strip()
         command = c
         if not command:
             if self.channel:
