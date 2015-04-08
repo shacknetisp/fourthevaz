@@ -91,25 +91,30 @@ def absorb(fp, args):
 
 def bold(fp, args):
     return formatcodes.bold + "%s%s" % (
-        args.getlinstr('text', ''), formatcodes.reset)
+        args.getlinstr('text', ''), formatcodes.reset
+        if args.getlinstr('text', '') else '')
 
 
 def italic(fp, args):
     return formatcodes.italic + "%s%s" % (
-        args.getlinstr('text', ''), formatcodes.reset)
+        args.getlinstr('text', ''), formatcodes.reset
+        if args.getlinstr('text', '') else '')
 
 
 def underline(fp, args):
     return formatcodes.underline + "%s%s" % (
-        args.getlinstr('text', ''), formatcodes.reset)
+        args.getlinstr('text', ''), formatcodes.reset
+        if args.getlinstr('text', '') else '')
 
 
 def strike(fp, args):
     return formatcodes.strike + "%s%s" % (
-        args.getlinstr('text', ''), formatcodes.reset)
+        args.getlinstr('text', ''), formatcodes.reset
+        if args.getlinstr('text', '') else '')
 
 
 def color(fp, args):
     return formatcodes.color + "%s%s%s" % (
         args.getlinstr('color'),
-        args.getlinstr('text', ''), formatcodes.reset)
+        args.getlinstr('text', ''), formatcodes.reset
+        if args.getlinstr('text', '') else '')
