@@ -172,11 +172,11 @@ class Server:
             if ircmsg and ircmsg[0] == ':':
                 self.process_message(splitparse.SplitParser(ircmsg))
 
-    def get_channel_access(self, galf, fp, channel):
+    def get_channel_access(self, galf, fp, channel, ltn=False):
         return galf(
             self, fp.accesslevelname,
             str(self.entry[
-                'settings'] + ':' + channel), fp.channel)
+                'settings'] + ':' + channel), fp.channel, ltn=ltn)
 
     def process(self):
         if current_milli_time() - self.lasttick > self.options['tick_min']:
