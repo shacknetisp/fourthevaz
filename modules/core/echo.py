@@ -60,11 +60,24 @@ def init():
                 {
                     'name': 'text',
                     'optional': False,
-                    'help': 'Text to echo bolded.',
+                    'help': 'Text to echo.',
                     'end': True,
                     },
                 ],
             })
+    m.add_short_command_hook(italic,
+        'italic::Echo italic text.',
+        ['text...::Text to echo.'])
+    m.add_short_command_hook(underline,
+        'underline::Echo underlined text.',
+        ['text...::Text to echo.'])
+    m.add_short_command_hook(strike,
+        'strike::Echo strikthroughed text.',
+        ['text...::Text to echo.'])
+    m.add_short_command_hook(color,
+        'color::Echo colored text.',
+        ['color::Color: fgnd,[bgnd].',
+        'text...::Text to echo.'])
     return m
 
 
@@ -77,5 +90,26 @@ def absorb(fp, args):
 
 
 def bold(fp, args):
-    return formatcodes.bold + "%s" % (
-        args.getlinstr('text', ''))
+    return formatcodes.bold + "%s%s" % (
+        args.getlinstr('text', ''), formatcodes.reset)
+
+
+def italic(fp, args):
+    return formatcodes.italic + "%s%s" % (
+        args.getlinstr('text', ''), formatcodes.reset)
+
+
+def underline(fp, args):
+    return formatcodes.underline + "%s%s" % (
+        args.getlinstr('text', ''), formatcodes.reset)
+
+
+def strike(fp, args):
+    return formatcodes.strike + "%s%s" % (
+        args.getlinstr('text', ''), formatcodes.reset)
+
+
+def color(fp, args):
+    return formatcodes.color + "%s%s%s" % (
+        args.getlinstr('color'),
+        args.getlinstr('text', ''), formatcodes.reset)

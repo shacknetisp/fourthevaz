@@ -20,6 +20,7 @@ class formatcodes:
     underline = '\x15'
     underline2 = '\x1f'
     strike = '\x13'
+    color = '\x03'
 
     white = 0
     black = 1
@@ -38,10 +39,10 @@ class formatcodes:
     darkgray = 14
     lightgray = 15
 
-    def color(foreground=-1, background=-1):
+    def buildcolor(foreground=-1, background=-1):
         out = ""
         if foreground >= 0:
-            out += '\x03%d' % foreground
+            out += formatcodes.color + '%d' % foreground
         if background >= 0:
             out += ',%d' % background
         return out
