@@ -135,7 +135,7 @@ def timer():
                     'time': utils.utcepoch(),
                     }
         #Players
-        dbd = dbdh['ac.players']
+        dbd = dbdh[url]['ac.players']
         if 'list' not in dbd:
             dbd['list'] = {}
         highest = 0
@@ -153,7 +153,7 @@ def timer():
                     tod.append(p)
             dbd['list'] = utils.remove_indices(dbd['list'], tod)
         #Servers
-        dbd = dbdh['ac.servers']
+        dbd = dbdh[url]['ac.servers']
         if 'list' not in dbd:
             dbd['list'] = {}
         highest = 0
