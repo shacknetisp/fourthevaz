@@ -210,6 +210,7 @@ def enableredflare(fp, args):
 
 
 def doredflare(fp, args):
+    url = args.getlinstr('url')
     rf = redflare.RedFlare(args.getlinstr('url'))
     try:
         lsdb = fp.server.state['redflare'].db()[
@@ -242,7 +243,7 @@ def doredflare(fp, args):
     elif 'playerstats' in args.lin:
         search = args.getlinstr('search', '')
         try:
-            acdb = fp.server.state['redflare'].db()[
+            acdb = fp.server.state['redflare'].db()[url][
                 'ac.players']['list']
             sorteddb = list(
                 reversed(sorted(list(acdb.items()), key=lambda x: x[1])))
@@ -263,7 +264,7 @@ def doredflare(fp, args):
     elif 'serverstats' in args.lin:
         search = args.getlinstr('search', '')
         try:
-            acdb = fp.server.state['redflare'].db()[
+            acdb = fp.server.state['redflare'].db()[url][
                 'ac.servers']['list']
             sorteddb = list(
                 reversed(sorted(list(acdb.items()), key=lambda x: x[1])))
