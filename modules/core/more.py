@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import configs.module
+import irc.utils
 
 
 def init():
@@ -20,8 +21,10 @@ def more(fp, args):
             m = (fp.server.state['more.' + fp.user].pop(0))
             if fp.server.state['more.%s' % fp.user]:
                 l = len(fp.server.state['more.%s' % fp.user])
-                m += ' \2(%d more message%s)\2' % (l,
-                    's' if l != 1 else '')
+                m += (' ' + irc.utils.formatcodes.bold +
+                '(%d more message%s)' % (l,
+                's' if l != 1 else ''))
+            fp.moreflag = True
             return m
         except IndexError:
             pass

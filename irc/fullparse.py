@@ -12,6 +12,7 @@ class FullParse():
     def __init__(self, server, sp):
         self.server = server
         self.sp = sp
+        self.moreflag = False
         if self.isquery() or self.sp.target == '*':
             self.channel = None
         else:
@@ -84,7 +85,11 @@ class FullParse():
             else:
                 command = 'NOTICE'
         if message.count('\n') == 0:
-            messages = textwrap.wrap(message, 400)
+            if self.moreflag:
+                messages = textwrap.wrap(message, 450)
+                self.moreflag = False
+            else:
+                messages = textwrap.wrap(message, 400)
             message = messages[0]
             if len(messages) > 1:
                 self.server.state[
