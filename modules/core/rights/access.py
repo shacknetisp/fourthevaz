@@ -46,8 +46,13 @@ def getaccesslevel(server, user, alist="", channel=None):
             if good:
                 lowest = min(lowest, d[k])
                 highest = max(highest, d[k])
+    ltn = False
+    try:
+        ltn = (splitu[-1][0] != ':')
+    except IndexError:
+        pass
     if channel and (not alist or alist == server.entry['access'][0] + '=' +
-    channel.entry['channel']) and splitu[-1][0] != ':':
+    channel.entry['channel']) and ltn:
         if splitu[0] in server.whoislist:
             if channel.entry['channel'] in server.whoislist[splitu[0]]['op']:
                 highest = max(highest, 50)
