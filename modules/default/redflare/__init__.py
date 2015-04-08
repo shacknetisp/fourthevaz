@@ -124,17 +124,21 @@ def timer():
             dbdh['ac.players'] = {}
         if 'ac.servers' not in dbdh:
             dbdh['ac.servers'] = {}
-        dbd = dbdh['lastseen']
-        if url not in dbd:
-            dbd[url] = {}
+        if url not in dbdh:
+            dbdh[url] = {}
+        dbd = dbdh[url]
+        if 'lastseen' not in dbd:
+            dbd['lastseen'] = {}
         for server in rf.servers:
             for player in server['players']:
-                dbd[url][player] = {
+                dbd['lastseen'][player] = {
                     'server': server['description'],
                     'name': player,
                     'time': utils.utcepoch(),
                     }
         #Players
+        if 'ac.players' not in dbdh[url]:
+            dbdh[url]['ac.players'] = {}
         dbd = dbdh[url]['ac.players']
         if 'list' not in dbd:
             dbd['list'] = {}
@@ -153,6 +157,8 @@ def timer():
                     tod.append(p)
             dbd['list'] = utils.remove_indices(dbd['list'], tod)
         #Servers
+        if 'ac.servers' not in dbdh[url]:
+            dbdh[url]['ac.servers'] = {}
         dbd = dbdh[url]['ac.servers']
         if 'list' not in dbd:
             dbd['list'] = {}
@@ -242,46 +248,40 @@ def doredflare(fp, args):
             )
     elif 'playerstats' in args.lin:
         search = args.getlinstr('search', '')
-        try:
-            acdb = fp.server.state['redflare'].db()[url][
-                'ac.players']['list']
-            sorteddb = list(
-                reversed(sorted(list(acdb.items()), key=lambda x: x[1])))
-            if not sorteddb:
-                return 'No stats recorded.'
-            ret = []
-            number = 1
-            for player in sorteddb:
-                if configs.match.matchnocase(player[0], search, False):
-                    if len(ret) < 4 or(len(ret) >= 4 and len(
-                        utils.ltos(ret)) < 128):
-                        ret.append("%s (%d:%.2f)" % (player[0], number,
-                    round(player[1] / sorteddb[0][1], 2)))
-                number += 1
-            return utils.ltos(ret)
-        except KeyError:
+        acdb = fp.server.state['redflare'].db()[url][
+            'ac.players']['list']
+        sorteddb = list(
+            reversed(sorted(list(acdb.items()), key=lambda x: x[1])))
+        if not sorteddb:
             return 'No stats recorded.'
+        ret = []
+        number = 1
+        for player in sorteddb:
+            if configs.match.matchnocase(player[0], search, False):
+                if len(ret) < 4 or(len(ret) >= 4 and len(
+                    utils.ltos(ret)) < 128):
+                    ret.append("%s (%d:%.2f)" % (player[0], number,
+                round(player[1] / sorteddb[0][1], 2)))
+            number += 1
+        return utils.ltos(ret)
     elif 'serverstats' in args.lin:
         search = args.getlinstr('search', '')
-        try:
-            acdb = fp.server.state['redflare'].db()[url][
-                'ac.servers']['list']
-            sorteddb = list(
-                reversed(sorted(list(acdb.items()), key=lambda x: x[1])))
-            if not sorteddb:
-                return 'No stats recorded.'
-            ret = []
-            number = 1
-            for player in sorteddb:
-                if configs.match.matchnocase(player[0], search, False):
-                    if len(ret) < 4 or(len(ret) >= 4 and len(
-                        utils.ltos(ret)) < 128):
-                        ret.append("%s (%d:%.2f)" % (player[0], number,
-                    round(player[1] / sorteddb[0][1], 2)))
-                number += 1
-            return utils.ltos(ret)
-        except KeyError:
+        acdb = fp.server.state['redflare'].db()[url][
+            'ac.servers']['list']
+        sorteddb = list(
+            reversed(sorted(list(acdb.items()), key=lambda x: x[1])))
+        if not sorteddb:
             return 'No stats recorded.'
+        ret = []
+        number = 1
+        for player in sorteddb:
+            if configs.match.matchnocase(player[0], search, False):
+                if len(ret) < 4 or(len(ret) >= 4 and len(
+                    utils.ltos(ret)) < 128):
+                    ret.append("%s (%d:%.2f)" % (player[0], number,
+                round(player[1] / sorteddb[0][1], 2)))
+            number += 1
+        return utils.ltos(ret)
     else:
         search = args.getlinstr('search', '')
         searchservers = ('servers' in args.lin)
