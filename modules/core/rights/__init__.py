@@ -122,7 +122,7 @@ def getrights(fp, args):
     try:
         if 'onlyvalue' in args.lin:
             return('%d' % (access.getaccesslevel(
-            fp.server, user, alist, fp.channel)))
+            fp.server, user, alist, fp.channel, ltn=fp.ltnserver())))
         else:
             return('%s%s has an access level of %d.' % (
                 user, ' (' + alist + ')' if alist else '',
@@ -152,7 +152,7 @@ def setrights(fp, args):
                 10 if 'leveladd' not in fp.server.entry else int(
                 fp.server.entry['leveladd']))
     sl = access.getaccesslevel(
-            fp.server, fp.accesslevelname)
+            fp.server, fp.accesslevelname, ltn=fp.ltnserver())
     if sl < required:
         return('You are level %d, but you need at least level %d.' % (
             sl,

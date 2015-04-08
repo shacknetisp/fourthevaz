@@ -48,9 +48,10 @@ class FullParse():
             "")
         self.channellevel = self.server.get_channel_access(
             access.getaccesslevel, self,
-            c)
+            c, ltn=self.ltnserver())
         self.serverlevel = access.getaccesslevel(
-            self.server, self.accesslevelname, "", self.channel)
+            self.server, self.accesslevelname, "", self.channel,
+            ltn=self.ltnserver())
 
     def isquery(self):
         return self.sp.target == self.server.nick
