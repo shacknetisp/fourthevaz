@@ -47,7 +47,7 @@ def init():
     m.add_aliases({
         'random': 'calc uniform($1, $2)~~0~~100',
         'randint': 'calc randrange($1, $2)~~0~~100',
-        'dice':
+        'rolldie':
             'if <gt $1 0> ' +
                 '"echo You roll <*calc -int <randint 0 $1> + 1> out of $1."' +
                 ' "echo The die must have at least 1 side."~~6',
