@@ -9,15 +9,16 @@ def ctcp(t):
     return '\1%s\1' % t
 
 
-#Everything but italic was found here:
+#References:
 #http://stackoverflow.com/a/13382032
+#https://www.codeux.com/textual/help/Text-Formatting.kb
 class formatcodes:
 
     reset = '\x0f'
     bold = '\x02'
     italic = '\x1d'
     reverse = '\x16'
-    underline = '\x15'
+    underline = '\x1f'
     strike = '\x13'
     color = '\x03'
 
