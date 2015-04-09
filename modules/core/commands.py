@@ -312,6 +312,17 @@ def doptext(fp, p_ptext, count=100):
         found = True
         lastusedindex = 0
         hadall = False
+        tsplit = t.split('~~')
+        argsplit = shlex.split(args)
+        try:
+            for i in range(len(tsplit)):
+                if i == 0:
+                    continue
+                if i not in list(range(len(argsplit))):
+                    argsplit.append(tsplit[i])
+        except IndexError:
+            pass
+        t = tsplit[0]
         while found:
             found = False
             for ic in range(len(t)):
@@ -334,7 +345,7 @@ def doptext(fp, p_ptext, count=100):
                             return "Arguments after $* are not supported."
                         found = True
                         try:
-                            result = shlex.split(args)[lastusedindex]
+                            result = argsplit[lastusedindex]
                             lastusedindex += 1
                         except IndexError:
                             return "Too few arguments!"
@@ -346,7 +357,7 @@ def doptext(fp, p_ptext, count=100):
                     if c == '$' and ac == "*":
                         found = True
                         try:
-                            result = ' '.join(shlex.split(args)[
+                            result = ' '.join(argsplit[
                                 lastusedindex:])
                         except IndexError:
                             pass
@@ -359,7 +370,7 @@ def doptext(fp, p_ptext, count=100):
                     if c == '$' and acint:
                         found = True
                         try:
-                            result = shlex.split(args)[acint - 1]
+                            result = argsplit[acint - 1]
                             lastusedindex = acint
                         except IndexError:
                             return "Too few arguments!"

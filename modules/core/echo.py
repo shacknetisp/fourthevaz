@@ -81,6 +81,7 @@ def init():
     m.add_short_command_hook(lambda fp, args: formatcodes.reset,
         'reset::Echo the reset code.',
         [])
+    m.add_alias('give', 'echo $#: <*$*>')
     return m
 
 

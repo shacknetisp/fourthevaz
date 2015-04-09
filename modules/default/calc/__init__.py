@@ -15,10 +15,10 @@ def init():
             'help': 'Calculate an expression (Python Syntax).',
             'args': [
                 {
-                    'name': 'truth',
+                    'name': '{truth/int}',
                     'optional': True,
                     'keyvalue': '',
-                    'help': 'Output as a truth value.',
+                    'help': 'Output as a truth/rounded int value.',
                     },
                 {
                     'name': 'expr',
@@ -44,6 +44,14 @@ def init():
         'eq::Return if <a> == <b>.',
         ['a::Value to test.',
         'b::Value to test.'])
+    m.add_aliases({
+        'random': 'calc uniform($1, $2)~~0~~100',
+        'randint': 'calc randrange($1, $2)~~0~~100',
+        'dice':
+            'if <gt $1 0>' +
+                '"echo You roll <*calc -int <randint 0 $1> + 1> out of $1."' +
+                ' "echo The dice must have at least 1 side."~~6'
+        })
     return m
 
 
@@ -77,6 +85,8 @@ def calc(fp, args):
     try:
         if 'truth' in args.lin:
             return str(bool(round(safeeval.domath(arg))))
+        elif 'int' in args.lin:
+            return str(int(round(safeeval.domath(arg))))
         return('%s' % (str(float(safeeval.domath(arg)))))
     except Exception as e:
         return('Error: ' + str(e))

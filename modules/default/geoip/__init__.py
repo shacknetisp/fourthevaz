@@ -26,6 +26,7 @@ def init():
                 ],
             }
         )
+    m.add_alias('geoipnick', 'geoip <whois $# host> $*')
     return m
 
 

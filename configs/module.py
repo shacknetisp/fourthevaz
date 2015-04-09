@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 ctcplist = []
+import utils
 
 
 class Module:
@@ -10,6 +11,13 @@ class Module:
         self.timer_hooks = []
         self.helptext = ""
         self.name = name.split('.')[-1]
+        self.aliases = {}
+
+    def add_alias(self, name, content):
+        self.aliases[name] = content
+
+    def add_aliases(self, aliases):
+        self.aliases = utils.merge_dicts(self.aliases, aliases)
 
     def set_help(self, helptext):
         self.helptext = helptext

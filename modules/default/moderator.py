@@ -53,6 +53,8 @@ def init(options):
                 },
             ]
         })
+    m.add_alias('kickban',
+        'absorb "Attempted to kickban $1" <kick $1 $*><ban $1>')
     return m
 
 

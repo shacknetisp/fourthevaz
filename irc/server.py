@@ -70,6 +70,8 @@ class Server:
                  mload.import_module_py(
                      "share.aliases", self.entry['moduleset']).aliases, d,
                       self.db['aliases'])
+        for m in self.modules:
+            self.aliasdb = utils.merge_dicts(self.aliasdb, m.aliases)
 
     def whois(self, name):
         self.whoisbuffer.append(name)
@@ -245,6 +247,7 @@ class Server:
             print(('Dependancy Exception in %s: %s' % (name, e.e)))
             return
         self.modules.append(m)
+        self.update_aliases()
         print(('Added Module: %s' % name))
 
     class ServerConnectException(Exception):

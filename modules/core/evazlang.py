@@ -44,6 +44,11 @@ def init():
             'a::Value to reverse',
             ]
         )
+    m.add_aliases({
+        'nand': 'not <and $# $#>',
+        'nor': 'not <or $# $#>',
+        'xor': 'not <eq <not $#> <not $#>>'
+        })
     return m
 
 
