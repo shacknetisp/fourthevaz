@@ -4,7 +4,6 @@ import importlib
 import utils
 importlib.reload(safeeval)
 from configs.module import Module
-from irc.utils import formatcodes
 
 
 def init():
