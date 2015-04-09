@@ -50,7 +50,9 @@ def init():
         'dice':
             'if <gt $1 0> ' +
                 '"echo You roll <*calc -int <randint 0 $1> + 1> out of $1."' +
-                ' "echo The dice must have at least 1 side."~~6'
+                ' "echo The die must have at least 1 side."~~6',
+        'flipcoin':
+            'if <calc -truth randrange(0, 2)> "echo heads" "echo tails"',
         })
     return m
 
