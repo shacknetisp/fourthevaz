@@ -53,23 +53,25 @@ def init():
         })
     m.add_short_command_hook(dice,
         'dice::Roll dice.',
-        ['[form]::Form of the dice, <number>d<sides>'])
+        ['[form]::Form of the dice, [<number>]d<sides>'])
     return m
 
 
 def dice(fp, args):
     import random
+    default = '1d6'
+    invalidformat = 'Invalid format. Use [<number>]d<sides>.'
     try:
         try:
-            number = int(args.getlinstr('form', '1d6').split('d')[0])
-            sides = int(args.getlinstr('form', '1d6').split('d')[1])
+            number = int(args.getlinstr('form', default).split('d')[0])
+            sides = int(args.getlinstr('form', default).split('d')[1])
         except ValueError:
-            number = 1
-            sides = int(args.getlinstr('form', '1d6').split('d')[1])
+            number = int(default.split('d')[0])
+            sides = int(args.getlinstr('form', default).split('d')[1])
     except IndexError:
-        return 'Invalid format. Use <number>d<sides>.'
+        return invalidformat
     except ValueError:
-        return 'Invalid format. Use <number>d<sides>.'
+        return invalidformat
     if number < 1 or sides < 1:
         return "You won't get very many results with those numbers."
     if number > 450 / len(str(sides)):
