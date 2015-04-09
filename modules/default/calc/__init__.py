@@ -67,6 +67,8 @@ def dice(fp, args):
         return 'Invalid format. Use <number>d<sides>.'
     if number < 1 or sides < 1:
         return "You won't get very many results with those numbers."
+    if number > 300:
+        return "I don't want to roll that many dice."
     output = []
     for i in range(number):
         output.append(str(random.randrange(0, sides) + 1))
