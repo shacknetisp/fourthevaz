@@ -58,7 +58,7 @@ def commands(fp, args):
         for a in m.command_hooks:
             if a not in commands:
                 commands.append(a)
-    commands += list(fp.server.aliasdb.keys())
+    commands += fp.get_aliases()
     return('%s' % (
         utils.ltos(commands)
         ))
