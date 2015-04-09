@@ -568,7 +568,7 @@ def domath(source):
     import random
     sd = {}
     for i in list(math.__dict__.keys()):
-        if hasattr(math.__dict__[i], '__call__'):
+        if i.find('_') == -1:
             sd[i] = math.__dict__[i]
     sd['random'] = random.random
     sd['randrange'] = random.randrange
