@@ -52,7 +52,7 @@ def init():
                 '"echo You roll <*calc -int <randint 0 $1> + 1> out of $1."' +
                 ' "echo The die must have at least 1 side."~~6',
         'flipcoin':
-            'if <calc -truth randrange(0, 2)> "echo heads" "echo tails"',
+            'if <calc -truth randrange(0, 2)> "echo Heads" "echo Tails"',
         })
     return m
 
