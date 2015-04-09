@@ -47,14 +47,30 @@ def init():
     m.add_aliases({
         'random': 'calc uniform($1, $2)~~0~~100',
         'randint': 'calc randrange($1, $2)~~0~~100',
-        'rolldie':
-            'if <gt $1 0> ' +
-                '"echo You roll <*calc -int <randint 0 $1> + 1> out of $1."' +
-                ' "echo The die must have at least 1 side."~~6',
         'flipcoin':
             'if <calc -truth randrange(0, 2)> "echo Heads" "echo Tails"',
         })
+    m.add_short_command_hook(dice,
+        'dice::Roll dice.',
+        ['[form]::Form of the dice, <number>d<sides>'])
     return m
+
+
+def dice(fp, args):
+    import random
+    try:
+        number = int(args.getlinstr('form', '1d6').split('d')[0])
+        sides = int(args.getlinstr('form', '1d6').split('d')[1])
+    except IndexError:
+        return 'Invalid format. Use <number>d<sides>.'
+    except ValueError:
+        return 'Invalid format. Use <number>d<sides>.'
+    if number < 1 or sides < 1:
+        return "You won't get very many results with those numbers."
+    output = []
+    for i in range(number):
+        output.append(str(random.randrange(0, sides) + 1))
+    return utils.ltos(output)
 
 
 def lt(fp, args):
