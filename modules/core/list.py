@@ -48,7 +48,7 @@ def clist(fp, args):
         for m in fp.server.modules:
             output.append(m.name)
     return('%s' % (
-        utils.ltos(output)
+        utils.ltos(sorted(output))
         ))
 
 
@@ -60,7 +60,7 @@ def commands(fp, args):
                 commands.append(a)
     commands += fp.get_aliases()
     return('%s' % (
-        utils.ltos(commands)
+        utils.ltos(sorted(commands))
         ))
 
 
@@ -69,6 +69,6 @@ def aliases(fp, args):
     for m in fp.get_aliases():
         commands.append(m)
     return('%s' % (
-        utils.ltos(commands)
+        utils.ltos(sorted(commands))
         ))
 
