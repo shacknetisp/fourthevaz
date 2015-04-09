@@ -4,6 +4,7 @@ import importlib
 import utils
 importlib.reload(safeeval)
 from configs.module import Module
+from irc.utils import formatcodes
 
 
 def init():
@@ -71,8 +72,11 @@ def dice(fp, args):
         return "I don't want to roll that many dice."
     output = []
     for i in range(number):
-        output.append(str(random.randrange(0, sides) + 1))
-    return utils.ltos(output)
+        n = random.randrange(0, sides) + 1
+        s = str(n)
+        output.append(s)
+    final = [utils.ltos(output, ', ')]
+    return (" -- ".join(final))
 
 
 def lt(fp, args):
