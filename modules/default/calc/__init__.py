@@ -60,8 +60,12 @@ def init():
 def dice(fp, args):
     import random
     try:
-        number = int(args.getlinstr('form', '1d6').split('d')[0])
-        sides = int(args.getlinstr('form', '1d6').split('d')[1])
+        try:
+            number = int(args.getlinstr('form', '1d6').split('d')[0])
+            sides = int(args.getlinstr('form', '1d6').split('d')[1])
+        except ValueError:
+            number = 1
+            sides = int(args.getlinstr('form', '1d6').split('d')[1])
     except IndexError:
         return 'Invalid format. Use <number>d<sides>.'
     except ValueError:
