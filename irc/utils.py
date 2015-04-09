@@ -18,7 +18,6 @@ class formatcodes:
     italic = '\x1d'
     reverse = '\x16'
     underline = '\x15'
-    underline2 = '\x1f'
     strike = '\x13'
     color = '\x03'
 
