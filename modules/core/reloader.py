@@ -8,6 +8,7 @@ import utils
 def init():
     m = Module('reloader')
     m.set_help('Reload various parts of the bot.')
+    m.add_timer_hook(2.5 * 1000, timer)
     m.add_command_hook('reloadall',
         {
             'function': reloadall,
@@ -28,7 +29,22 @@ def init():
                     },
                 ],
         })
+    m.add_short_command_hook(reinit,
+        'reinit::Reload all possible files.', [], 75)
     return m
+
+
+def timer():
+    if moduleregistry.reloadscheduled:
+        moduleregistry.reloadscheduled = False
+        moduleregistry.reload_all()
+        for server in running.working_servers:
+            server.reinit()
+
+
+def reinit(fp, args):
+    running.reinit = True
+    return "Re-connecting to all servers."
 
 
 def reloadall(fp, args):

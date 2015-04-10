@@ -23,7 +23,8 @@
     ".js", 
     ".ini", 
     ".md", 
-    ".txt"
+    ".txt", 
+    ".sh"
   ], 
   "project-type": "Import from sources", 
   "postExecScript": "", 
