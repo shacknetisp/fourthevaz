@@ -221,8 +221,8 @@ def doredflare(fp, args):
     url = args.getlinstr('url')
     rf = redflare.RedFlare(args.getlinstr('url'))
     try:
-        lsdb = fp.server.state['redflare'].db()[
-            'lastseen'][args.getlinstr('url')]
+        lsdb = fp.server.state['redflare'].db()[args.getlinstr('url')][
+            'lastseen']
     except KeyError:
         lsdb = None
     if 'stats' in args.lin:
