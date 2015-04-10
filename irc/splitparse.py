@@ -2,6 +2,7 @@
 
 
 class SplitParser():
+    """Low level parser, provides information from the message."""
 
     def __init__(self, message):
         self.message = message
@@ -26,13 +27,14 @@ class SplitParser():
             self.text = ""
 
     def getsplit(self, n, d=''):
+        """Get word <n> from the message, with <d> as the default."""
         try:
             return self.splitmessage[n]
         except IndexError:
             return d
 
     def iscode(self, c):
-        #End of /MOTD command.
+        """Detect a command."""
         if c == 'endmotd':
             if self.command == '376':
                 return True

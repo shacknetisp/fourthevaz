@@ -6,6 +6,7 @@ formatcodes = ircutils.formatcodes
 
 
 class FullParse():
+    """High-level parser, contains Server and SplitParse references."""
 
     def __init__(self, server, sp):
         self.server = server
@@ -26,8 +27,12 @@ class FullParse():
         self.setaccess("%s=%s=%s" % (
             self.sp.sendernick, self.sp.host, authed))
         self.user = self.sp.sendernick
+        o = {'external': False}
+        self.server.do_base_hook('isexternal', self, o)
+        self.external = o['external']
 
     def get_aliases(self):
+        """Returns a dictionary of all current aliases."""
         channeld = {}
         if self.channel:
             channeld = self.channel.aliases
@@ -35,11 +40,11 @@ class FullParse():
             channeld)
 
     def external(self):
-        o = {'external': False}
-        self.server.do_base_hook('isexternal', self, o)
-        return o['external']
+        """Returns true if the messages comes from a server relay."""
+        return self.external
 
     def setaccess(self, s=""):
+        """Set the access string of this fullparse object."""
         access = self.server.import_module('rights.access', False)
         if s:
             self.accesslevelname = s
@@ -54,26 +59,31 @@ class FullParse():
             ltn=self.external())
 
     def isquery(self):
+        """Did the message come from a query?"""
         return self.sp.target == self.server.nick
 
     def outtarget(self):
+        """Returns the target to send messages to."""
         if self.isquery():
             return self.sp.sendernick
         else:
             return self.sp.target
 
     def accesslevel(self):
+        """Get the current highest access level."""
         return max(
             self.serverlevel,
             self.channellevel)
 
     def channelaccess(self, channel):
+        """Get the channel access level."""
         access = self.server.import_module('rights.access', False)
         return max(self.server.get_channel_access(
             access.getaccesslevel, self,
             channel), self.serverlevel)
 
     def reply_driver(self, target, message, c=''):
+        """Send <message> to <target> using <c> or the default."""
         if not message:
             return
         message = message.strip(' \n\t')
@@ -113,6 +123,7 @@ class FullParse():
                 i += 1
 
     def reply(self, message, c=''):
+        """Default reply function, reply with <message> [command <c>]."""
         if self.channel:
             if not self.server.db[
                 'bot.enable.%s' % self.channel.entry['channel']]:
@@ -120,15 +131,18 @@ class FullParse():
         return self.reply_driver(self.outtarget(), message, c)
 
     def replyctcp(self, message):
+        """Reply with CTCP markers."""
         self.reply(ircutils.ctcp(message), "NOTICE")
 
     def replypriv(self, message, c=''):
+        """Reply using a query, ignore channels."""
         return self.reply_driver(self.sp.sendernick, message, c)
 
     class Channel:
 
         def __init__(self, fp, name=""):
             self.fp = fp
+            self.name = ""
             self.findname(name)
 
         def findname(self, name=""):
@@ -137,6 +151,7 @@ class FullParse():
             for c in self.fp.server.channels:
                 if name == c['channel']:
                     self.entry = c
+                    self.name = name
                     self.aliases = self.fp.server.db['aliases:%s' % (
                     c['channel'])]
                     return
