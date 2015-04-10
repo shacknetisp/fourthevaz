@@ -2,9 +2,18 @@
 import importlib
 import os
 import sys
+import imp
 import configs.locs as locs
 if locs.userdata not in sys.path:
     sys.path.append(locs.userdata)
+
+
+def find_module(name, path=None):
+    for x in name.split('.'):
+        if path is not None:
+            path = [path]
+        file, path, descr = imp.find_module(x, path)
+    return path
 
 
 class DDRException(Exception):
@@ -30,11 +39,11 @@ def serverinit(server):
         return n[0] == '_' or n == 'share'
     server.modules = []
     for f in os.listdir(locs.cmoddir):
-        if not skipname(f):
+        if not skipname(f) and f != 'sets':
             server.add_module(os.path.splitext(f)[0])
     for mset in server.entry['modulesets']:
         try:
-            for f in os.listdir(locs.cmoddir + '/%s' % mset):
+            for f in os.listdir(locs.cmoddir + '/sets/%s' % mset):
                 if not skipname(f):
                     server.add_module(os.path.splitext(f)[0])
         except FileNotFoundError:
@@ -54,21 +63,22 @@ def serverinit(server):
 def import_module_py(name, modulesets=[], doreload=True):
     possible = ['mlocal.']
     for mset in modulesets:
-        possible.append('mlocal.%s.' % mset)
+        possible.append('mlocal.sets.%s.' % mset)
         possible.append('modules.%s.' % mset)
     possible.append('modules.core.')
     m = None
     err = None
     for i in possible:
         try:
-            m = importlib.import_module(i + name)
-            if not hasattr(m, 'init'):
+            if not find_module(i + name):
                 continue
-            break
         except ImportError as e:
             err = e
-            if e.name.split('.')[0] not in ['mlocal', 'modules']:
-                raise DepException(e)
+            continue
+        m = importlib.import_module(i + name)
+        if not hasattr(m, 'init'):
+            continue
+        break
     if not m:
         raise err
     if not os.path.exists(m.__file__):

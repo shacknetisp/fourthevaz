@@ -65,12 +65,7 @@ class Server:
             d = ast.literal_eval(open(locs.userdata + '/aliases.py').read())
         except FileNotFoundError:
             pass
-        self.aliasdb = utils.merge_dicts(
-            mload.import_module_py("share.aliases", "core").aliases)
-        for mset in self.entry['modulesets']:
-            self.aliasdb = utils.merge_dicts(self.aliasdb,
-                mload.import_module_py("share.aliases", mset).aliases)
-        self.aliasdb = utils.merge_dicts(self.aliasdb, d, self.db['aliases'])
+        self.aliasdb = utils.merge_dicts(d, self.db['aliases'])
         for m in self.modules:
             self.aliasdb = utils.merge_dicts(self.aliasdb, m.aliases)
 
