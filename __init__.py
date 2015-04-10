@@ -21,7 +21,7 @@ def signal_handler(signal, frame):
 
 def hup_handler(signal, frame):
     print('Reloading from HUP.')
-    moduleregistry.reloadscheduled = True
+    running.reinit = True
 
 
 if __name__ == '__main__':
