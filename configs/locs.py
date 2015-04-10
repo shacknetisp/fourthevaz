@@ -1,17 +1,10 @@
 # -*- coding: utf-8 -*-
-import os
 import sys
+import os
 overridehome = ""
 if len(sys.argv) > 1:
     overridehome = sys.argv[1]
-from os.path import expanduser
-home = expanduser("~")
-if os.name == "posix":
-    userdata = home + "/.fourthevaz"
-elif os.name == "nt":
-    userdata = home + "/fourthevaz"
-elif not overridehome:
-    raise ValueError('OS not supported.')
+userdata = './userdata'
 if len(overridehome) > 0:
     userdata = overridehome
 cmoddir = userdata + '/mlocal'
