@@ -3,13 +3,11 @@ import configs.match
 import configs.module
 import configs.mload
 import configs.locs
-ldb = None
 
 
 def init(options):
-    global ldb
     server = options['server']
-    linedb = configs.mload.import_module_py("share.linedb", "default")
+    linedb = server.import_module("share.linedb", True)
     server.state['jokes.linedb'] = linedb.LineDB(
         'joke', 'jokes', '#', 'channel', add, main, remove, showlist, True,
         ' !target! and !joker! are the tokens.')
@@ -30,11 +28,13 @@ def init(options):
 
 
 def add(fp, args):
+    ldb = fp.server.state['jokes.linedb']
     return ldb.add(fp, args, fp.channel.entry[
                 'channel'] if fp.channel and fp.channel.entry else '', True)
 
 
 def main(fp, args):
+    ldb = fp.server.state['jokes.linedb']
     r = ldb.main(fp, args, fp.channel.entry[
                 'channel'] if fp.channel and fp.channel.entry else '')
     if 'add' in args.lin or 'remove' in args.lin:
@@ -46,10 +46,12 @@ def main(fp, args):
 
 
 def showlist(fp, args):
+    ldb = fp.server.state['jokes.linedb']
     return ldb.showlist(fp, args)
 
 
 def remove(fp, args):
+    ldb = fp.server.state['jokes.linedb']
     return ldb.remove(fp, args, fp.channel.entry[
                 'channel'] if fp.channel and fp.channel.entry else '', True)
 

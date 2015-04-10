@@ -31,8 +31,8 @@ def init():
 
 
 def google(fp, args):
-    google = configs.mload.import_module_py('share.google', "default")
-    linkparse = configs.mload.import_module_py('share.linkparse', "default")
+    google = fp.server.import_module('share.google', True)
+    linkparse = fp.server.import_module('share.linkparse', True)
     try:
         n = min(int(args.getlinstr("num", "1")), 10)
     except TypeError:

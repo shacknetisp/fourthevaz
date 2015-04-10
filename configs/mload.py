@@ -32,21 +32,38 @@ def serverinit(server):
     for f in os.listdir(locs.cmoddir):
         if not skipname(f):
             server.add_module(os.path.splitext(f)[0])
+    for mset in server.entry['modulesets']:
+        try:
+            for f in os.listdir(locs.cmoddir + '/%s' % mset):
+                if not skipname(f):
+                    server.add_module(os.path.splitext(f)[0])
+        except FileNotFoundError:
+            continue
     for f in os.listdir('modules/%s/' % "core"):
         if not skipname(f):
             server.add_module(os.path.splitext(f)[0])
-    for f in os.listdir('modules/%s/' % server.entry['moduleset']):
-        if not skipname(f):
-            server.add_module(os.path.splitext(f)[0])
+    for mset in server.entry['modulesets']:
+        try:
+            for f in os.listdir('modules/%s/' % mset):
+                if not skipname(f):
+                    server.add_module(os.path.splitext(f)[0])
+        except FileNotFoundError:
+            continue
 
 
-def import_module_py(name, moduleset="", doreload=True):
-    possible = ['mlocal.', 'modules.%s.' % moduleset, 'modules.core.']
+def import_module_py(name, modulesets=[], doreload=True):
+    possible = ['mlocal.']
+    for mset in modulesets:
+        possible.append('mlocal.%s.' % mset)
+        possible.append('modules.%s.' % mset)
+    possible.append('modules.core.')
     m = None
     err = None
     for i in possible:
         try:
             m = importlib.import_module(i + name)
+            if not hasattr(m, 'init'):
+                continue
             break
         except ImportError as e:
             err = e
@@ -61,8 +78,8 @@ def import_module_py(name, moduleset="", doreload=True):
     return m
 
 
-def import_module(name, moduleset="", doreload=True, options={}):
-    m = import_module_py(name, moduleset, doreload)
+def import_module(name, modulesets=[], doreload=True, options={}):
+    m = import_module_py(name, modulesets, doreload)
     if m.init.__code__.co_argcount == 1:
         mr = m.init(options)
     else:

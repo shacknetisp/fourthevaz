@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-import configs.mload
 import utils
 import textwrap
 from . import utils as ircutils
 formatcodes = ircutils.formatcodes
-access = configs.mload.import_module_py('rights.access')
 
 
 class FullParse():
@@ -42,6 +40,7 @@ class FullParse():
         return o['external']
 
     def setaccess(self, s=""):
+        access = self.server.import_module('rights.access', False)
         if s:
             self.accesslevelname = s
         c = (self.channel.entry['channel']
@@ -69,6 +68,7 @@ class FullParse():
             self.channellevel)
 
     def channelaccess(self, channel):
+        access = self.server.import_module('rights.access', False)
         return max(self.server.get_channel_access(
             access.getaccesslevel, self,
             channel), self.serverlevel)

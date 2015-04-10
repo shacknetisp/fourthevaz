@@ -66,10 +66,11 @@ class Server:
         except FileNotFoundError:
             pass
         self.aliasdb = utils.merge_dicts(
-            mload.import_module_py("share.aliases", "core").aliases,
-                 mload.import_module_py(
-                     "share.aliases", self.entry['moduleset']).aliases, d,
-                      self.db['aliases'])
+            mload.import_module_py("share.aliases", "core").aliases)
+        for mset in self.entry['modulesets']:
+            self.aliasdb = utils.merge_dicts(self.aliasdb,
+                mload.import_module_py("share.aliases", mset).aliases)
+        self.aliasdb = utils.merge_dicts(self.aliasdb, d, self.db['aliases'])
         for m in self.modules:
             self.aliasdb = utils.merge_dicts(self.aliasdb, m.aliases)
 
@@ -236,9 +237,13 @@ class Server:
             return True
         return False
 
-    def add_module(self, name, mset=""):
+    def import_module(self, name, do_reload):
+        return mload.import_module_py(
+            name, self.entry['modulesets'], do_reload)
+
+    def add_module(self, name, mset=[]):
         if not mset:
-            mset = self.entry['moduleset']
+            mset = self.entry['modulesets']
         self.delete_module(name)
         try:
             m = mload.import_module(

@@ -10,8 +10,8 @@
     'address': {'host': 'irc.freenode.net', 'port': 6667},
     #The nick and name are defined here
     'id': {'nick': 'mybotsnick', 'name': 'An Example Bot'},
-    #The moduleset to use
-    'moduleset': 'default',
+    #The modulesets to use, core is always included
+    'modulesets': ['default'],
     #The nickserv password, accessable with %pass% in the nickserv module
     'nspassword': 'anickservpass',
     #The default prefixes for commands, each channel can define it's own

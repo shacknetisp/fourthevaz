@@ -82,8 +82,7 @@ def findzone(fp, args):
 
 
 def gettime(fp, args):
-    geoip = configs.mload.import_module_py(
-        'geoip', fp.server.entry['moduleset'], False)
+    geoip = fp.server.import_module('geoip', False)
     tz = args.getlinstr('zone/ip')
     t = datetime.now(UTC())
     utcs = '%d:%d' % (t.hour, t.minute)

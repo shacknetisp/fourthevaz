@@ -93,8 +93,7 @@ def listservers(fp, args):
 
 
 def recv(fp):
-    commands = configs.mload.import_module_py(
-        'commands', fp.server.entry['moduleset'], False)
+    commands = fp.server.import_module('commands', False)
     if fp.external() and isredeclipse(fp):
         if fp.sp.iscode('QUIT') or fp.sp.iscode('PART'):
             for k in fp.server.state:

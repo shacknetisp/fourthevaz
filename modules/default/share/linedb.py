@@ -5,8 +5,6 @@ import db.text
 import configs.mload
 import random
 import utils
-commands = configs.mload.import_module_py('commands', '', False)
-access = configs.mload.import_module_py('rights.access')
 
 
 class LineDB:
@@ -143,6 +141,7 @@ class LineDB:
         return '"%s" has been added to %s %s' % (line, self.seper, topic)
 
     def main(self, fp, args, dt):
+        commands = fp.server.import_module('commands', False)
         line = args.getlinstr(self.name, '')
         if 'add' in args.lin:
             return commands.doptext(fp, '%s.add %s' % (self.plural, line))

@@ -29,8 +29,7 @@ def init():
 
 
 def weather(fp, args):
-    geoip = configs.mload.import_module_py(
-        'geoip', fp.server.entry['moduleset'], False)
+    geoip = fp.server.import_module('geoip', False)
     imperial = ('imp' in args.lin)
     location = args.getlinstr('location/IP')
     r = geoip.geoip(location)

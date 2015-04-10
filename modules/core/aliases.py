@@ -2,7 +2,7 @@
 from configs.module import Module
 import configs.mload
 import running
-commands = configs.mload.import_module_py('commands')
+from . import commands
 
 
 def init():

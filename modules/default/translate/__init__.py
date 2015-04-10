@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import configs.module
-import configs.mload
+import importlib
 
 
 def init():
@@ -34,7 +34,8 @@ def init():
 
 
 def getl(l):
-    iso639 = configs.mload.import_module_py("translate.iso639", "default")
+    from . import iso639
+    importlib.reload(iso639)
     item = iso639.find(whatever=l)
     if item:
         return item['iso639_1']
@@ -42,11 +43,11 @@ def getl(l):
 
 
 def translate(fp, args):
-    gtapi = configs.mload.import_module_py("translate.translate", "default")
+    translate = fp.server.import_module('translate.translate', True)
     fromword = args.getlinstr('from', '')
     toword = args.getlinstr('to', 'en')
     inp = args.getlinstr('words')
-    translator = gtapi.TranslateService()
+    translator = translate.TranslateService()
     if fromword == '':
         fromword = list(translator.detect(inp).keys())[0]
     try:
