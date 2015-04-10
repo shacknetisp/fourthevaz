@@ -11,7 +11,7 @@ import configs.locs
 
 def init(options):
     server = options['server']
-    path = configs.locs.userdata + '/lastseen.%s.py' % server.entry['settings']
+    path = configs.locs.userdb + '/lastseen.%s.py' % server.entry['settings']
     server.state['lastseen'] = db.text.DB(path)
     if os.path.exists(path):
         server.state['lastseen'].load()

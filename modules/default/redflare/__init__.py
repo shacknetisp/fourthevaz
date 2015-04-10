@@ -17,8 +17,8 @@ def init(options):
         options['server'].db['redflares'] = {}
 
     options['server'].state['redflare'] = db.text.DB(
-        configs.locs.userdata + '/redflare.py')
-    if os.path.exists(configs.locs.userdata + '/redflare.py'):
+        configs.locs.userdb + '/redflare.py')
+    if os.path.exists(configs.locs.userdb + '/redflare.py'):
         options['server'].state['redflare'].load()
     if 'list' not in options['server'].state['redflare'].db():
         options['server'].state['redflare'].db()['list'] = []
@@ -114,7 +114,7 @@ def init(options):
 
 
 def timer():
-    dbf = db.text.DB(configs.locs.userdata + '/redflare.py')
+    dbf = db.text.DB(configs.locs.userdb + '/redflare.py')
     dbdh = dbf.db()
     for url in dbdh['list']:
         rf = redflare.RedFlare(url)

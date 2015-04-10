@@ -7,7 +7,7 @@ from . import wordai
 def init(options):
     server = options['server']
     server.state['wordai'] = wordai.wordai(
-        configs.locs.userdata + '/chatbot.%s.pkl' % server.entry['settings'])
+        configs.locs.userdb + '/chatbot.%s.pkl' % server.entry['settings'])
     server.state['wordai'].load()
     m = configs.module.Module(__name__)
     m.set_help('Talk with the chatbot.')

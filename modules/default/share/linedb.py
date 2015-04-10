@@ -13,7 +13,7 @@ class LineDB:
 
     def __init__(self, name, plural, seperprefix,
         seper, add, main, remove, showlist, random, eh=''):
-        self.dbfolder = configs.locs.userdata + '/' + plural
+        self.dbfolder = configs.locs.userdb + '/' + plural
         os.makedirs(self.dbfolder, exist_ok=True)
         self.name = name
         self.plural = plural
