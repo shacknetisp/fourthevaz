@@ -44,6 +44,9 @@ def clist(fp, args):
                 for a in m.command_hooks:
                     if a not in output:
                         output.append(a)
+                for a in m.aliases:
+                    if a not in output:
+                        output.append(a)
     else:
         for m in fp.server.modules:
             output.append(m.name)
