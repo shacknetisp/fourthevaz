@@ -8,12 +8,13 @@ from . import geoip
 
 def init(options):
     server = options['server']
-    if 'ltnservers' not in server.db or type(server.db[
-        'ltnservers']) is not dict:
-        server.db['ltnservers'] = {}
+    if 'reservers' not in server.db or type(server.db[
+        'reservers']) is not dict:
+        server.db['reservers'] = {}
     m = configs.module.Module(__name__)
-    m.set_help('Parse commands from servers.')
-    m.add_command_hook('addserver', {
+    m.set_help(
+        'Parse commands from Red Eclipse (http://redeclipse.net) servers.')
+    m.add_command_hook('addreserver', {
         'function': addserver,
         'help': 'Add a nick to the servers list.',
         'args': [
@@ -29,7 +30,7 @@ def init(options):
                 }
             ]
         })
-    m.add_command_hook('removeserver', {
+    m.add_command_hook('removereserver', {
         'function': removeserver,
         'help': 'Removes a nick from the servers list.',
         'args': [
@@ -40,12 +41,13 @@ def init(options):
                 }
             ]
         })
-    m.add_command_hook('listservers', {
+    m.add_command_hook('listreservers', {
         'function': listservers,
         'help': 'Show server list.',
         'args': []
         })
     m.add_base_hook('recv', recv)
+    m.add_base_hook('isexternal', isexternal)
     return m
 
 
@@ -55,6 +57,12 @@ def isredeclipse(fp):
         return (fp.server.whoislist[user]['ident'] == '~redeclips')
 
 
+def isexternal(fp, o):
+    if 'reservers' in fp.server.db and isredeclipse(fp):
+        if fp.sp.sendernick in fp.server.db['reservers']:
+            o['external'] = True
+
+
 def addserver(fp, args):
     if not ':'.join(args.getlinstr('address').split(':')[0:-1]):
         return 'Invalid Address'
@@ -62,14 +70,14 @@ def addserver(fp, args):
         int(args.getlinstr('address').split(':')[-1])
     except ValueError:
         return 'Invalid Port'
-    fp.server.db['ltnservers'][args.getlinstr('nick')] = args.getlinstr(
+    fp.server.db['reservers'][args.getlinstr('nick')] = args.getlinstr(
         'address')
     return '%s is now in the server list.' % args.getlinstr('nick')
 
 
 def removeserver(fp, args):
     try:
-        del fp.server.db['ltnservers'][args.getlinstr('nick')]
+        del fp.server.db['reservers'][args.getlinstr('nick')]
         return '%s has been removed from the server list.' % args.getlinstr(
             'nick')
     except KeyError:
@@ -79,15 +87,15 @@ def removeserver(fp, args):
 
 def listservers(fp, args):
     results = []
-    for k in fp.server.db['ltnservers']:
-        results.append('%s:%s' % (k, fp.server.db['ltnservers'][k]))
+    for k in fp.server.db['reservers']:
+        results.append('%s:%s' % (k, fp.server.db['reservers'][k]))
     return 'Servers: ' + utils.ltos(results)
 
 
 def recv(fp):
     commands = configs.mload.import_module_py(
         'commands', fp.server.entry['moduleset'], False)
-    if fp.ltnserver():
+    if fp.external() and isredeclipse(fp):
         if fp.sp.iscode('QUIT') or fp.sp.iscode('PART'):
             for k in fp.server.state:
                 if k.find('%s.authname.' % fp.sp.sendernick) == 0:
@@ -99,22 +107,23 @@ def recv(fp):
         except IndexError:
             fp.user = ''
         fp.setaccess("%s==" % fp.user)
-        if isredeclipse(fp):
-            authname = ""
-            rf = redflare.RedFlare('http://redflare.ofthings.net/reports')
-            entry = fp.server.db['ltnservers'][fp.sp.sendernick].split(':')
-            host = ':'.join(entry[0:-1])
-            if host == '%':
-                host = fp.sp.host.split('@')[1]
-            host = geoip.geoip(host)['query']
-            if not host:
-                host = ''
-            for server in rf.servers:
-                if server['host'] == host and server['port'] == int(entry[-1]):
-                    for player in server['playerauths']:
-                        if player[0] == fp.user:
-                            authname = player[1]
-            fp.setaccess("%s==:%s" % (fp.user, authname))
+
+        authname = ""
+        rf = redflare.RedFlare('http://redflare.ofthings.net/reports')
+        entry = fp.server.db['reservers'][fp.sp.sendernick].split(':')
+        host = ':'.join(entry[0:-1])
+        if host == '%':
+            host = fp.sp.host.split('@')[1]
+        host = geoip.geoip(host)['query']
+        if not host:
+            host = ''
+        for server in rf.servers:
+            if server['host'] == host and server['port'] == int(entry[-1]):
+                for player in server['playerauths']:
+                    if player[0] == fp.user:
+                        authname = player[1]
+        fp.setaccess("%s==:%s" % (fp.user, authname))
+
         try:
             text = fp.sp.text[fp.sp.text.index('> ') + 2:]
         except ValueError:

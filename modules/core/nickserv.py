@@ -31,7 +31,7 @@ def joined(server):
 
 
 def nickserv(fp, args):
-    if fp.ltnserver():
+    if fp.external():
         return "Must be called from IRC."
     fp.server.state['nsuser'] = fp.user
     action = args.getlinstr('action')

@@ -109,9 +109,7 @@ def recv(fp):
         if fp.sp.sendernick:
             if fp.accesslevel() >= 50:
                 return
-            if 'ltnservers' not in fp.server.db:
-                fp.server.db['ltnservers'] = []
-            if fp.sp.sendernick in fp.server.db['ltnservers']:
+            if fp.external():
                 return
             if fp.sp.sendernick not in db:
                 db[fp.sp.sendernick] = {

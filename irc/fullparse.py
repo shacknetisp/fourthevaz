@@ -36,11 +36,10 @@ class FullParse():
         return utils.merge_dicts(self.server.aliasdb,
             channeld)
 
-    def ltnserver(self):
-        if 'ltnservers' in self.server.db:
-            if self.sp.sendernick in self.server.db['ltnservers']:
-                return True
-        return False
+    def external(self):
+        o = {'external': False}
+        self.server.do_base_hook('isexternal', self, o)
+        return o['external']
 
     def setaccess(self, s=""):
         if s:
@@ -50,10 +49,10 @@ class FullParse():
             "")
         self.channellevel = self.server.get_channel_access(
             access.getaccesslevel, self,
-            c, ltn=self.ltnserver())
+            c, ltn=self.external())
         self.serverlevel = access.getaccesslevel(
             self.server, self.accesslevelname, "", self.channel,
-            ltn=self.ltnserver())
+            ltn=self.external())
 
     def isquery(self):
         return self.sp.target == self.server.nick
@@ -107,7 +106,7 @@ class FullParse():
         for tm in message.split('\n'):
             i = 0
             for fm in textwrap.wrap(tm, 450):
-                if self.ltnserver():
+                if self.external():
                     fm = fm.replace(formatcodes.bold, '')
                 self.server.write_cmd(command, target + str(' :') +
                 ('...' if i else '') + fm)

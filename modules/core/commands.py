@@ -413,7 +413,7 @@ def recv(fp):
             return
         if fp.sp.sendernick in ['ChanServ', 'NickServ']:
             return
-        if fp.ltnserver():
+        if fp.external():
             return
         text = fp.sp.text
         prefixt = fp.server.entry['prefix'].split()

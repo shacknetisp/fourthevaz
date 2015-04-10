@@ -54,7 +54,7 @@ def suggest(fp, args):
             if 'suggest.apikey' in fp.server.db else ''}
     if 'results' in args.lin:
         params['limit'] = args.getlinstr('results')
-    if fp.ltnserver() and params['limit'] > 10:
+    if fp.external() and params['limit'] > 10:
         return "You cannot use this module from a server."
     suggestions = requests.get('http://www.tastekid.com/api/similar',
         params=params)
