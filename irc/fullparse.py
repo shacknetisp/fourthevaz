@@ -29,7 +29,7 @@ class FullParse():
         self.user = self.sp.sendernick
         o = {'external': False}
         self.server.do_base_hook('isexternal', self, o)
-        self.external = o['external']
+        self.isexternal = o['external']
 
     def get_aliases(self):
         """Returns a dictionary of all current aliases."""
@@ -41,7 +41,7 @@ class FullParse():
 
     def external(self):
         """Returns true if the messages comes from a server relay."""
-        return self.external
+        return self.isexternal
 
     def setaccess(self, s=""):
         """Set the access string of this fullparse object."""
