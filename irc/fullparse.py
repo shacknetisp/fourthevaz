@@ -10,6 +10,7 @@ class FullParse():
 
     def __init__(self, server, sp):
         self.server = server
+        self.isexternal = False
         self.sp = sp
         self.moreflag = False
         if self.isquery() or self.sp.target == '*':
