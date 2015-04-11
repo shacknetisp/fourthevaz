@@ -83,6 +83,11 @@ def init(options):
                 'optional': False,
                 'help': 'Enable or not.',
                 },
+            {
+                'name': 'channel',
+                'optional': True,
+                'help': 'Channel to use.',
+                },
             ]
         })
     m.add_command_hook('redflares', {
@@ -205,14 +210,14 @@ def redflares(fp, args):
 
 
 def enableredflare(fp, args):
-    if not fp.channel:
-        return 'You are not calling from a channel.'
+    channel = args.getlinstr('channel', fp.channel.entry[
+        'channel'] if fp.channel else None)
     try:
         fp.server.db[
-            'redflare.enable.%s' % fp.channel.entry['channel']] = utils.boolstr(
+            'redflare.enable.%s' % channel] = utils.boolstr(
                 args.getlinstr('enable?'))
-        return 'Enabled: ' + str(
-            fp.server.db['redflare.enable.%s' % fp.channel.entry['channel']])
+        return ('Enabled in %s: ' % channel) + str(
+            fp.server.db['redflare.enable.%s' % channel])
     except ValueError as e:
         return str(e)
 
