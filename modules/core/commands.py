@@ -61,8 +61,11 @@ def doptext(fp, p_ptext, count=100):
 
     def mcdisabled(m):
         if fp.channel:
-            if m in fp.channel.entry['disable']:
-                return True
+            try:
+                if m in fp.server.db[fp.channel.entry['channel'] + '.disabled']:
+                    return True
+            except KeyError:
+                return False
         return False
     args = None
     command = None
@@ -80,7 +83,6 @@ def doptext(fp, p_ptext, count=100):
         if not waswcommand:
             break
         if mcdisabled(m.name):
-            fp.reply("This module is disabled here.")
             continue
         if wmodule == m.name:
             modcall = True
@@ -111,7 +113,6 @@ def doptext(fp, p_ptext, count=100):
             if wcommand == k:
                 if len(v) == 1:
                     if mcdisabled(v[list(v.keys())[0]]['module'].name):
-                        fp.reply("This module is disabled here.")
                         return
                     command = v[list(v.keys())[0]]
                     usedtext = wcommand

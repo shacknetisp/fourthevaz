@@ -76,11 +76,8 @@ class Server:
         if type(c) is str:
             c = {
             'channel': c,
-            'disable': [],
             'prefix': self.entry['prefix'],
             }
-        if 'disable' not in c:
-            c['disable'] = []
         if 'prefix' not in c:
             c['prefix'] = self.entry['prefix']
         if 'disabled' not in c:

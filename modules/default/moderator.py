@@ -22,6 +22,11 @@ def init(options):
                 'optional': False,
                 'help': 'Enable or not.',
                 },
+            {
+                'name': 'channel',
+                'optional': True,
+                'help': 'Channel to set.'
+                }
             ]
         })
     m.add_command_hook('kick', {
@@ -71,14 +76,15 @@ def timer():
 
 
 def enablemoderator(fp, args):
-    if not fp.channel:
+    if not fp.channel and 'channel' not in args.lin:
         return 'You are not calling from a channel.'
+    channel = fp.channel.entry[
+        'channel'] if fp.channel else args.getlinstr('channel')
     try:
         fp.server.db[
-            'moderator.enable.%s' % fp.channel.entry[
-                'channel']] = utils.boolstr(
+            'moderator.enable.%s' % channel] = utils.boolstr(
                 args.getlinstr('enable?'))
-        return 'Enabled: ' + str(
+        return ('Enabled in %s: ' % channel) + str(
             fp.server.db['moderator.enable.%s' % fp.channel.entry['channel']])
     except ValueError as e:
         return str(e)

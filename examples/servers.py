@@ -21,10 +21,10 @@
     'access': ['freenode'],
     #The channels to connect to
     'channels': [
-        #A single string will use the default prefix and disable no modules
+        #A single string will use the server prefixes.
         '#channel1',
-        #You can specify a prefix and modules to disable in dictionary format.
-        {'channel': '#channel2', 'disable': ['jokes'], 'prefix': '!'}
+        #You can specify prefixes and the channel name in dictionary format.
+        {'channel': '#channel2', 'prefix': '!'}
     ],
   },
 ]
