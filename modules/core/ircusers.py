@@ -209,7 +209,7 @@ def whois(fp, args):
 def names(fp, args):
     channel = fp.Channel(fp, args.getlinstr('channel'))
     if channel.entry:
-        return(str(channel.entry['names']))
+        return(utils.ltos(channel.entry['names']))
     else:
         return(
             "That channel either doesn't exist or has no NAMES list yet.")
