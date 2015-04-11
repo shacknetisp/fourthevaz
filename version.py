@@ -24,4 +24,4 @@ def pythonversionstr():
 
 
 def systemversionstr():
-    return platform.platform()
+    return platform.uname().system
