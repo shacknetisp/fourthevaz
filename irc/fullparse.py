@@ -32,6 +32,10 @@ class FullParse():
         self.server.do_base_hook('isexternal', self, o)
         self.isexternal = o['external']
 
+    def me(self, text):
+        """Returns an ACTION text"""
+        return '\x01ACTION %s\x01' % text
+
     def get_aliases(self):
         """Returns a dictionary of all current aliases."""
         channeld = {}
