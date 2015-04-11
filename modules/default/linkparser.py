@@ -48,4 +48,6 @@ def title(fp, args):
         title = ""
     except socket.timeout:
         title = ""
+    except requests.exceptions.Timeout:
+        title = ""
     return title if title else 'Cannot find the title for %s.' % url
