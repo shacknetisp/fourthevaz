@@ -49,7 +49,7 @@ def init():
             ]
         })
     m.add_short_command_hook(enablemodule,
-        'enablemodule::Enable or disable a module in a channel.',
+        'enablemodule::Enable or disable a module\'s commands in a channel.',
         ['module::Module to enable or disable.',
         'enable?::Enable or not.',
         '[channel]::Channel to use.',
