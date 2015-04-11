@@ -82,7 +82,7 @@ def getversion(fp, args):
 
 
 def ctcp_version(fp):
-    fp.replyctcp('VERSION %s %s (%s)| Python %s | System %s' % (
+    fp.replyctcp('VERSION %s %s (%s) | Python %s | System %s' % (
         version.name,
         version.versionstr(),
         version.source,
