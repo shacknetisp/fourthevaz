@@ -40,8 +40,10 @@ def urbandictionary(fp, args):
     final = ""
     index = 1
     first = ""
-    for meaning in r['list']:
-        meaning = meaning['definition']
+    for entry in r['list']:
+        meaning = entry['definition']
+        if entry['example']:
+            meaning += ' -- ' + entry['example']
         meaning = meaning.replace('\n', ' ')
         meaning = meaning.replace('\r', ' ')
         index += 1
