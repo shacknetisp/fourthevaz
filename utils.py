@@ -47,7 +47,10 @@ def strip_html_tags(html):
 
     s = MLStripper()
     s.feed(html)
-    return s.get_data()
+    if s.get_data():
+        return s.get_data()
+    else:
+        return html
 
 
 def strip_xml_ampcodes(text):

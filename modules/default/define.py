@@ -6,6 +6,7 @@ import urllib.parse
 import xmltodict
 import random
 import re
+import requests
 
 
 def init():
@@ -25,7 +26,35 @@ def init():
             ]
         })
     m.add_command_alias('d', 'define')
+    m.add_short_command_hook(urbandictionary,
+        'urbandictionary::Get a dictionary definition' +
+        'from http://urbandictionary.com', ['words...::Word(s) to look for.'])
+    m.add_command_alias('ud', 'urbandictionary')
     return m
+
+
+def urbandictionary(fp, args):
+    words = args.getlinstr('words')
+    r = requests.get('http://api.urbandictionary.com/v0/define', params={
+        'term': words}).json()
+    final = ""
+    index = 1
+    first = ""
+    for meaning in r['list']:
+        meaning = meaning['definition']
+        meaning = meaning.replace('\n', ' ')
+        meaning = meaning.replace('\r', ' ')
+        index += 1
+        if not first:
+            first = meaning
+        if (len(meaning) < len(final) or not final) and index <= 3:
+            final = meaning
+            print(meaning)
+        elif index > 3 and not final:
+            final = first
+            break
+    final = ' '.join(final.split())
+    return final if final else 'No definition found.'
 
 
 def getibiblio(word):
