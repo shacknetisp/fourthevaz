@@ -49,7 +49,6 @@ def urbandictionary(fp, args):
             first = meaning
         if (len(meaning) < len(final) or not final) and index <= 3:
             final = meaning
-            print(meaning)
         elif index > 3 and not final:
             final = first
             break
