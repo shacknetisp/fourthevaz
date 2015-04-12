@@ -75,7 +75,10 @@ def import_module_py(name, modulesets=[], doreload=True):
         except ImportError as e:
             err = e
             continue
-        m = importlib.import_module(i + name)
+        try:
+            m = importlib.import_module(i + name)
+        except ImportError as e:
+            raise DepException(e)
         if not hasattr(m, 'init'):
             continue
         break

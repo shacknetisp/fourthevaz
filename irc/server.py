@@ -227,7 +227,7 @@ class Server:
             m = mload.import_module(
                 name, mset, options={'server': self})
         except mload.DepException as e:
-            print(('Dependancy Exception in %s: %s' % (name, e.e)))
+            print(('!!! -- Dependancy Exception in %s: %s' % (name, e.e)))
             return
         self.modules.append(m)
         self.update_aliases()
