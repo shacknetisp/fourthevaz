@@ -122,15 +122,14 @@ def doptext(fp, p_ptext, count=100):
                         k, utils.ltos(list(v.keys())), k))
                     return
     if command:
-        if 0 > fp.serverlevel or 0 > fp.channellevel:
-            return
-        if 'level' in command:
-            if command['level'] > fp.accesslevel():
-                fp.reply('You are level %d, but must be at least %d.' % (
-                    fp.accesslevel(),
-                    command['level']
-                    ))
+        if not fp.hasright('owner'):
+            if fp.hasright('disable') or fp.haschannelright('disable'):
                 return
+            if 'rights' in command:
+                for right in command['rights']:
+                    if not fp.hasright(right):
+                        fp.reply('You need the %s right.' % right)
+                        return
         noquote = command['noquote'] if 'noquote' in command else False
         tt = ""
         try:
@@ -395,9 +394,8 @@ def doptext(fp, p_ptext, count=100):
 
 def recv(fp):
     if fp.sp.iscode('chat'):
-        if fp.channel:
-            if not fp.server.db['bot.enable.%s' % fp.channel.entry['channel']]:
-                return
+        if fp.channelhasright('disable'):
+            return
         try:
             if fp.sp.text[0] == '\x01':
                 st = fp.sp.text.strip('\x01')

@@ -51,8 +51,8 @@ def init():
         {
             #Help text to be displayed with help
             'help': 'An example command, echoes text.',
-            #Required access level, if ommitted defaults to 0
-            'level': 0,
+            #Required rights, if ommitted defaults to []
+            'rights': [],
             #Function to call
             'function': example,
             #Argument definitions

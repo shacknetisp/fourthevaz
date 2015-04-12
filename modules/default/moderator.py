@@ -15,7 +15,7 @@ def init(options):
     m.add_command_hook('enablemoderator', {
         'function': enablemoderator,
         'help': 'Enable moderator in a channel.',
-        'level': 50,
+        'rights': ['%,op'],
         'args': [
             {
                 'name': 'enable?',
@@ -32,7 +32,7 @@ def init(options):
     m.add_command_hook('kick', {
         'function': kick,
         'help': 'Kick a nick from the channel.',
-        'level': 50,
+        'rights': ['%,op'],
         'args': [
             {
                 'name': 'nick',
@@ -49,7 +49,7 @@ def init(options):
     m.add_command_hook('ban', {
         'function': ban,
         'help': "Ban a nick from the channel.",
-        'level': 50,
+        'rights': ['%,op'],
         'args': [
             {
                 'name': 'nick',
@@ -113,8 +113,12 @@ def recv(fp):
         if not rfes in fp.server.db or not fp.server.db[rfes]:
             return
         if fp.sp.sendernick:
-            if fp.accesslevel() >= 50:
-                return
+            for r in ['owner', 'admin']:
+                if fp.hasright(r):
+                    return
+            for r in ['op']:
+                if fp.haschannelright(r):
+                    return
             if fp.external():
                 return
             if fp.sp.sendernick not in db:
@@ -136,7 +140,7 @@ def recv(fp):
             if db[fp.sp.sendernick]['evilness'] == 2:
                 fp.reply('%s: Stop spamming.' % fp.sp.sendernick)
             if db[fp.sp.sendernick][
-                'evilness'] >= (4 if fp.accesslevel() < 25 else 6):
+                'evilness'] >= (4 if not fp.haschannelright('voice') else 6):
                 fp.server.write_cmd(
                     'KICK', '%s %s :Do not spam. %s' % (
                         fp.channel.entry['channel'],
@@ -148,7 +152,7 @@ def recv(fp):
                         ))
                 #Give a change to repent
                 db[fp.sp.sendernick]['evilness'] -= 1
-                if fp.accesslevel() < 25:
+                if not fp.haschannelright('voice'):
                     db[fp.sp.sendernick]['evilness'] -= 2
                 db[fp.sp.sendernick]['kicks'] += 1
                 if db[fp.sp.sendernick]['kicks'] > 2:

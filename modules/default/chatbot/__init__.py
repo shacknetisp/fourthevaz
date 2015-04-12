@@ -14,7 +14,7 @@ def init(options):
     m.add_command_hook('chatbot',
         {
             'function': chatbot,
-            'level': 1,
+            'rights': ['normal'],
             'help': 'Talk to the bot.',
             'noquote': True,
             'args': [

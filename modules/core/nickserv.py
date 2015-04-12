@@ -9,7 +9,7 @@ def init():
     m.add_base_hook('joined', joined)
     m.add_command_hook('nickserv',
         {
-            'level': 85,
+            'rights': ['admin'],
             'help': 'Interact with NickServ, replace %pass% with the password.',
             'function': nickserv,
             'args': [

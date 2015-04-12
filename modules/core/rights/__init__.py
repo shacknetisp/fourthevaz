@@ -17,28 +17,17 @@ def init():
             'help': 'Get user rights.',
             'args': [
                 {
-                    'name': 'onlyvalue',
-                    'optional': True,
-                    'keyvalue': '',
-                    'help': 'Only display the value, not the name.'
-                    },
-                {
                     'name': 'user',
                     'optional': True,
                     'help': 'The user to view, defaults to caller. ([<nick>]:'
                     '[<hostname>]:[<NickServ Account>])'
                     },
-                {
-                    'name': 'accesslist',
-                    'optional': True,
-                    'help': 'The access list to get.'
-                    },
                 ],
             })
-    m.add_command_hook('setrights',
+    m.add_command_hook('setright',
         {
-            'function': setrights,
-            'help': 'Set user rights.',
+            'function': setright,
+            'help': 'Set a user right.',
             'args': [
                 {
                     'name': 'user',
@@ -47,15 +36,28 @@ def init():
                     '[<hostname>]:[<NickServ Account>])'
                     },
                         {
-                    'name': 'level',
+                    'name': 'right',
                     'optional': False,
-                    'help': 'The access level to set.'
+                    'help': 'The right to set.'
+                    },
+                ],
+            })
+    m.add_command_hook('delright',
+        {
+            'function': delright,
+            'help': 'Delete a user right.',
+            'args': [
+                {
+                    'name': 'user',
+                    'optional': False,
+                    'help': 'The user to set. ([<nick>]:'
+                    '[<hostname>]:[<NickServ Account>])'
                     },
                         {
-                    'name': 'accesslist',
-                    'optional': True,
-                    'help': 'The access list to set.'
-                    }
+                    'name': 'right',
+                    'optional': False,
+                    'help': 'The right to set.'
+                    },
                 ],
             })
     m.add_command_hook('getusers',
@@ -68,24 +70,31 @@ def init():
                     'optional': False,
                     'help': 'The "regex" to search for, uses fnmatchcase().'
                     },
-                    {
-                    'name': 'accesslist',
-                    'optional': True,
-                    'help': 'The access list to get.'
-                    },
                 ],
             })
-    m.add_command_hook('accesslists',
+    m.add_command_hook('listrights',
         {
-            'function': accesslists,
-            'help': 'Show the access lists.',
+            'function': listrights,
+            'help': 'Get a list of all rights.',
             'args': [],
             })
+    m.add_rights([
+        'disable',
+        'admin',
+        'owner',
+        'normal',
+        '%,op',
+        '%,voice',
+        '%,ignore',
+        ])
     return m
 
 
-def accesslists(fp, args):
-    return(str(fp.server.entry['access']))
+def listrights(fp, args):
+    r = []
+    for m in fp.server.modules:
+        r += m.rights
+    return utils.ltos(r)
 
 
 def getusers(fp, args):
@@ -94,18 +103,11 @@ def getusers(fp, args):
         access.raiseifnotformeduser(search)
     except access.AccessLevelError:
         return "Malformed user!"
-    alist = args.getlinstr('accesslist', fp.server.entry['access'][0])
-    if alist == '.':
-        if not fp.channel:
-            return 'Not in channel, cannot expand "."'
-        alist = fp.server.entry['access'][0] + ':' + fp.channel.entry['channel']
     results = []
-    if alist not in running.accesslist.db:
-        return('Invalid Access List.')
-    for user in running.accesslist.db[alist]:
+    for user in fp.server.adb:
         if fnmatch.fnmatchcase(user, search):
             results.append(user)
-    return('%s: %s' % (alist, utils.ltos(results)))
+    return('Results: %s' % (utils.ltos(results)))
 
 
 def getrights(fp, args):
@@ -114,56 +116,38 @@ def getrights(fp, args):
         access.raiseifnotformeduser(user)
     except access.AccessLevelError:
         return "Malformed user!"
-    alist = args.getlinstr('accesslist', '')
-    if alist == '.':
-        if not fp.channel:
-            return 'Not in channel, cannot expand "."'
-        alist = fp.server.entry['access'][0] + ':' + fp.channel.entry['channel']
-    try:
-        if 'onlyvalue' in args.lin:
-            return('%d' % (access.getaccesslevel(
-            fp.server, user, alist, fp.channel, ltn=fp.external())))
-        else:
-            return('%s%s has an access level of %d.' % (
-                user, ' (' + alist + ')' if alist else '',
-                access.getaccesslevel(
-                    fp.server, user, alist, fp.channel, ltn=fp.external())))
-    except access.AccessLevelError as e:
-        return(e.msg)
+    return user + ': ' + utils.ltos(access.getrights(fp.server, user) +
+    fp.channelrights())
 
 
-def setrights(fp, args):
+def setright(fp, args):
     user = args.getlinstr('user')
+    right = args.getlinstr('right')
+    sright = right.strip('-')
     try:
         access.raiseifnotformeduser(user)
     except access.AccessLevelError:
         return "Malformed user!"
-    alist = args.getlinstr('accesslist', fp.server.entry['access'][0])
-    if alist == '.':
-        if not fp.channel:
-            return 'Not in channel, cannot expand "."'
-        alist = fp.server.entry['access'][0] + ':' + fp.channel.entry['channel']
+    if sright == 'owner':
+        return 'You may not set owner.'
+    elif sright == 'admin' and not fp.hasright('owner'):
+        return 'You may not set admin.'
+    access.setright(fp.server, user, right)
+    return '%s given to %s' % (right, user)
+
+
+def delright(fp, args):
+    user = args.getlinstr('user')
+    right = args.getlinstr('right')
+    sright = right.strip('-')
     try:
-        level = int(args.getlinstr('level'))
-    except ValueError:
-        return('Invalid level.')
-    required = max(access.getaccesslevel(
-            fp.server, user, alist), level) + (
-                10 if 'leveladd' not in fp.server.entry else int(
-                fp.server.entry['leveladd']))
-    sl = access.getaccesslevel(
-            fp.server, fp.accesslevelname, ltn=fp.external())
-    if sl < required:
-        return('You are level %d, but you need at least level %d.' % (
-            sl,
-            required
-            ))
-    try:
-        access.setaccesslevel(alist, user, level)
-        return(
-            'The access level of %s (%s) is now %d.' % (
-                user, alist, access.getaccesslevel(
-            fp.server, user)))
-    except access.AccessLevelError as e:
-        return(e.msg)
+        access.raiseifnotformeduser(user)
+    except access.AccessLevelError:
+        return "Malformed user!"
+    if sright == 'owner':
+        return 'You may not set owner.'
+    elif sright == 'admin' and not fp.hasright('owner'):
+        return 'You may not set admin.'
+    access.delright(fp.server, user, right)
+    return '%s taken from %s' % (right, user)
 

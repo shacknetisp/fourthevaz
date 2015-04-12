@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 from configs.module import Module
 import running
 
@@ -13,4 +12,5 @@ def init(options):
 
 def timer():
     running.serverdb.save()
+    running.accesslist.save()
 

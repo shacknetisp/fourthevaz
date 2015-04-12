@@ -12,12 +12,16 @@ class Module:
         self.helptext = ""
         self.name = name.split('.')[-1]
         self.aliases = {}
+        self.rights = []
 
     def add_alias(self, name, content):
         self.aliases[name] = content
 
     def add_aliases(self, aliases):
         self.aliases = utils.merge_dicts(self.aliases, aliases)
+
+    def add_rights(self, rights):
+        self.rights += rights
 
     def set_help(self, helptext):
         self.helptext = helptext
@@ -48,6 +52,8 @@ class Module:
 
     def add_command_hook(self, hook, p_d):
         d = p_d
+        if 'rights' not in d:
+            d['rights'] = []
         d['module'] = self
         d['name'] = hook
         d['haskeyvalue'] = False
@@ -56,7 +62,7 @@ class Module:
                 d['haskeyvalue'] = True
         self.command_hooks[hook] = d
 
-    def add_short_command_hook(self, function, string, argstrs, level=0,
+    def add_short_command_hook(self, function, string, argstrs, rights=[],
         noquote=False):
         args = []
         for arg in argstrs:
@@ -64,7 +70,7 @@ class Module:
                 'optional': False,
                 'help': arg.split('::')[1],
                 'end': False,
-                'level': level,
+                'rights': rights,
                 }
             arg = arg.split('::')[0]
             if arg[0] == '[':

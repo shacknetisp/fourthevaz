@@ -50,18 +50,8 @@ class FullParse():
 
     def setaccess(self, s=""):
         """Set the access string of this fullparse object."""
-        access = self.server.import_module('rights.access', False)
         if s:
             self.accesslevelname = s
-        c = (self.channel.entry['channel']
-            if self.channel is not None else
-            "")
-        self.channellevel = self.server.get_channel_access(
-            access.getaccesslevel, self,
-            c, ltn=self.external())
-        self.serverlevel = access.getaccesslevel(
-            self.server, self.accesslevelname, "", self.channel,
-            ltn=self.external())
 
     def isquery(self):
         """Did the message come from a query?"""
@@ -74,18 +64,40 @@ class FullParse():
         else:
             return self.sp.target
 
-    def accesslevel(self):
-        """Get the current highest access level."""
-        return max(
-            self.serverlevel,
-            self.channellevel)
-
-    def channelaccess(self, channel):
-        """Get the channel access level."""
+    def hasright(self, right):
+        """Returns if the user has the specified right."""
         access = self.server.import_module('rights.access', False)
-        return max(self.server.get_channel_access(
-            access.getaccesslevel, self,
-            channel), self.serverlevel)
+        return (right in access.getrights(self.server, self.accesslevelname))
+
+    def channelrights(self):
+        extra = []
+        if not self.external():
+            if self.sp.sendernick in self.server.whoislist:
+                if self.channel.entry[
+                    'channel'] in self.server.whoislist[
+                        self.sp.sendernick]['op']:
+                        extra.append('%s,op' % self.channel.entry['channel'])
+                if self.channel.entry[
+                    'channel'] in self.server.whoislist[
+                        self.sp.sendernick]['voice']:
+                        extra.append('%s,voice' % self.channel.entry['channel'])
+        return extra
+
+    def haschannelright(self, right):
+        """Returns if the user has the specified channel right."""
+        access = self.server.import_module('rights.access', False)
+        right = (self.channel.entry[
+            'channel'] if self.channel else '') + ',' + right
+        return (right in access.getrights(
+            self.server, self.accesslevelname) + self.channelrights())
+
+    def channelhasright(self, right):
+        """Returns if the channel has the specified right."""
+        if not self.channel:
+            return []
+        access = self.server.import_module('rights.access', False)
+        return (right in (access.getrights(self.server, self.channel.entry[
+            'channel'])))
 
     def reply_driver(self, target, message, c=''):
         """Send <message> to <target> using <c> or the default."""
@@ -129,10 +141,8 @@ class FullParse():
 
     def reply(self, message, c=''):
         """Default reply function, reply with <message> [command <c>]."""
-        if self.channel:
-            if not self.server.db[
-                'bot.enable.%s' % self.channel.entry['channel']]:
-                return
+        if self.channelhasright('disable'):
+            return
         return self.reply_driver(self.outtarget(), message, c)
 
     def replyctcp(self, message):

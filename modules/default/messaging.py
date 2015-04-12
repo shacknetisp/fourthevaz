@@ -13,7 +13,7 @@ def init(options):
     m.add_command_hook('tell',
         {
             'function': tell,
-            'level': 1,
+            'rights': ['normal'],
             'help': 'Give <nick> <message> when <nick> is online. (No shlex.)',
             'noquote': True,
             'args': [

@@ -33,6 +33,9 @@ class Server:
         if entry['settings'] not in running.serverdb.db():
             running.serverdb.db()[entry['settings']] = {}
         self.db = running.serverdb.db()[entry['settings']]
+        if entry['settings'] not in running.accesslist.db():
+            running.serverdb.accesslist()[entry['settings']] = {}
+        self.adb = running.accesslist.db()[entry['settings']]
         self.state = {}
         self.options = options
         self.address = address
@@ -96,16 +99,7 @@ class Server:
             self.join_channel(channel)
 
     def join_channel(self, c):
-        if 'bot.enable.%s' % self.shortchannel(c)['channel'] not in self.db:
-            self.db['bot.enable.%s' % self.shortchannel(c)['channel']] = True
-        if self.shortchannel(c)['disabled']:
-            self.db['bot.enable.%s' % self.shortchannel(c)['channel']] = False
         self.write_cmd('JOIN ', self.shortchannel(c)['channel'])
-        name = self.entry['access'][0] + ':' + self.shortchannel(c)['channel']
-        if name not in running.accesslist.db():
-            running.accesslist.db()[name] = {}
-            running.accesslist.save()
-        self.entry['access'].append(name)
         if ('aliases:%s' % self.shortchannel(c)['channel']) not in self.db:
             self.db['aliases:%s' % self.shortchannel(c)['channel']] = {}
 
@@ -166,12 +160,6 @@ class Server:
             #Parse Message
             if ircmsg and ircmsg[0] == ':':
                 self.process_message(splitparse.SplitParser(ircmsg))
-
-    def get_channel_access(self, galf, fp, channel, ltn=False):
-        return galf(
-            self, fp.accesslevelname,
-            str(self.entry[
-                'settings'] + ':' + channel), fp.channel, ltn=ltn)
 
     def process(self):
         if current_milli_time() - self.lasttick > self.options['tick_min']:

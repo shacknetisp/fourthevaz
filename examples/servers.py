@@ -16,9 +16,6 @@
     'nspassword': 'anickservpass',
     #The default prefixes for commands, each channel can define it's own
     'prefix': '. ! !! ~',
-    #The access lists to use, the first list is the default.
-    #They can be shared between servers
-    'access': ['freenode'],
     #The channels to connect to
     'channels': [
         #A single string will use the server prefixes.

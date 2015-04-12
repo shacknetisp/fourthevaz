@@ -10,7 +10,7 @@ def init():
     m.add_command_hook('add',
         {
             'function': add,
-            'level': 75,
+            'rights': ['admin'],
             'help': 'Add modules.',
             'args': [
                 {
@@ -23,7 +23,7 @@ def init():
     m.add_command_hook('remove',
         {
             'function': remove,
-            'level': 75,
+            'rights': ['admin'],
             'help': 'Remove modules.',
             'args': [
                 {
