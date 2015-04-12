@@ -23,10 +23,10 @@ def init():
                     },
                 ],
             })
-    m.add_command_hook('addright',
+    m.add_command_hook('addrights',
         {
-            'function': addright,
-            'help': 'Add a user right.',
+            'function': addrights,
+            'help': 'Add user rights.',
             'args': [
                 {
                     'name': 'user',
@@ -35,16 +35,17 @@ def init():
                     '[<hostname>]:[<NickServ Account>])'
                     },
                         {
-                    'name': 'right',
+                    'name': 'rights',
                     'optional': False,
-                    'help': 'The right to set.'
+                    'end': True,
+                    'help': 'The rights to set.'
                     },
                 ],
             })
-    m.add_command_hook('delright',
+    m.add_command_hook('delrights',
         {
-            'function': delright,
-            'help': 'Delete a user right.',
+            'function': delrights,
+            'help': 'Delete user rights.',
             'args': [
                 {
                     'name': 'user',
@@ -53,9 +54,10 @@ def init():
                     '[<hostname>]:[<NickServ Account>])'
                     },
                         {
-                    'name': 'right',
+                    'name': 'rights',
                     'optional': False,
-                    'help': 'The right to set.'
+                    'end': True,
+                    'help': 'The rights to set.'
                     },
                 ],
             })
@@ -124,48 +126,52 @@ def getrights(fp, args):
 
 def addright(fp, args):
     user = args.getlinstr('user')
-    right = args.getlinstr('right')
-    sright = right.strip('-')
-    try:
-        access.raiseifnotformeduser(user)
-    except access.AccessLevelError:
-        return "Malformed user!"
-    if sright == 'owner':
-        return 'You may not set owner.'
-    elif sright == 'admin' and not fp.hasright('owner'):
-        return 'You may not set admin.'
-    channel = "#"
-    if access.ischannel(user):
-        channel = user
-    elif len(right.split(',')) == 2:
-        channel = right.split(',')[0]
-    if not (fp.hasright('owner') or
-    fp.hasright('admin') or fp.hasright(channel + ',op')):
-        return 'You must be either an owner, admin, or operator.'
-    access.setright(fp.server, user, right)
-    return '"%s" added to %s' % (right, user)
+    finished = []
+    for right in args.getlinstr('rights'):
+        sright = right.strip('-')
+        try:
+            access.raiseifnotformeduser(user)
+        except access.AccessLevelError:
+            return "Malformed user!"
+        if sright == 'owner':
+            return 'You may not set owner.'
+        elif sright == 'admin' and not fp.hasright('owner'):
+            return 'You may not set admin.'
+        channel = "#"
+        if access.ischannel(user):
+            channel = user
+        elif len(right.split(',')) == 2:
+            channel = right.split(',')[0]
+        if not (fp.hasright('owner') or
+        fp.hasright('admin') or fp.hasright(channel + ',op')):
+            return 'You must be either an owner, admin, or operator.'
+        access.setright(fp.server, user, right)
+        finished.append(right)
+    return '%s added to %s' % (utils.ltos(finished), user)
 
 
 def delright(fp, args):
     user = args.getlinstr('user')
-    right = args.getlinstr('right')
-    sright = right.strip('-')
-    try:
-        access.raiseifnotformeduser(user)
-    except access.AccessLevelError:
-        return "Malformed user!"
-    if sright == 'owner':
-        return 'You may not set owner.'
-    elif sright == 'admin' and not fp.hasright('owner'):
-        return 'You may not set admin.'
-    channel = "#"
-    if access.ischannel(user):
-        channel = user
-    elif len(right.split(',')) == 2:
-        channel = right.split(',')[0]
-    if not (fp.hasright('owner') or
-    fp.hasright('admin') or fp.hasright(channel + ',op')):
-        return 'You must be either an owner, admin, or operator.'
-    access.delright(fp.server, user, right)
-    return '"%s" removed from %s' % (right, user)
+    finished = []
+    for right in args.getlinstr('rights'):
+        sright = right.strip('-')
+        try:
+            access.raiseifnotformeduser(user)
+        except access.AccessLevelError:
+            return "Malformed user!"
+        if sright == 'owner':
+            return 'You may not set owner.'
+        elif sright == 'admin' and not fp.hasright('owner'):
+            return 'You may not set admin.'
+        channel = "#"
+        if access.ischannel(user):
+            channel = user
+        elif len(right.split(',')) == 2:
+            channel = right.split(',')[0]
+        if not (fp.hasright('owner') or
+        fp.hasright('admin') or fp.hasright(channel + ',op')):
+            return 'You must be either an owner, admin, or operator.'
+        access.delright(fp.server, user, right)
+        finished.append(right)
+    return '%s removed from %s' % (utils.ltos(finished), user)
 
