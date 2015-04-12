@@ -77,6 +77,9 @@ class FullParse():
         extra = []
         if not self.external() and channel:
             if self.sp.sendernick in self.server.whoislist:
+                if not channel[
+                    'names'] or self.sp.sendernick not in channel['names']:
+                        return extra
                 if channel[
                     'channel'] in self.server.whoislist[
                         self.sp.sendernick]['op']:
