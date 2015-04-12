@@ -58,15 +58,6 @@ def doptext(fp, p_ptext, count=100):
     count -= 1
     if count < 0:
         raise RuntimeError('doptext recursion limit reached.')
-
-    def mcdisabled(m):
-        if fp.channel:
-            try:
-                if m in fp.server.db[fp.channel.entry['channel'] + '.disabled']:
-                    return True
-            except KeyError:
-                return False
-        return False
     args = None
     command = None
     modcall = False
@@ -82,8 +73,6 @@ def doptext(fp, p_ptext, count=100):
     for m in fp.server.modules:
         if not waswcommand:
             break
-        if mcdisabled(m.name):
-            continue
         if wmodule == m.name:
             modcall = True
             usedtext = wmodule
@@ -112,8 +101,6 @@ def doptext(fp, p_ptext, count=100):
             v = fp.server.commands[k]
             if wcommand == k:
                 if len(v) == 1:
-                    if mcdisabled(v[list(v.keys())[0]]['module'].name):
-                        return
                     command = v[list(v.keys())[0]]
                     usedtext = wcommand
                     break
@@ -123,13 +110,27 @@ def doptext(fp, p_ptext, count=100):
                     return
     if command:
         if not fp.hasright('owner'):
+            has = True
             if fp.hasright('disable') or fp.haschannelright('disable'):
                 return
+            for r in [':' + command['module'].name,
+                ':' + command['module'].name + '.' + command['name']]:
+                    dr = '-' + r
+                    if fp.channelhasright(dr) and not fp.hasright(r):
+                        return
+                    if fp.hasright(dr) or fp.haschannelright('op'):
+                        return
+                    if fp.haschannelright(dr) and not fp.hasright(r):
+                        return
             if 'rights' in command:
                 for right in command['rights']:
                     if not fp.hasright(right):
-                        fp.reply('You need the %s right.' % right)
-                        return
+                        has = False
+            if not has:
+                fp.reply('You do not have the neccessary rights (%s).' % (
+                    utils.ltos(command['rights'])
+                    ))
+                return
         noquote = command['noquote'] if 'noquote' in command else False
         tt = ""
         try:

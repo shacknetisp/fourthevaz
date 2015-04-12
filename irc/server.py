@@ -83,8 +83,6 @@ class Server:
             }
         if 'prefix' not in c:
             c['prefix'] = self.entry['prefix']
-        if 'disabled' not in c:
-            c['disabled'] = False
         return c
 
     def reinit(self):
