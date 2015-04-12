@@ -118,7 +118,8 @@ def getrights(fp, args):
     extra = []
     for c in fp.server.channels:
         extra += fp.channelrights(c)
-    return user + ': ' + utils.ltos(access.getrights(fp.server, user) + extra)
+    return user + ': ' + utils.ltos(access.getrights(fp.server, user) + extra,
+        '; ')
 
 
 def addright(fp, args):
