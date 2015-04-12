@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
-import configs.mload
 import running
 from . import commands
 
