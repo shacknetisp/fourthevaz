@@ -67,20 +67,24 @@ class FullParse():
     def hasright(self, right):
         """Returns if the user has the specified right."""
         access = self.server.import_module('rights.access', False)
-        return (right in access.getrights(self.server, self.accesslevelname))
-
-    def channelrights(self):
         extra = []
-        if not self.external():
+        for c in self.server.channels:
+            extra += self.channelrights(c)
+        return (right in (access.getrights(
+            self.server, self.accesslevelname) + extra))
+
+    def channelrights(self, channel):
+        extra = []
+        if not self.external() and channel:
             if self.sp.sendernick in self.server.whoislist:
-                if self.channel.entry[
+                if channel[
                     'channel'] in self.server.whoislist[
                         self.sp.sendernick]['op']:
-                        extra.append('%s,op' % self.channel.entry['channel'])
-                if self.channel.entry[
+                        extra.append('%s,op' % channel['channel'])
+                if channel[
                     'channel'] in self.server.whoislist[
                         self.sp.sendernick]['voice']:
-                        extra.append('%s,voice' % self.channel.entry['channel'])
+                        extra.append('%s,voice' % channel['channel'])
         return extra
 
     def haschannelright(self, right):
@@ -89,7 +93,8 @@ class FullParse():
         right = (self.channel.entry[
             'channel'] if self.channel else '') + ',' + right
         return (right in access.getrights(
-            self.server, self.accesslevelname) + self.channelrights())
+            self.server, self.accesslevelname) + self.channelrights(
+                self.channel.entry if self.channel else None))
 
     def channelhasright(self, right):
         """Returns if the channel has the specified right."""

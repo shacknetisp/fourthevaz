@@ -116,14 +116,20 @@ def doptext(fp, p_ptext, count=100):
             for r in [':' + command['module'].name,
                 ':' + command['module'].name + '.' + command['name']]:
                     dr = '-' + r
-                    if fp.channelhasright(dr) and not fp.hasright(r):
+                    if fp.channelhasright(dr) and not fp.hasright(
+                        r):
                         return
-                    if fp.hasright(dr) or fp.haschannelright('op'):
+                    if fp.hasright(dr):
                         return
-                    if fp.haschannelright(dr) and not fp.hasright(r):
+                    if fp.haschannelright(dr) and not fp.hasright(
+                        r) and not fp.haschannelright('op'):
                         return
             if 'rights' in command:
                 for right in command['rights']:
+                    if fp.channel and len(right.split(
+                        ',')) == 2 and right.split(',')[0] == '%':
+                        right = '%s,%s' % (fp.channel.entry['channel'],
+                            right.split(',')[1])
                     if not fp.hasright(right):
                         has = False
             if not has:

@@ -23,10 +23,10 @@ def init():
                     },
                 ],
             })
-    m.add_command_hook('setright',
+    m.add_command_hook('addright',
         {
-            'function': setright,
-            'help': 'Set a user right.',
+            'function': addright,
+            'help': 'Add a user right.',
             'args': [
                 {
                     'name': 'user',
@@ -82,9 +82,9 @@ def init():
         'admin',
         'owner',
         'normal',
-        '%,op',
-        '%,voice',
-        '%,ignore',
+        '#channel,op',
+        '#channel,voice',
+        '#channel,ignore',
         ])
     return m
 
@@ -115,11 +115,13 @@ def getrights(fp, args):
         access.raiseifnotformeduser(user)
     except access.AccessLevelError:
         return "Malformed user!"
-    return user + ': ' + utils.ltos(access.getrights(fp.server, user) +
-    fp.channelrights())
+    extra = []
+    for c in fp.server.channels:
+        extra += fp.channelrights(c)
+    return user + ': ' + utils.ltos(access.getrights(fp.server, user) + extra)
 
 
-def setright(fp, args):
+def addright(fp, args):
     user = args.getlinstr('user')
     right = args.getlinstr('right')
     sright = right.strip('-')
@@ -131,8 +133,16 @@ def setright(fp, args):
         return 'You may not set owner.'
     elif sright == 'admin' and not fp.hasright('owner'):
         return 'You may not set admin.'
+    channel = "#"
+    if access.ischannel(user):
+        channel = user
+    elif len(right.split(',')) == 2:
+        channel = right.split(',')[0]
+    if not (fp.hasright('owner') or
+    fp.hasright('admin') or fp.hasright(channel + ',op')):
+        return 'You must be either an owner, admin, or operator.'
     access.setright(fp.server, user, right)
-    return '%s given to %s' % (right, user)
+    return '"%s" added to %s' % (right, user)
 
 
 def delright(fp, args):
@@ -147,6 +157,14 @@ def delright(fp, args):
         return 'You may not set owner.'
     elif sright == 'admin' and not fp.hasright('owner'):
         return 'You may not set admin.'
+    channel = "#"
+    if access.ischannel(user):
+        channel = user
+    elif len(right.split(',')) == 2:
+        channel = right.split(',')[0]
+    if not (fp.hasright('owner') or
+    fp.hasright('admin') or fp.hasright(channel + ',op')):
+        return 'You must be either an owner, admin, or operator.'
     access.delright(fp.server, user, right)
-    return '%s taken from %s' % (right, user)
+    return '"%s" removed from %s' % (right, user)
 
