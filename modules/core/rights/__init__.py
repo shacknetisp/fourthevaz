@@ -81,12 +81,20 @@ def init():
             })
     m.add_rights([
         'disable',
+        '%,disable',
         'admin',
         'owner',
         'normal',
         '%,op',
         '%,voice',
         ])
+    m.add_implicit_rights(
+        {
+            '%,op': '%,normal',
+            '%,voice': '%,normal',
+            'admin': '%,normal',
+            'owner': 'admin',
+        })
     return m
 
 
@@ -122,8 +130,10 @@ def getrights(fp, args):
             extra += fp.channelrights('='.join(user.split('=')[:-2]), c)
         except IndexError:
             pass
-    return user + ': ' + utils.ltos(access.getrights(fp.server, user) + extra,
-        '; ')
+    return user + ': ' + utils.ltos(
+        utils.unique(access.fullrights(fp, access.getrights(fp.server, user)
+        + extra),
+        ), '; ')
 
 
 def rightexists(fp, right):

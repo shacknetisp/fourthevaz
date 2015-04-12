@@ -13,6 +13,15 @@ class Module:
         self.name = name.split('.')[-1]
         self.aliases = {}
         self.rights = []
+        self.implicitrights = {}
+
+    def add_implicit_rights(self, d):
+        for right in d:
+            for implies in [d[right]] if type(d[right]) is str else d[right]:
+                if right not in self.implicitrights:
+                    self.implicitrights[right] = []
+                if implies not in self.implicitrights[right]:
+                    self.implicitrights[right].append(implies)
 
     def add_alias(self, name, content):
         self.aliases[name] = content

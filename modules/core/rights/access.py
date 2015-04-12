@@ -2,6 +2,7 @@
 accesslen = 3
 hostidx = 1
 import fnmatch
+import copy
 
 
 class AccessLevelError(Exception):
@@ -26,6 +27,32 @@ def raiseifnotformeduser(u):
         return
     if u.count('=') < accesslen - 1:
         raise AccessLevelError('The user %s is malformed!' % u)
+
+
+def fullrights(fp, rights, r=True):
+    ret = copy.deepcopy(rights)
+    for m in fp.server.modules:
+        for ir in m.implicitrights:
+            irt = ''
+            if len(ir.split(',')) == 2:
+                if fp.channel:
+                    irt = fp.channel.entry[
+                        'channel'] + ',' + ir.split(',')[1]
+            if ir in ret or irt in ret:
+                for implied in m.implicitrights[ir]:
+                    if len(implied.split(',')) == 2:
+                        if fp.channel:
+                            implied = fp.channel.entry[
+                                'channel'] + ',' + implied.split(',')[1]
+                    if implied not in ret:
+                        ret.append(implied)
+    if r:
+        oldrights = rights
+        for i in range(10):
+            if oldrights != ret:
+                oldrights = copy.deepcopy(ret)
+                ret = fullrights(fp, ret, False)
+    return ret
 
 
 def getrights(server, user):

@@ -129,8 +129,8 @@ class LineDB:
             dt)
         if topic == "":
             return 'You must specify a topic.'
-        if channel and fp.channelaccess(topic) < 1:
-                return 'You must be at least level 1 in the target channel.'
+        if channel and not fp.hasright(topic + ',normal'):
+                return 'You need <normal> in the target channel.'
         if (topic not in fp.server.state['%s.db' % self.plural].db()) or (
             not self.random):
             fp.server.state['%s.db' % self.plural].db()[topic] = []
@@ -173,8 +173,8 @@ class LineDB:
         topic, line = self.splitline(line,
             dt)
 
-        if channel and fp.channelaccess(topic) < 1:
-                return 'You must be at least level 1 in the target channel.'
+        if channel and not fp.hasright(topic + ',normal'):
+                return 'You need <normal> in the target channel.'
 
         db = fp.server.state['%s.db' % self.plural].db()
         if topic not in db or len(db[topic]) == 0:
