@@ -76,7 +76,7 @@ def init(options):
     m.add_command_hook('enableredflare', {
         'function': enableredflare,
         'help': 'Enable redflare in a channel.',
-        'rights': ['%,op', '%,voice'],
+        'rights': ['%,op'],
         'args': [
             {
                 'name': 'enable?',
