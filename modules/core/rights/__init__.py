@@ -119,7 +119,10 @@ def getrights(fp, args):
         return "Malformed user!"
     extra = []
     for c in fp.server.channels:
-        extra += fp.channelrights(c)
+        try:
+            extra += fp.channelrights('='.join(user.split('=')[:-2]), c)
+        except IndexError:
+            pass
     return user + ': ' + utils.ltos(access.getrights(fp.server, user) + extra,
         '; ')
 

@@ -69,24 +69,24 @@ class FullParse():
         access = self.server.import_module('rights.access', False)
         extra = []
         for c in self.server.channels:
-            extra += self.channelrights(c)
+            extra += self.channelrights(self.sp.sendernick, c)
         return (right in (access.getrights(
             self.server, self.accesslevelname) + extra))
 
-    def channelrights(self, channel):
+    def channelrights(self, nick, channel):
         extra = []
         if not self.external() and channel:
-            if self.sp.sendernick in self.server.whoislist:
+            if nick in self.server.whoislist:
                 if not channel[
-                    'names'] or self.sp.sendernick not in channel['names']:
+                    'names'] or nick not in channel['names']:
                         return extra
                 if channel[
                     'channel'] in self.server.whoislist[
-                        self.sp.sendernick]['op']:
+                        nick]['op']:
                         extra.append('%s,op' % channel['channel'])
                 if channel[
                     'channel'] in self.server.whoislist[
-                        self.sp.sendernick]['voice']:
+                        nick]['voice']:
                         extra.append('%s,voice' % channel['channel'])
         return extra
 
@@ -97,6 +97,7 @@ class FullParse():
             'channel'] if self.channel else '') + ',' + right
         return (right in access.getrights(
             self.server, self.accesslevelname) + self.channelrights(
+                self.sp.sendernick,
                 self.channel.entry if self.channel else None))
 
     def channelhasright(self, right):
