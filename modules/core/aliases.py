@@ -79,7 +79,10 @@ def init():
                         },
                 ],
             })
-    m.add_rights(['aliases'])
+    m.add_rights([
+        'aliases',
+        '%,aliases'
+        ])
     return m
 
 
