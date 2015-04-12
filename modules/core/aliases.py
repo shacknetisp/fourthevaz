@@ -79,18 +79,21 @@ def init():
                         },
                 ],
             })
+    m.add_rights(['aliases'])
     return m
 
 
 def delete(fp, args):
     alias = args.getlinstr('alias')
     if fp.channel and alias in fp.channel.aliases:
+        if not (fp.haschannelright('aliases') or fp.hasright('owner')):
+            return 'You need the <aliases> channel right.'
         content = fp.channel.aliases[alias]
         del fp.channel.aliases[alias]
         return 'Deleted channel alias <%s>: %s' % (alias, content)
     elif alias in fp.server.db['aliases']:
-        if fp.serverlevel < 25:
-            return 'You must be level 25 or higher to modify aliases.'
+        if not (fp.hasright('aliases') or fp.hasright('owner')):
+            return 'You need the <aliases> right.'
         content = fp.server.db['aliases'][alias]
         del fp.server.db['aliases'][alias]
         for server in running.working_servers:
@@ -111,15 +114,15 @@ def setalias(fp, args):
             return 'That alias already exists as a server alias.'
         if not fp.channel:
             return 'You are not in a channel.'
-        if fp.accesslevel() < 25:
-            return 'You must be level 25 or higher to modify aliases.'
+        if not (fp.haschannelright('aliases') or fp.hasright('owner')):
+            return 'You need the <aliases> channel right.'
         fp.channel.aliases[alias] = content
         return 'Set channel alias <%s> to: %s' % (alias, content)
     elif scope == 'server':
         if fp.channel and alias in fp.channel.aliases:
             return 'That alias already exists as a channel alias.'
-        if fp.serverlevel < 25:
-            return 'You must be level 25 or higher to modify aliases.'
+        if not (fp.hasright('aliases') or fp.hasright('owner')):
+            return 'You need the <aliases> right.'
         fp.server.db['aliases'][alias] = content
         for server in running.working_servers:
             server.update_aliases()
