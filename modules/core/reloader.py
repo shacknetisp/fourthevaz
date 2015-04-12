@@ -63,9 +63,11 @@ def reload_list(fp, args):
         for i in rlist:
             try:
                 server.add_module(i)
-                goodlist.append(i)
+                if i not in goodlist:
+                    goodlist.append(i)
             except ImportError:
-                badlist.append(i)
+                if i not in badlist:
+                    badlist.append(i)
         server.load_commands()
     bt = '; could not reload: %s' % utils.ltos(badlist)
     if not badlist:

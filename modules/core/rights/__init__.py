@@ -84,9 +84,8 @@ def init():
         'admin',
         'owner',
         'normal',
-        '#channel,op',
-        '#channel,voice',
-        '#channel,ignore',
+        '%,op',
+        '%,voice',
         ])
     return m
 
@@ -127,6 +126,22 @@ def getrights(fp, args):
         '; ')
 
 
+def rightexists(fp, right):
+    r = []
+    for m in fp.server.modules:
+        r += m.rights
+    if len(right.split(',')) == 2:
+        if '%,' + right.split(',')[1].strip('-') in r:
+            return True
+        r = right.split(',')[1].strip('-')
+    if right.find(':') == 0:
+        return True
+    elif right in r:
+        return True
+    else:
+        return False
+
+
 def addrights(fp, args):
     user = args.getlinstr('user')
     try:
@@ -136,6 +151,8 @@ def addrights(fp, args):
     finished = []
     for right in args.getlinstr('rights').split(' '):
         sright = right.strip('-')
+        if not rightexists(fp, sright):
+            return 'That right does not exist.'
         if sright == 'owner':
             return 'You may not set owner.'
         elif sright == 'admin' and not fp.hasright('owner'):
@@ -145,10 +162,15 @@ def addrights(fp, args):
             channel = user
         elif len(right.split(',')) == 2:
             channel = right.split(',')[0]
-        if not (fp.hasright('owner') or
-        fp.hasright('admin') or fp.hasright(channel + ',op')):
-            return (
-                '%s: You must be either an owner, admin, or operator.' % right)
+        if not (fp.hasright('owner')):
+            if channel != '#' and not fp.hasright(channel + ',op'):
+                return (
+                    '%s: You must be either an owner or operator.' % (
+                        right))
+            elif channel == '#' and not fp.hasright('admin'):
+                return (
+                    '%s: You must be either an owner or admin.' % (
+                        right))
         access.setright(fp.server, user, right)
         finished.append(right)
     return '%s added to %s' % (utils.ltos(finished, '; '), user)
@@ -163,6 +185,8 @@ def delrights(fp, args):
     finished = []
     for right in args.getlinstr('rights').split(' '):
         sright = right.strip('-')
+        if not rightexists(fp, sright):
+            return 'That right does not exist.'
         if sright == 'owner':
             return 'You may not set owner.'
         elif sright == 'admin' and not fp.hasright('owner'):
@@ -172,10 +196,15 @@ def delrights(fp, args):
             channel = user
         elif len(right.split(',')) == 2:
             channel = right.split(',')[0]
-        if not (fp.hasright('owner') or
-        fp.hasright('admin') or fp.hasright(channel + ',op')):
-            return (
-                '%s: You must be either an owner, admin, or operator.' % right)
+        if not (fp.hasright('owner')):
+            if channel != '#' and not fp.hasright(channel + ',op'):
+                return (
+                    '%s: You must be either an owner or operator.' % (
+                        right))
+            elif channel == '#' and not fp.hasright('admin'):
+                return (
+                    '%s: You must be either an owner or admin.' % (
+                        right))
         access.delright(fp.server, user, right)
         finished.append(right)
     return '%s removed from %s' % (utils.ltos(finished, '; '), user)

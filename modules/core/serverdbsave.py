@@ -12,5 +12,13 @@ def init(options):
 
 def timer():
     running.serverdb.save()
+    for e in running.accesslist.db():
+        d = running.accesslist.db()[e]
+        tod = []
+        for name in d:
+            if not d[name]:
+                tod.append(name)
+        for todi in tod:
+            del d[todi]
     running.accesslist.save()
 
