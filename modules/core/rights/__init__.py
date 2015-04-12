@@ -124,15 +124,15 @@ def getrights(fp, args):
         '; ')
 
 
-def addright(fp, args):
+def addrights(fp, args):
     user = args.getlinstr('user')
+    try:
+        access.raiseifnotformeduser(user)
+    except access.AccessLevelError:
+        return "Malformed user!"
     finished = []
-    for right in args.getlinstr('rights'):
+    for right in args.getlinstr('rights').split(' '):
         sright = right.strip('-')
-        try:
-            access.raiseifnotformeduser(user)
-        except access.AccessLevelError:
-            return "Malformed user!"
         if sright == 'owner':
             return 'You may not set owner.'
         elif sright == 'admin' and not fp.hasright('owner'):
@@ -144,21 +144,22 @@ def addright(fp, args):
             channel = right.split(',')[0]
         if not (fp.hasright('owner') or
         fp.hasright('admin') or fp.hasright(channel + ',op')):
-            return 'You must be either an owner, admin, or operator.'
+            return (
+                '%s: You must be either an owner, admin, or operator.' % right)
         access.setright(fp.server, user, right)
         finished.append(right)
-    return '%s added to %s' % (utils.ltos(finished), user)
+    return '%s added to %s' % (utils.ltos(finished, '; '), user)
 
 
-def delright(fp, args):
+def delrights(fp, args):
     user = args.getlinstr('user')
+    try:
+        access.raiseifnotformeduser(user)
+    except access.AccessLevelError:
+        return "Malformed user!"
     finished = []
-    for right in args.getlinstr('rights'):
+    for right in args.getlinstr('rights').split(' '):
         sright = right.strip('-')
-        try:
-            access.raiseifnotformeduser(user)
-        except access.AccessLevelError:
-            return "Malformed user!"
         if sright == 'owner':
             return 'You may not set owner.'
         elif sright == 'admin' and not fp.hasright('owner'):
@@ -170,8 +171,9 @@ def delright(fp, args):
             channel = right.split(',')[0]
         if not (fp.hasright('owner') or
         fp.hasright('admin') or fp.hasright(channel + ',op')):
-            return 'You must be either an owner, admin, or operator.'
+            return (
+                '%s: You must be either an owner, admin, or operator.' % right)
         access.delright(fp.server, user, right)
         finished.append(right)
-    return '%s removed from %s' % (utils.ltos(finished), user)
+    return '%s removed from %s' % (utils.ltos(finished, '; '), user)
 
