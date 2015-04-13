@@ -69,7 +69,7 @@ def init(options):
             'args': [
                 {
                     'name': 'channel',
-                    'optional': False,
+                    'optional': True,
                     'help': 'The channel to view.'
                     }
                 ],
@@ -209,7 +209,8 @@ def whois(fp, args):
 
 
 def names(fp, args):
-    channel = fp.Channel(fp, args.getlinstr('channel'))
+    channel = fp.Channel(fp, args.getlinstr('channel',
+    fp.channel.entry['channel'] if fp.channel else None))
     if channel.entry:
         return(utils.ltos(channel.entry['names']))
     else:
