@@ -64,7 +64,7 @@ if __name__ == '__main__':
                             print((str(e)))
                             server.socket = None
                 readyr, readyw, readyx = select.select(
-                    inr, [], [], 0.2)
+                    inr, [], [], 0.05)
                 for sock in readyr:
                     for server in running.working_servers:
                         if sock == server.socket:
@@ -72,7 +72,7 @@ if __name__ == '__main__':
                                 server.socketready()
                             except type(server).ServerConnectionException:
                                 server.socket.close()
-                time.sleep(0.1)
+                time.sleep(0.01)
                 did = []
                 for server in running.working_servers:
                     for m in server.modules:

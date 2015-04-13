@@ -85,7 +85,7 @@ def timer():
         server.state['dcc.chat'] = utils.remove_indices(
             server.state['dcc.chat'], tod)
         readyr, readyw, readyx = select.select(
-                    sockets, [], [], 0.2)
+                    sockets, [], [], 0.05)
         for sock in readyr:
             for dcc in server.state['dcc.chat']:
                 if sock == dcc.socket:
