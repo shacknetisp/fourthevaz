@@ -48,7 +48,13 @@ def init():
         'random': 'calc uniform($1, $2)~~0~~100',
         'randint': 'calc randrange($1, $2)~~0~~100',
         'flipcoin':
-            'if <calc -truth randrange(0, 2)> "echo Heads" "echo Tails"',
+            ' '.join("""
+            if <calc -truth randrange(0, 2)>
+            "echo <*if <eq <if <gt <wc $*> 0> 'echo $*' 'echo 0'> 1>
+                'echo True' 'echo Heads'>"
+            "echo <*if <eq <if <gt <wc $*> 0> 'echo $*' 'echo 0'> 1>
+                'echo False' 'echo Tails'>"
+            """.split()),
         })
     m.add_short_command_hook(dice,
         'dice::Roll dice.',
@@ -106,7 +112,7 @@ def eq(fp, args):
             return str(utils.boolstr(args.getlinstr('a')) ==
             utils.boolstr(args.getlinstr('b')))
         except ValueError:
-            return 'Not numbers!'
+            return args.getlinstr('a') == args.getlinstr('b')
 
 
 def calc(fp, args):

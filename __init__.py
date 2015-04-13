@@ -63,16 +63,20 @@ if __name__ == '__main__':
                         except type(server).ServerConnectException as e:
                             print((str(e)))
                             server.socket = None
-                readyr, readyw, readyx = select.select(
-                    inr, [], [], 0.05)
-                for sock in readyr:
-                    for server in running.working_servers:
-                        if sock == server.socket:
-                            try:
-                                server.socketready()
-                            except type(server).ServerConnectionException:
-                                server.socket.close()
-                time.sleep(0.01)
+                readyr = []
+                times = 0
+                while (readyr or not times) and times < 5:
+                    times += 1
+                    readyr, readyw, readyx = select.select(
+                        inr, [], [], 0.05)
+                    for sock in readyr:
+                        for server in running.working_servers:
+                            if sock == server.socket:
+                                try:
+                                    server.socketready()
+                                except type(server).ServerConnectionException:
+                                    server.socket.close()
+                    readyr = []
                 did = []
                 for server in running.working_servers:
                     for m in server.modules:
