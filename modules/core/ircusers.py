@@ -121,6 +121,8 @@ def recv(fp):
             fp.server.whoislist[fp.sp.object]['away'] = True
         elif fp.sp.iscode('318'):
             fp.server.whoislist[fp.sp.object]['done'] = True
+            fp.server.do_base_hook('whois.done', fp.server, fp.sp.object,
+                fp.server.whoislist[fp.sp.object])
         elif fp.sp.iscode('join'):
             fp.server.whois(fp.sp.sendernick)
             fp.server.do_base_hook('join', fp)

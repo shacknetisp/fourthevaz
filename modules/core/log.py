@@ -49,7 +49,10 @@ def recv(fp):
             fp.sp.sendernick, fp.sp.message.strip()))
         return
     text = fp.sp.text.strip()
-    with open(folder + '/' + fp.outtarget(), 'a') as f:
+    target = fp.outtarget()
+    if fp.dcc:
+        target = 'dcc:' + target
+    with open(folder + '/' + target, 'a') as f:
         if text:
             f.write("[%s] <%s> %s\n" % (
                 datetime.datetime.utcnow(), fp.sp.sendernick, text))

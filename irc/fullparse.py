@@ -8,8 +8,9 @@ formatcodes = ircutils.formatcodes
 class FullParse():
     """High-level parser, contains Server and SplitParse references."""
 
-    def __init__(self, server, sp):
+    def __init__(self, server, sp, dcc=None):
         self.server = server
+        self.dcc = dcc
         self.isexternal = False
         self.sp = sp
         self.moreflag = False
@@ -138,14 +139,24 @@ class FullParse():
                             's' if l != 1 else ''))
                 except KeyError:
                     pass
-        self.server.do_base_hook('output', self, target, message)
+        if self.dcc:
+            self.server.do_base_hook('output', self,
+                'dcc:' + self.dcc.nick, message)
+        else:
+            self.server.do_base_hook('output', self,
+                target, message)
         for tm in message.split('\n'):
             i = 0
             for fm in textwrap.wrap(tm, 450):
                 if self.external():
                     fm = fm.replace(formatcodes.bold, '')
-                self.server.write_cmd(command, target + str(' :') +
-                ('...' if i else '') + fm)
+                if self.dcc:
+                    self.dcc.socket.send(
+                        str(('...' if i else '') + fm).encode() +
+                    b'\n')
+                else:
+                    self.server.write_cmd(command, target + str(' :') +
+                    ('...' if i else '') + fm)
                 i += 1
 
     def reply(self, message, c=''):
