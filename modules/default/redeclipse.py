@@ -88,7 +88,7 @@ def reusage(fp, args):
             if command == args.getlinstr('name'):
                 found.append('%s: %s' % (command, parsed[command]))
     if found:
-        return utils.ltos(found)
+        return utils.ltos(sorted(found))
     else:
         return 'Nothing found.'
 
