@@ -23,7 +23,7 @@ def generateface():
 
 
 def recv(fp):
-    if fp.sp.code('privmsg'):
+    if fp.sp.iscode('privmsg'):
         if fp.sp.text.count(
             '.') == len(fp.sp.text):
                 fp.reply(generateface())
