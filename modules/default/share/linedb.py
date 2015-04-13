@@ -46,7 +46,7 @@ class LineDB:
         m.set_help('Store and retrieve %s.' % self.plural)
         m.add_command_hook('add',
             {
-                'rights': ['%,normal'] if self.channel else ['normal'],
+                'rights': [] if self.channel else ['normal'],
                 'function': self.f_add,
                 'help': 'Add a %s to the database.' % self.name,
                 'args': [
@@ -105,7 +105,7 @@ class LineDB:
             {
                 'function': self.f_remove,
                 'help': 'Remove a %s.' % self.name,
-                'rights': ['%,normal'] if self.channel else ['normal'],
+                'rights': [] if self.channel else ['normal'],
                 'args': [
                         {
                     'name': 'force',
