@@ -100,6 +100,8 @@ def recv(fp):
             fp.server.whoislist[fp.sp.object] = {
                 'op': [],
                 'voice': [],
+                'user': [],
+                'channels': [],
                 'away': False,
                 }
             fp.server.whoislist[fp.sp.object]['ident'] = fp.sp.getsplit(4)
@@ -108,13 +110,18 @@ def recv(fp):
         elif fp.sp.iscode('319'):
             o = []
             v = []
+            n = []
             for c in fp.sp.text.split():
                 if c[0] == '@':
                     o.append(c[1:])
                 elif c[0] == '+':
                     v.append(c[1:])
+                else:
+                    n.append(c)
             fp.server.whoislist[fp.sp.object]['op'] = o
             fp.server.whoislist[fp.sp.object]['voice'] = v
+            fp.server.whoislist[fp.sp.object]['user'] = n
+            fp.server.whoislist[fp.sp.object]['channels'] = o + v + n
         elif fp.sp.iscode('330'):
             fp.server.whoislist[fp.sp.object]['authed'] = fp.sp.getsplit(4)
         elif fp.sp.iscode('301'):

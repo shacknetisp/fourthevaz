@@ -98,7 +98,20 @@ def init():
         })
     m.add_command_alias('setrights', 'addrights')
     m.add_command_alias('removerights', 'delrights')
+    m.add_base_hook('whois.done', whois_done)
     return m
+
+
+def whois_done(server, nick, whois):
+    access = server.import_module('rights.access', False)
+    rights = access.getrights(server, "%s=%s@%s=%s" % (
+        nick, whois['ident'], whois['host'],
+        whois['authed'] if 'authed' in whois else ''))
+    for c in whois['channels']:
+        if (c + ',op') in rights and c not in whois['op']:
+            server.write_cmd('MODE', '%s +o %s' % (c, nick))
+        elif (c + ',voice') in rights and c not in whois['voice']:
+            server.write_cmd('MODE', '%s +v %s' % (c, nick))
 
 
 def listrights(fp, args):
