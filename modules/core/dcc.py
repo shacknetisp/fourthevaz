@@ -17,7 +17,6 @@ def init(options):
     m.add_base_hook('whois.done', whois_done)
     m.add_base_hook('ctcp.dcc', ctcp_dcc)
     m.add_timer_hook(200, timer)
-    m.add_rights(['nodcc'])
     return m
 
 
@@ -108,23 +107,26 @@ def whois_done(server, nick, whois):
 
 
 def ctcp_dcc(fp):
-    if (not (fp.hasright('disable') or
-    fp.hasright('nodcc'))) or fp.hasright('owner'):
-        if len(fp.ctcptext.split()) == 4:
-            if (fp.ctcptext.split()[0] == 'CHAT'
-            and fp.ctcptext.split()[1]) == 'CHAT':
-                fp.server.log('DCC',
-                    'Accepted DCC connection from %s (%s:%d)' % (
-                        fp.sp.sendernick,
-                        fp.ctcptext.split()[2],
-                        int(fp.ctcptext.split()[3])))
-                fp.server.state['dcc.chat'].append(DCC(
-                    fp.server,
-                    fp.ctcptext.split()[2],
-                    int(fp.ctcptext.split()[3]),
+    if not fp.hasright('owner'):
+        if fp.hasright('disable'):
+            return
+        elif not fp.canuse('dcc'):
+            fp.reply('You have the -:dcc right, you may not use DCC.')
+            return
+    if len(fp.ctcptext.split()) == 4:
+        if (fp.ctcptext.split()[0] == 'CHAT'
+        and fp.ctcptext.split()[1]) == 'CHAT':
+            fp.server.log('DCC',
+                'Accepted DCC connection from %s (%s:%d)' % (
                     fp.sp.sendernick,
-                    fp.sp.host
-                    ))
-                fp.server.whoisbuffer = [
-                    fp.sp.sendernick] + fp.server.whoisbuffer
-    pass
+                    fp.ctcptext.split()[2],
+                    int(fp.ctcptext.split()[3])))
+            fp.server.state['dcc.chat'].append(DCC(
+                fp.server,
+                fp.ctcptext.split()[2],
+                int(fp.ctcptext.split()[3]),
+                fp.sp.sendernick,
+                fp.sp.host
+                ))
+            fp.server.whoisbuffer = [
+                fp.sp.sendernick] + fp.server.whoisbuffer

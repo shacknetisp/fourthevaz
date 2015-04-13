@@ -173,6 +173,20 @@ class FullParse():
         """Reply using a query, ignore channels."""
         return self.reply_driver(self.sp.sendernick, message, c)
 
+    def canuse(self, module, command=''):
+        for r in [':' + module,
+            ':' + module + '.' + command]:
+                dr = '-' + r
+                if self.channelhasright(dr) and not self.hasright(
+                    r):
+                    return False
+                if self.hasright(dr):
+                    return False
+                if self.haschannelright(dr) and not self.hasright(
+                    r) and not self.haschannelright('op'):
+                    return False
+        return True
+
     class Channel:
 
         def __init__(self, fp, name=""):

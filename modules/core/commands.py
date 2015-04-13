@@ -110,20 +110,11 @@ def doptext(fp, p_ptext, count=100):
                     return
     if command:
         if not fp.hasright('owner'):
-            has = True
             if fp.hasright('disable') or fp.haschannelright('disable'):
                 return
-            for r in [':' + command['module'].name,
-                ':' + command['module'].name + '.' + command['name']]:
-                    dr = '-' + r
-                    if fp.channelhasright(dr) and not fp.hasright(
-                        r):
-                        return
-                    if fp.hasright(dr):
-                        return
-                    if fp.haschannelright(dr) and not fp.hasright(
-                        r) and not fp.haschannelright('op'):
-                        return
+            if not fp.canuse(command['module'].name, command['name']):
+                return
+            has = True
             if 'rights' in command:
                 for right in command['rights']:
                     if fp.channel and len(right.split(

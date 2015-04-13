@@ -96,6 +96,8 @@ def init():
             'admin': ['%,normal', 'normal'],
             'owner': 'admin',
         })
+    m.add_command_alias('setrights', 'addrights')
+    m.add_command_alias('removerights', 'delrights')
     return m
 
 
