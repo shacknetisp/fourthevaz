@@ -17,6 +17,7 @@ def init(options):
     m.add_base_hook('whois.done', whois_done)
     m.add_base_hook('ctcp.dcc', ctcp_dcc)
     m.add_timer_hook(200, timer)
+    m.add_rights(['nodcc'])
     return m
 
 
@@ -51,8 +52,8 @@ class DCC:
         for ircmsg in ircmsg.strip().split('\n'):
             ircmsg = ircmsg.strip('\r')
             ircmsg = regex.sub("", ircmsg)
-            #Parse Message
             if ircmsg:
+                #Construct a fake PRIVMSG
                 self.process_message(irc.splitparse.SplitParser(
                     ':%s!%s PRIVMSG %s :%s' % (self.nick, self.host,
                         self.server.nick,
@@ -107,7 +108,8 @@ def whois_done(server, nick, whois):
 
 
 def ctcp_dcc(fp):
-    if not fp.hasright('disable'):
+    if (not (fp.hasright('disable') or
+    fp.hasright('nodcc'))) or fp.hasright('owner'):
         if len(fp.ctcptext.split()) == 4:
             if (fp.ctcptext.split()[0] == 'CHAT'
             and fp.ctcptext.split()[1]) == 'CHAT':
