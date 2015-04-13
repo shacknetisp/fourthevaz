@@ -3,6 +3,7 @@ accesslen = 3
 hostidx = 1
 import fnmatch
 import copy
+import utils
 
 
 class AccessLevelError(Exception):
@@ -29,30 +30,45 @@ def raiseifnotformeduser(u):
         raise AccessLevelError('The user %s is malformed!' % u)
 
 
+def splitchannel(right):
+    if len(right.split(',')) == 2:
+        return right.split(',')
+    return []
+
+
 def fullrights(fp, rights, r=True):
     ret = copy.deepcopy(rights)
+    implied = {}
     for m in fp.server.modules:
         for ir in m.implicitrights:
-            irt = ''
-            if len(ir.split(',')) == 2:
-                if fp.channel:
-                    irt = fp.channel.entry[
-                        'channel'] + ',' + ir.split(',')[1]
-            if ir in ret or irt in ret:
-                for implied in m.implicitrights[ir]:
-                    if len(implied.split(',')) == 2:
-                        if fp.channel:
-                            implied = fp.channel.entry[
-                                'channel'] + ',' + implied.split(',')[1]
-                    if implied not in ret:
-                        ret.append(implied)
+            if ir not in implied:
+                implied[ir] = []
+            implied[ir] += m.implicitrights[ir]
+    for right in rights:
+        if splitchannel(right):
+            gright = '%,' + splitchannel(right)[1]
+            if gright in implied:
+                for imp in implied[gright]:
+                    ret.append(imp.replace('%', splitchannel(right)[0]))
+        else:
+            if right in implied:
+                for implication in implied[right]:
+                    if splitchannel(implication):
+                        if not fp.external():
+                            for channel in fp.server.channels:
+                                if 'names' in channel:
+                                    if fp.sp.sendernick in channel['names']:
+                                        ret.append(channel['channel'] +
+                                        ',' + splitchannel(implication)[1])
+                    else:
+                        ret.append(implication)
     if r:
         oldrights = rights
         for i in range(10):
             if oldrights != ret:
                 oldrights = copy.deepcopy(ret)
                 ret = fullrights(fp, ret, False)
-    return ret
+    return utils.unique(ret)
 
 
 def getrights(server, user):

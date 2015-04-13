@@ -92,7 +92,7 @@ def init():
         {
             '%,op': '%,normal',
             '%,voice': '%,normal',
-            'admin': '%,normal',
+            'admin': ['%,normal', 'normal'],
             'owner': 'admin',
         })
     return m
