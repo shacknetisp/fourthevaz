@@ -24,6 +24,6 @@ def generateface():
 
 def recv(fp):
     if fp.sp.code('privmsg'):
-        if fp.sp.text and fp.sp.sendernick and fp.sp.text.count(
+        if fp.sp.text.count(
             '.') == len(fp.sp.text):
                 fp.reply(generateface())
