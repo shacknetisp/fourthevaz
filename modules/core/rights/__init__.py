@@ -133,7 +133,7 @@ def getrights(fp, args):
     return user + ': ' + utils.ltos(sorted(
         utils.unique(access.fullrights(fp, access.getrights(fp.server, user)
         + extra),
-        )), '; ')
+        ), key=lambda x: x.strip('#-')), '; ')
 
 
 def rightexists(fp, right):
