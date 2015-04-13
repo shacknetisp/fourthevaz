@@ -400,7 +400,7 @@ def doptext(fp, p_ptext, count=100):
 
 
 def recv(fp):
-    if fp.sp.iscode('chat'):
+    if fp.sp.iscode('privmsg'):
         if fp.channelhasright('disable'):
             return
         try:

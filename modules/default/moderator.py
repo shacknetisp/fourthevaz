@@ -104,7 +104,7 @@ def getcharacterrepition(s):
 
 
 def recv(fp):
-    if fp.sp.iscode('chat') and fp.channel:
+    if fp.sp.iscode('allchat') and fp.channel:
         if not fp.server.db[
             'bot.enable.%s' % fp.channel.entry['channel']]:
             return
