@@ -54,7 +54,7 @@ def init(options):
     m.add_short_command_hook(reusage,
         'reusage::Read the latest Red Eclipse usage.cfg',
         ['[-find]::Search for a command.',
-            'name::Name to look up or search query.'])
+            'name...::Name to look up or search query.'])
     return m
 
 
