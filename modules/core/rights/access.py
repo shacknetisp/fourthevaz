@@ -49,7 +49,9 @@ def fullrights(fp, rights, r=True):
             gright = '%,' + splitchannel(right)[1]
             if gright in implied:
                 for imp in implied[gright]:
-                    ret.append(imp.replace('%', splitchannel(right)[0]))
+                    if ('-' + imp.replace('%',
+                    splitchannel(right)[0]).strip('-')) not in ret:
+                        ret.append(imp.replace('%', splitchannel(right)[0]))
         else:
             if right in implied:
                 for implication in implied[right]:
@@ -58,10 +60,13 @@ def fullrights(fp, rights, r=True):
                             for channel in fp.server.channels:
                                 if 'names' in channel:
                                     if fp.sp.sendernick in channel['names']:
-                                        ret.append(channel['channel'] +
+                                        if ('-' + (channel['channel'] +
+                ',' + splitchannel(implication)[1]).strip('-')) not in ret:
+                                            ret.append(channel['channel'] +
                                         ',' + splitchannel(implication)[1])
                     else:
-                        ret.append(implication)
+                        if ('-' + implication.strip('-')) not in ret:
+                            ret.append(implication)
     if r:
         oldrights = rights
         for i in range(10):

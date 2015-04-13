@@ -85,6 +85,7 @@ def init():
         'admin',
         'owner',
         'normal',
+        '%,normal',
         '%,op',
         '%,voice',
         ])

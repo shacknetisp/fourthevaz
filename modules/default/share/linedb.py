@@ -10,7 +10,7 @@ import utils
 class LineDB:
 
     def __init__(self, name, plural, seperprefix,
-        seper, add, main, remove, showlist, random, eh=''):
+        seper, add, main, remove, showlist, random, eh='', channel=False):
         self.dbfolder = configs.locs.userdb + '/' + plural
         os.makedirs(self.dbfolder, exist_ok=True)
         self.name = name
@@ -21,6 +21,7 @@ class LineDB:
         self.f_main = main
         self.f_remove = remove
         self.f_list = showlist
+        self.channel = channel
         self.random = random
         self.randomtext = "random" if random else "single"
         self.eh = eh
@@ -45,7 +46,7 @@ class LineDB:
         m.set_help('Store and retrieve %s.' % self.plural)
         m.add_command_hook('add',
             {
-                'rights': ['normal', '%,normal'],
+                'rights': ['%,normal'] if self.channel else ['normal'],
                 'function': self.f_add,
                 'help': 'Add a %s to the database.' % self.name,
                 'args': [
@@ -104,7 +105,7 @@ class LineDB:
             {
                 'function': self.f_remove,
                 'help': 'Remove a %s.' % self.name,
-                'rights': ['normal', '%,normal'],
+                'rights': ['%,normal'] if self.channel else ['normal'],
                 'args': [
                         {
                     'name': 'force',

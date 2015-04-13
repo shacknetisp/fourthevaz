@@ -9,7 +9,8 @@ def init(options):
     server = options['server']
     linedb = server.import_module("share.linedb", True)
     server.state['tips.linedb'] = linedb.LineDB(
-        'tip', 'tips', '', 'topic', add, main, remove, showlist, True)
+        'tip', 'tips', '', 'topic', add, main, remove, showlist, True,
+        channel=True)
     ldb = server.state['tips.linedb']
     ldb.initserver(server)
     m = configs.module.Module('tips')
