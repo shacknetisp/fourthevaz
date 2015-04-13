@@ -403,6 +403,10 @@ def recv(fp):
     if fp.sp.iscode('privmsg'):
         if fp.channelhasright('disable'):
             return
+        ignore = {'ignore': False}
+        fp.server.do_base_hook('commands.ignore', fp, ignore)
+        if ignore['ignore']:
+            return
         try:
             if fp.sp.text[0] == '\x01':
                 st = fp.sp.text.strip('\x01')
