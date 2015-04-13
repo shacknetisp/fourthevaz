@@ -103,7 +103,7 @@ def listrights(fp, args):
     r = []
     for m in fp.server.modules:
         r += m.rights
-    return utils.ltos(r)
+    return utils.ltos(sorted(r, key=lambda x: x.strip('%,')))
 
 
 def getusers(fp, args):
