@@ -4,6 +4,9 @@ import configs.mload
 import utils
 from .redflare import redflare
 from . import geoip
+import configs.match
+import urllib.request
+import shlex
 
 
 def init(options):
@@ -48,7 +51,46 @@ def init(options):
         })
     m.add_base_hook('recv', recv)
     m.add_base_hook('isexternal', isexternal)
+    m.add_short_command_hook(reusage,
+        'reusage::Read the latest Red Eclipse usage.cfg',
+        ['[-find]::Search for a command.',
+            'name::Name to look up or search query.'])
     return m
+
+
+def reusage(fp, args):
+    parsed = {}
+    args.getlinstr('name')
+    for line in urllib.request.urlopen(
+        ('https://raw.githubusercontent.com/' +
+        'red-eclipse/base/master/config/usage.cfg')
+        ).read().decode().split('\n'):
+        lex = shlex.shlex(line, posix=True)
+        lex.whitespace_split = True
+        lex.escape = '^'
+        split = list(lex)
+        if len(split) == 4:
+            if split[0] == 'setdesc':
+                parsed[split[1]] = "%s {%s}" % (
+                    split[2],
+                    split[3]
+                    )
+    found = []
+    for command in parsed:
+        if 'find' in args.lin:
+            if configs.match.matchnocase(command, args.getlinstr('name'),
+                False):
+                found.append(command)
+            elif configs.match.matchnocase(parsed[command],
+                args.getlinstr('name'), False):
+                found.append(command)
+        else:
+            if command == args.getlinstr('name'):
+                found.append('%s: %s' % (command, parsed[command]))
+    if found:
+        return utils.ltos(found)
+    else:
+        return 'Nothing found.'
 
 
 def isredeclipse(fp):
