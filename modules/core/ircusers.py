@@ -113,11 +113,11 @@ def recv(fp):
             n = []
             for c in fp.sp.text.split():
                 if c[0] == '@':
-                    o.append(c[1:])
+                    o.append(irc.utils.stripuser(c))
                 elif c[0] == '+':
-                    v.append(c[1:])
+                    v.append(irc.utils.stripuser(c))
                 else:
-                    n.append(c)
+                    n.append(irc.utils.stripuser(c))
             fp.server.whoislist[fp.sp.object]['op'] = o
             fp.server.whoislist[fp.sp.object]['voice'] = v
             fp.server.whoislist[fp.sp.object]['user'] = n
