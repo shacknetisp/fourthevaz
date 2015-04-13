@@ -130,10 +130,10 @@ def getrights(fp, args):
             extra += fp.channelrights('='.join(user.split('=')[:-2]), c)
         except IndexError:
             pass
-    return user + ': ' + utils.ltos(
+    return user + ': ' + utils.ltos(sorted(
         utils.unique(access.fullrights(fp, access.getrights(fp.server, user)
         + extra),
-        ), '; ')
+        )), '; ')
 
 
 def rightexists(fp, right):
