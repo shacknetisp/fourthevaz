@@ -45,7 +45,7 @@ class FullParse():
         self.isexternal = o['external']
 
     def execute(self, command):
-        """Execute <command> with"""
+        """Execute <command> with the commands module."""
         commands = self.server.import_module('commands', False)
         return commands.doptext(self, command)
 
