@@ -1,25 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Use like this:
-
-Initialize:
-    import wordai
-    o = wordai.wordai("<your db file>")
-    o.load()
-
-Main AI function
-    textin = input()
-    print(o.process(textin))
-
-Get Dictionary Output
-    print(o.getdictstring())
-
-Replace a word
-    o.replace("old","new")
-
-It will auto-save to the database.
-"""
-
 from random import choice
 import copy
 import random
@@ -29,23 +8,22 @@ import pickle
 
 
 class wordai:
-    dbfile = ''
-    data_dict = {}
+    """Word AI"""
 
     def load(self):
+        """Load the file."""
         try:
-            dict_file = open(self.dbfile, 'rb')
-            self.data_dict = pickle.load(dict_file)
-            dict_file.close()
+            self.dict_file = open(self.dbfile, 'rb')
+            self.data_dict = pickle.load(self.dict_file)
+            self.dict_file.close()
         except:
             pass
 
     def save(self):
+        """Save the file"""
         output = open(self.dbfile, 'wb')
         pickle.dump(self.data_dict, output)
         output.close()
-
-    choices = list()
 
     def addchoice(self, a):
         self.choices.append(a)
@@ -118,11 +96,13 @@ class wordai:
             return '?'
 
     def process(self, mp):
+        """Process <mp> and return a reply."""
         out = self.ms(mp)
         self.save()
         return out
 
     def replace(self, w, n):
+        """Replace <w> with <n> in the dictionary."""
         if n != w:
             self.data_dict[n] = self.data_dict[w]
             del self.data_dict[w]
@@ -133,12 +113,14 @@ class wordai:
         self.save()
 
     def getdictstring(self):
+        """Return the pprinted dictionary."""
         data_dict_tmp = copy.deepcopy(self.data_dict)
         if ';record' in data_dict_tmp:
             del data_dict_tmp[';record']
         return pprint.pformat(data_dict_tmp)
 
     def getwords(self):
+        """Get the number of words."""
         data_dict_tmp = copy.deepcopy(self.data_dict)
         if ';record' in data_dict_tmp:
             del data_dict_tmp[';record']
@@ -146,3 +128,4 @@ class wordai:
 
     def __init__(self, dbf):
         self.dbfile = dbf
+        self.choices = []
