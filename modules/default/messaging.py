@@ -73,9 +73,12 @@ def timer():
                         n = server.db['messaging.tells'][i]
                         if configs.match.match(
                             name, n[0], True):
-                                server.write_cmd(
-                                    'NOTICE', '%s :%s' % (name, n[1]))
-                                tod.append(i)
+                                if (n[0] in server.whoislist and
+                                'done' in server.whoislist[n[0]]):
+                                    if not server.whoislist[n[0]]['away']:
+                                        server.write_cmd(
+                                            'NOTICE', '%s :%s' % (name, n[1]))
+                                        tod.append(i)
                     server.db[
                         'messaging.tells'] = utils.remove_indices(
                         server.db['messaging.tells'], tod)
