@@ -2,10 +2,12 @@
 
 
 def stripuser(u):
+    """Return u stripped of IRC prefixes (@+)"""
     return u.strip('@+')
 
 
 def ctcp(t):
+    """Return t with CTCP escapes."""
     return '\1%s\1' % t
 
 
@@ -40,6 +42,7 @@ class formatcodes:
     lightgray = 15
 
     def buildcolor(foreground=-1, background=-1):
+        """Build a color string from <foreground> and <background>."""
         out = ""
         if foreground >= 0:
             out += formatcodes.color + '%d' % foreground

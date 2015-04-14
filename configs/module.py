@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 ctcplist = []
+"""List of CTCP hooks."""
 alllist = []
+"""List of all hooks."""
 import utils
 
 
@@ -17,6 +19,12 @@ class Module:
         self.implicitrights = {}
 
     def add_implicit_rights(self, d):
+        """
+        Add implicit rights as follows:
+        'ifhavethis': ['getthis', 'andthis']
+        or
+        '%,op': '%,normal'
+        """
         for right in d:
             for implies in [d[right]] if type(d[right]) is str else d[right]:
                 if right not in self.implicitrights:
@@ -25,18 +33,26 @@ class Module:
                     self.implicitrights[right].append(implies)
 
     def add_alias(self, name, content):
+        """Add an alias <name> with <content>."""
         self.aliases[name] = content
 
     def add_aliases(self, aliases):
+        """
+        Add multiple aliases with format:
+        'name': 'content'
+        """
         self.aliases = utils.merge_dicts(self.aliases, aliases)
 
     def add_rights(self, rights):
+        """Add a right to the list of rights that can be set."""
         self.rights += rights
 
     def set_help(self, helptext):
+        """Set the module description."""
         self.helptext = helptext
 
     def add_base_hook(self, hook, f):
+        """Call <f> upon base hook <hook>."""
         if hook not in self.base_hooks:
             self.base_hooks[hook] = []
         if hook not in alllist:
@@ -56,6 +72,7 @@ class Module:
         return self.base_hooks[hook]
 
     def add_timer_hook(self, time, f):
+        """Every <time> milliseconds, call <f>. (The timer is not exact.)"""
         self.timer_hooks.append({
             'time': time,
             'lasttime': 0,
@@ -63,6 +80,10 @@ class Module:
             })
 
     def add_command_hook(self, hook, p_d):
+        """
+        Add a long command hook to <hook> with data <p_d>.
+        See examples/module.py for more information.
+        """
         d = p_d
         if 'rights' not in d:
             d['rights'] = []
@@ -76,6 +97,15 @@ class Module:
 
     def add_short_command_hook(self, function, string, argstrs, rights=[],
         noquote=False):
+        """
+        Add a short command hook.
+        <function>: Function to call.
+        <string>: Command and help text in this format: 'command::Command help.'
+        <argstrs>: List of args in this format:
+            ['anarg...::Help here.', '[-kv2]::Another description.']
+        <rights>: List of rights required. ('%,normal', 'admin', etc.)
+        <noquote>: Interpret quote characters literally?
+        """
         args = []
         for arg in argstrs:
             ad = {
@@ -108,6 +138,7 @@ class Module:
             })
 
     def add_command_alias(self, alias, hook):
+        """Make the command <alias> point to the command <hook>."""
         self.command_hooks[alias] = self.command_hooks[hook]
 
     def command_single_usage(i):
@@ -132,6 +163,7 @@ class Module:
         return topt
 
     def command_usage(command):
+        """Get usage text for a command entry."""
         optiontext = ""
         for i in command['args']:
             optiontext += Module.command_single_usage(i) + ' '
