@@ -33,14 +33,18 @@ class Server:
         if entry['settings'] not in running.serverdb.db():
             running.serverdb.db()[entry['settings']] = {}
         self.db = running.serverdb.db()[entry['settings']]
+        """Persistant dictionary."""
         if entry['settings'] not in running.accesslist.db():
             running.serverdb.accesslist()[entry['settings']] = {}
         self.adb = running.accesslist.db()[entry['settings']]
+        """This server's access list."""
         self.state = {}
+        """Temporary dictionary for server-specific data."""
         self.options = options
         self.address = address
         self.port = port
         self.nick = nick
+        """IRC Nick"""
         self.name = name
         self.outputbuffer = deque()
         self.logbuffer = []
@@ -48,7 +52,9 @@ class Server:
         self.lastwhoistick = 0
         self.socket = None
         self.entry = entry
+        """Server's entry in servers.py"""
         self.channels = []
+        """Current channels."""
         for c in channels:
             c = self.shortchannel(c)
             self.channels.append(c)
@@ -58,9 +64,12 @@ class Server:
         self.reinit()
         self.reloaded = False
         self.whoisbuffer = []
+        """List of nicks to run WHOIS on next."""
         self.whoislist = {}
+        """WHOIS information list."""
 
     def update_aliases(self):
+        """Regenerate the alias database."""
         if 'aliases' not in self.db or type(self.db['aliases']) is not dict:
             self.db['aliases'] = {}
         d = {}
@@ -73,6 +82,7 @@ class Server:
             self.aliasdb = utils.merge_dicts(self.aliasdb, m.aliases)
 
     def whois(self, name):
+        """Append <name> to the end of the WHOIS buffer."""
         self.whoisbuffer.append(name)
 
     def shortchannel(self, c):
@@ -86,6 +96,7 @@ class Server:
         return c
 
     def reinit(self):
+        """Completely reload the server's modules and aliases."""
         self.update_aliases()
         mload.serverinit(self)
         self.load_commands()
@@ -97,39 +108,47 @@ class Server:
             self.join_channel(channel)
 
     def join_channel(self, c):
+        """JOIN <c> and make the alias database."""
         self.write_cmd('JOIN ', self.shortchannel(c)['channel'])
         if ('aliases:%s' % self.shortchannel(c)['channel']) not in self.db:
             self.db['aliases:%s' % self.shortchannel(c)['channel']] = {}
 
     def log(self, prefix, p_text):
+        """Log <prefix>: <p_text>"""
         text = prefix + ': ' + p_text
         self.logbuffer.append(text)
         if self.options['print_log']:
             print((text.strip('\n')))
 
     def write_raw(self, binary):
+        """Write binary to the output buffer."""
         self.outputbuffer.append(binary)
         self.log('Out', binary.decode())
 
     def write_cmd(self, command, text):
+        """Write <command> with <text> to the output buffer."""
         message = command + ' ' + text
         self.write_raw(encode(message) + b"\n")
 
     def write_nocmd(self, text):
+        """Write to the output buffer."""
         message = text
         self.write_raw(encode(message) + b"\n")
 
     def setuser(self):
+        """Run the USER and NICK commands."""
         self.log('Init', 'USER and NICK: %s:%s' % (self.nick, self.name))
         self.write_cmd('USER', '%s 8 * :%s' % (self.nick, self.name))
         self.write_cmd('NICK', self.nick)
 
     def reconnect(self):
+        """Reconnect to the server."""
         self.properties['joined'] = False
         self.socket.close()
         self.connect()
 
     def connect(self):
+        """Connect to the server."""
         try:
             self.state['lastpong'] = time.time()
             self.socket = socket.socket()
@@ -141,7 +160,6 @@ class Server:
             raise Server.ServerConnectException(self)
 
     def socketready(self):
-        #Get Message
         ircmsg = ""
         try:
             ircmsg = self.socket.recv(self.options['recv_size']).decode()
@@ -155,7 +173,6 @@ class Server:
             ircmsg = ircmsg.strip('\r')
             ircmsg = regex.sub("", ircmsg)
             self.log('In', ircmsg)
-            #Parse Message
             if ircmsg and ircmsg[0] == ':':
                 self.process_message(splitparse.SplitParser(ircmsg))
 
@@ -182,6 +199,7 @@ class Server:
         self.do_base_hook('recv', fullparse.FullParse(self, sp))
 
     def do_base_hook(self, name, *args, **kwargs):
+        """Do base hook <name> with <*args> and <**kwargs>."""
         for m in self.modules:
             for f in m.get_base_hook(name):
                 try:
@@ -203,6 +221,7 @@ class Server:
             loadcommand(m)
 
     def delete_module(self, name):
+        """Unload module <name>."""
         index = -1
         for i in range(len(self.modules)):
             if self.modules[i].name == name:
@@ -216,10 +235,12 @@ class Server:
         return False
 
     def import_module(self, name, do_reload):
+        """Import a module from the current modulesets."""
         return mload.import_module_py(
             name, self.entry['modulesets'], do_reload)
 
     def add_module(self, name, mset=[]):
+        """Load module <name>."""
         if not mset:
             mset = self.entry['modulesets']
         self.delete_module(name)
