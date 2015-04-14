@@ -26,7 +26,7 @@ class Server:
     def __init__(
         self, address, port, nick, name, channels, entry, options={
         'print_log': True,
-        'tick_min': 50,
+        'tick_min': 200,
         'whois_tick_min': 1000,
         'recv_size': pow(2, 12),
         }):
