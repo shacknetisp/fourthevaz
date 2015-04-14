@@ -4,6 +4,10 @@ import fnmatch
 
 
 def match(string, regex, fullmatch):
+    """
+    Match <string> to <regex> using a variety of matches.
+    If <fullmatch> use str.find() as well.
+    """
     a = None
     try:
         a = re.compile(regex)
@@ -15,6 +19,10 @@ def match(string, regex, fullmatch):
 
 
 def matchnocase(string, regex, fullmatch):
+    """
+    Match <string> to <regex> using a variety of matches and case-insensitivity.
+    If <fullmatch> use str.find() as well.
+    """
     a = None
     try:
         a = re.compile(regex, re.IGNORECASE)

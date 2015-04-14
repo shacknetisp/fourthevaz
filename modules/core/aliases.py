@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
-import running
-from . import commands
+import bot
 
 
 def init():
@@ -99,7 +98,7 @@ def delete(fp, args):
             return 'You need the <aliases> right.'
         content = fp.server.db['aliases'][alias]
         del fp.server.db['aliases'][alias]
-        for server in running.working_servers:
+        for server in bot.servers():
             server.update_aliases()
         return 'Deleted server alias <%s>: %s' % (alias, content)
     else:
@@ -127,7 +126,7 @@ def setalias(fp, args):
         if not (fp.hasright('aliases') or fp.hasright('owner')):
             return 'You need the <aliases> right.'
         fp.server.db['aliases'][alias] = content
-        for server in running.working_servers:
+        for server in bot.servers():
             server.update_aliases()
         return 'Set server alias <%s> to: %s' % (alias, content)
     else:
@@ -137,7 +136,7 @@ def setalias(fp, args):
 def get(fp, args):
     alias = args.getlinstr('alias', '')
     if not alias:
-        return commands.doptext(fp, 'list.aliases')
+        return fp.execute('list.aliases')
     else:
         try:
             return fp.get_aliases()[alias]
@@ -147,12 +146,9 @@ def get(fp, args):
 
 def aliasfunction(fp, args):
     if 'set' in args.lin:
-        return commands.doptext(
-            fp, 'aliases.set %s' % args.getlinstr('args', ''))
+        return fp.execute('aliases.set %s' % args.getlinstr('args', ''))
     elif 'delete' in args.lin:
-        return commands.doptext(
-            fp, 'aliases.delete %s' % args.getlinstr('args', ''))
+        return fp.execute('aliases.delete %s' % args.getlinstr('args', ''))
     else:
-        return commands.doptext(
-            fp, 'aliases.get %s' % args.getlinstr('args', ''))
+        return fp.execute('aliases.get %s' % args.getlinstr('args', ''))
 

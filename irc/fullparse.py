@@ -33,6 +33,10 @@ class FullParse():
         self.server.do_base_hook('isexternal', self, o)
         self.isexternal = o['external']
 
+    def execute(self, command):
+        commands = self.server.import_module('commands', False)
+        return commands.doptext(self, command)
+
     def me(self, text):
         """Returns an ACTION text"""
         return '\x01ACTION %s\x01' % text
@@ -174,6 +178,7 @@ class FullParse():
         return self.reply_driver(self.sp.sendernick, message, c)
 
     def canuse(self, module, command=''):
+        """Return if the user can use <module>[.<command>]"""
         for r in [':' + module,
             ':' + module + '.' + command]:
                 dr = '-' + r

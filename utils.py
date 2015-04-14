@@ -3,6 +3,7 @@ import xml.sax.saxutils
 
 
 def remove_indices(l, indices):
+    """Return <l> with <indices> removed."""
     result = []
     i = 0
     for j in sorted(indices):
@@ -13,7 +14,9 @@ def remove_indices(l, indices):
 
 
 def unique(seq, idfun=None):
-    # order preserving
+    """
+    Return <seq> with no elements the same.
+    Transform each element with <idfun(x)> before comparing."""
     if idfun is None:
         def idfun(x):
             return x
@@ -29,6 +32,7 @@ def unique(seq, idfun=None):
 
 
 def ltos(l, d=', '):
+    """Same as d.join(l), but converting l's elements to str() beforehand."""
     out = []
     for i in l:
         out.append(str(i))
@@ -36,6 +40,7 @@ def ltos(l, d=', '):
 
 
 def find_between(s, first, last):
+    """Return first text in s between <first> and <last>."""
     try:
         start = s.index(first) + len(first)
         end = s.index(last, start)
@@ -45,6 +50,7 @@ def find_between(s, first, last):
 
 
 def strip_html_tags(html):
+    """Strip HTML tags from a str."""
     from html.parser import HTMLParser
 
     class MLStripper(HTMLParser):
@@ -70,10 +76,12 @@ def strip_html_tags(html):
 
 
 def strip_xml_ampcodes(text):
+    """Strip XML ampcodes from a str."""
     return xml.sax.saxutils.unescape(text)
 
 
 def merge_dicts(*dict_args):
+    """Return a merged dictionary from <dict_args>"""
     result = {}
     for dictionary in dict_args:
         result.update(dictionary)
@@ -81,6 +89,7 @@ def merge_dicts(*dict_args):
 
 
 def boolstr(s):
+    """Return a str converted to a bool using a list of truth values."""
     if s.lower() in ['yes', 'y', 'true', 't', '1']:
         return True
     elif s.lower() in ['no', 'n', 'false', 'f', '0']:
@@ -90,8 +99,7 @@ def boolstr(s):
 
 
 def utcepoch():
+    """Get the UTC epoch time."""
     import datetime
-
     dt = datetime.datetime.utcnow()
-
     return dt.timestamp()
