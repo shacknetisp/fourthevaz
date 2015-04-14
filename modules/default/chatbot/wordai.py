@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 """
-#Use like this:
+Use like this:
 
-#Initialize:
-import wordai
-o = wordai.wordai("<your db file>")
-o.load()
+Initialize:
+    import wordai
+    o = wordai.wordai("<your db file>")
+    o.load()
 
-#Main AI function
-textin = input()
-print(o.process(textin))
+Main AI function
+    textin = input()
+    print(o.process(textin))
 
-#Get Dictionary Output
-print(o.getdictstring())
+Get Dictionary Output
+    print(o.getdictstring())
 
-#Replace a word
-o.replace("old","new")
+Replace a word
+    o.replace("old","new")
 
-#It will auto-save to the database.
+It will auto-save to the database.
 """
 
 from random import choice
