@@ -6,7 +6,13 @@ formatcodes = ircutils.formatcodes
 
 
 class FullParse():
-    """High-level parser, contains Server and SplitParse references."""
+    """
+    High-level parser, contains Server and SplitParse references.
+
+    Dynamic Objects:
+    sp -- A SplitParse object
+    server -- A Server object
+    """
 
     def __init__(self, server, sp, dcc=None):
         self.server = server
