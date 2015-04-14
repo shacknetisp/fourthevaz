@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 ctcplist = []
+alllist = []
 import utils
 
 
@@ -38,6 +39,8 @@ class Module:
     def add_base_hook(self, hook, f):
         if hook not in self.base_hooks:
             self.base_hooks[hook] = []
+        if hook not in alllist:
+            alllist.append(hook)
         self.base_hooks[hook].append(f)
         try:
             if hook.split('.')[0] == 'ctcp':
