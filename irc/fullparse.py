@@ -8,18 +8,19 @@ formatcodes = ircutils.formatcodes
 class FullParse():
     """
     High-level parser, contains Server and SplitParse references.
-
-    Dynamic Objects:
-    sp -- A SplitParse object
-    server -- A Server object
     """
 
     def __init__(self, server, sp, dcc=None):
         self.server = server
+        """Current Server"""
         self.dcc = dcc
+        """DCC object, set to None if the message didn't come from DCC."""
         self.isexternal = False
         self.sp = sp
+        """SplitParser object."""
         self.moreflag = False
+        self.channel = None
+        """A FullParse.Channel object, set to None if not in a channel."""
         if self.isquery() or self.sp.target == '*':
             self.channel = None
         else:
@@ -35,11 +36,16 @@ class FullParse():
         self.setaccess("%s=%s=%s" % (
             self.sp.sendernick, self.sp.host, authed))
         self.user = self.sp.sendernick
+        """
+        IRC Nick or name from an external server (Red Eclipse, etc...).
+        Use unless you need to directly get the IRC nick.
+        """
         o = {'external': False}
         self.server.do_base_hook('isexternal', self, o)
         self.isexternal = o['external']
 
     def execute(self, command):
+        """Execute <command> with"""
         commands = self.server.import_module('commands', False)
         return commands.doptext(self, command)
 
@@ -206,6 +212,8 @@ class FullParse():
             self.findname(name)
 
         def findname(self, name=""):
+            self.aliases = None
+            '''Channel aliases reference.'''
             if not name:
                 name = self.fp.sp.target
             for c in self.fp.server.channels:
@@ -216,3 +224,10 @@ class FullParse():
                     c['channel'])]
                     return
             self.entry = None
+            """
+            Entry in the server.
+            Always contains:
+            'channel': Channel name
+            Probably contains:
+            'names': List of nicks
+            """
