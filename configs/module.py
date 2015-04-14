@@ -4,6 +4,7 @@ ctcplist = []
 alllist = []
 """List of all hooks."""
 import utils
+import string
 
 
 class Module:
@@ -84,6 +85,8 @@ class Module:
         Add a long command hook to <hook> with data <p_d>.
         See examples/module.py for more information.
         """
+        if hook[0] in string.punctuation:
+            raise ValueError('Punctuation may not start a command hook.')
         d = p_d
         if 'rights' not in d:
             d['rights'] = []

@@ -3,6 +3,7 @@ from configs.module import Module
 import shlex
 import utils
 import traceback
+import string
 
 
 def init():
@@ -440,6 +441,8 @@ def recv(fp):
             return
         ptext = text[len(prefix):]
         try:
+            if fp.isquery:
+                ptext = ptext.lstrip(string.punctuation)
             r = doptext(fp, ptext)
         except NoEndToken as e:
             r = e.msg
