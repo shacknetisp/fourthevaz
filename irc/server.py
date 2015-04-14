@@ -235,7 +235,7 @@ class Server:
         return False
 
     def import_module(self, name, do_reload):
-        """Import a module from the current modulesets."""
+        """Return an imported module from the current modulesets."""
         return mload.import_module_py(
             name, self.entry['modulesets'], do_reload)
 

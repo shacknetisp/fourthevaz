@@ -6,21 +6,32 @@ class SplitParser():
 
     def __init__(self, message):
         self.message = message
+        """Text received from the server."""
         self.splitmessage = message.split(' ')
         self.sender = self.getsplit(0)
+        """Who sent the message."""
+        self.sendernick = ""
+        """The nick that sent the message."""
         try:
             self.sendernick = self.sender[
                 self.sender.index(':') + 1:self.sender.index('!')]
         except ValueError:
             self.sendernick = ""
         self.command = self.getsplit(1).upper()
+        """The command that was used."""
         self.target = self.getsplit(2)
+        """The target of the message."""
         self.object = self.getsplit(3)
+        """Object of the message. (WHOIS subject)."""
+        self.host = ""
+        """Host and ident: ~ident@my.host.here"""
         try:
             self.host = self.sender[
                 self.sender.index('~'):]
         except ValueError:
             self.host = ""
+        self.text = ""
+        """The text of the message (PRIVMSG text, QUIT message, etc.)"""
         try:
             self.text = self.message[self.message.index(' :') + 2:]
         except ValueError:
