@@ -65,7 +65,12 @@ def reusage(fp, args):
         ('https://raw.githubusercontent.com/' +
         'red-eclipse/base/master/config/usage.cfg')
         ).read().decode().split('\n'):
+        line = line.replace('(concatword $w ', 'weapon')
+        line = line.replace(' $m)', '#')
+        line = line.replace(') ', ' ')
         lex = shlex.shlex(line, posix=True)
+        lex.commenters = ''
+        lex.wordchars += '#'
         lex.whitespace_split = True
         lex.escape = '^'
         split = list(lex)
@@ -85,8 +90,9 @@ def reusage(fp, args):
                 args.getlinstr('name'), False):
                 found.append(command)
         else:
-            if command == args.getlinstr('name'):
+            if command.strip('#') == args.getlinstr('name').strip('#'):
                 found.append('%s: %s' % (command, parsed[command]))
+                break
     if found:
         return utils.ltos(sorted(found))
     else:
