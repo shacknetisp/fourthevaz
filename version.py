@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import platform
 name = "Fourth Evaz"
-version = (0, 2, 0)
+version = (0, 2, 1)
 source = "https://github.com/shacknetisp/fourthevaz"
 
 
