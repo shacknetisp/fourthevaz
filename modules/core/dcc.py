@@ -11,7 +11,8 @@ import re
 
 
 def init(options):
-    options['server'].state['dcc.chat'] = []
+    if 'dcc.chat' not in options['server'].state:
+        options['server'].state['dcc.chat'] = []
     m = configs.module.Module(__name__)
     m.set_help("Transmit and receive DCC communications.")
     m.add_base_hook('whois.done', whois_done)

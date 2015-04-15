@@ -136,7 +136,7 @@ class FullParse():
                 command = 'PRIVMSG'
             else:
                 command = 'NOTICE'
-        if message.count('\n') == 0:
+        if message.count('\n') == 0 and not self.dcc:
             if self.moreflag:
                 messages = textwrap.wrap(message, 450)
                 self.moreflag = False
@@ -168,7 +168,7 @@ class FullParse():
                     fm = fm.replace(formatcodes.bold, '')
                 if self.dcc:
                     self.dcc.socket.send(
-                        str(('...' if i else '') + fm).encode() +
+                        str(fm).encode() +
                     b'\n')
                 else:
                     self.server.write_cmd(command, target + str(' :') +
