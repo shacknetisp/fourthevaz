@@ -17,6 +17,7 @@ def init(options):
     m.set_help("Transmit and receive DCC communications.")
     m.add_base_hook('whois.done', whois_done)
     m.add_base_hook('ctcp.dcc', ctcp_dcc)
+    m.add_base_hook('dcc.connected', dcc_connected)
     m.add_timer_hook(200, timer)
     return m
 
@@ -35,7 +36,6 @@ class DCC:
         self.socket = None
 
     def socketready(self):
-        #Get Message
         ircmsg = ""
         try:
             ircmsg = self.socket.recv(4096).decode()
@@ -105,6 +105,17 @@ def whois_done(server, nick, whois):
                 dcc.socket.settimeout(None)
                 server.log('DCC',
                     'Connected to DCC: %s:%d' % (dcc.address, dcc.port))
+                sp = irc.splitparse.SplitParser(
+                    ':%s!%s DCCCONNECT' % (dcc.nick, dcc.host))
+                server.do_base_hook('dcc.connected',
+                    server,
+                    irc.fullparse.FullParse(server, sp, dcc))
+
+
+def dcc_connected(server, fp):
+    fp.reply('%s DCC chat, from server %s:%d' % (server.name,
+    server.address, server.port))
+    fp.reply('Logged in as: %s' % fp.accesslevelname)
 
 
 def ctcp_dcc(fp):
