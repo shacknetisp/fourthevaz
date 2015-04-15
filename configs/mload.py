@@ -6,6 +6,7 @@ import imp
 import configs.locs as locs
 if locs.userdata not in sys.path:
     sys.path.append(locs.userdata)
+import fnmatch
 
 
 def find_module(name, path=None):
@@ -35,29 +36,17 @@ class DepException(Exception):
 
 
 def serverinit(server):
-    def skipname(n):
-        return n[0] == '_' or n == 'share'
+    def skipname(n, folder):
+        return n[0] == '_' or n in [
+            'share',
+            'sets',
+        ] or fnmatch.fnmatch(n, '*.ext')
     server.modules = []
-    for f in os.listdir(locs.cmoddir):
-        if not skipname(f) and f != 'sets':
-            server.add_module(os.path.splitext(f)[0])
-    for mset in server.entry['modulesets']:
-        try:
-            for f in os.listdir(locs.cmoddir + '/sets/%s' % mset):
-                if not skipname(f):
-                    server.add_module(os.path.splitext(f)[0])
-        except FileNotFoundError:
-            continue
-    for f in os.listdir('modules/%s/' % "core"):
-        if not skipname(f):
-            server.add_module(os.path.splitext(f)[0])
-    for mset in server.entry['modulesets']:
-        try:
-            for f in os.listdir('modules/%s/' % mset):
-                if not skipname(f):
-                    server.add_module(os.path.splitext(f)[0])
-        except FileNotFoundError:
-            continue
+    paths = server.modulepaths()
+    for path in paths:
+        for f in os.listdir(path):
+            if not skipname(f, path):
+                server.add_module(os.path.splitext(f)[0])
 
 
 def import_module_py(name, modulesets=[], doreload=True):

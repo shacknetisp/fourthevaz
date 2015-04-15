@@ -11,6 +11,7 @@ import moduleregistry
 import running
 import utils
 import ast
+import os
 moduleregistry.add_module(splitparse)
 moduleregistry.add_module(fullparse)
 moduleregistry.add_module(mload)
@@ -140,6 +141,16 @@ class Server:
         """Write to the output buffer."""
         message = text
         self.write_raw(encode(message) + b"\n")
+
+    def modulepaths(self):
+        """Return a list of all paths where modules might be."""
+        paths = [locs.cmoddir, 'modules/%s/' % "core"]
+        for mset in self.entry['modulesets']:
+            if os.path.isdir(locs.cmoddir + '/sets/%s' % mset):
+                paths.append(locs.cmoddir + '/sets/%s' % mset)
+            if os.path.isdir('modules/%s/' % mset):
+                paths.append('modules/%s/' % mset)
+        return paths
 
     def setuser(self):
         """Run the USER and NICK commands."""

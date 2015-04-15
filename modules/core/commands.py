@@ -4,13 +4,26 @@ import shlex
 import utils
 import traceback
 import string
+import fnmatch
+import os
+import subprocess
 
 
 def init():
     m = Module('commands')
     m.set_help('Call the command system.')
     m.add_base_hook('recv', recv)
+    m.add_base_hook('ext.prepare', ext_prepare)
     return m
+
+
+def ext_prepare(fp, o):
+    d = {
+        'evaz_caller_nick': fp.user,
+        'evaz_caller_external': '1' if fp.external() else '0'
+        }
+    for k in d:
+        o[k] = d[k]
 
 
 class NoEndToken(Exception):
@@ -378,21 +391,31 @@ def doptext(fp, p_ptext, count=100):
                         t = t[0:ic] + (
                             result + t[ic + 2:])
                         break
-        sd = {
-            'caller_nick': fp.user,
-            'caller_external': "yes" if fp.external() else 'no',
-            }
+        sd = {}
         s = string.Template(t)
+        fp.server.do_base_hook('alias.prepare', fp, sd)
         return doptext(fp, s.safe_substitute(sd), count)
     else:
-        if fp.isquery():
-            return("?")
         if len(ptext.split(' ')[0].split('.')) == 1:
+            pargs = ptext[len(ptext.split(' ')[0].split('.')[0]):].strip()
+            pargs = fp.execute('qecho %s' % pargs.replace(
+                '"', '\\"').replace("'", "\\'"))
+            sd = {}
+            fp.server.do_base_hook('ext.prepare', fp, sd)
+            for path in fp.server.modulepaths():
+                for f in os.listdir(path):
+                    if fnmatch.fnmatch(f, '%s.ext' %
+                    ptext.split(' ')[0].split('.')[0]):
+                        return subprocess.check_output([path + '/' + f],
+                             input=pargs.encode(),
+                             shell=True,
+                             env=sd).decode().strip()
             for m in fp.server.modules:
                 if ptext.split(' ')[0].split('.')[0] == m.name:
                     return doptext(fp,
                         'echo <*modhelp %s> <*qecho "--"> <*list %s>' % (
                         m.name, m.name))
+        return("?")
     return None
 
 

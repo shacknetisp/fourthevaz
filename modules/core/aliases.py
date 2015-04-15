@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
 import bot
+import utils
 
 
 def init():
@@ -82,7 +83,17 @@ def init():
         'aliases',
         '%,aliases'
         ])
+    m.add_base_hook('alias.prepare', alias_prepare)
     return m
+
+
+def alias_prepare(fp, o):
+    d = {
+        'caller_nick': fp.user,
+        'caller_external': "yes" if fp.external() else 'no',
+        }
+    for k in d:
+        o[k] = d[k]
 
 
 def delete(fp, args):
