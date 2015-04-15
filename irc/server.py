@@ -194,15 +194,17 @@ class Server:
                     self.socket, server_hostname=self.ssl)
             self.log('Init', 'Connecting to %s:%d%s' % (
                 self.address, self.port, ' (SSL)' if self.ssl else ''))
-            self.socket.connect((self.address, self.port))
             if self.ssl:
                 try:
+                    self.socket.connect((self.address, self.port))
                     ssl.match_hostname(self.socket.getpeercert(),
                         self.ssl)
                 except ssl.CertificateError as e:
                     handle(e)
                 except ssl.SSLError as e:
                     handle(e)
+            else:
+                self.socket.connect((self.address, self.port))
             self.setuser()
             self.log('Init', 'Connection succeded.')
         except OSError:
