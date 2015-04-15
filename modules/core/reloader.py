@@ -30,7 +30,7 @@ def init():
                 ],
         })
     m.add_short_command_hook(reinit,
-        'reinit::Reload all possible files.', [], 75)
+        'reinit::Reload all possible files.', [], ['admin'])
     return m
 
 
