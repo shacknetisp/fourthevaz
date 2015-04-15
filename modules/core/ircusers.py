@@ -183,7 +183,7 @@ def recv(fp):
 
 
 def authme(fp, args):
-    fp.server.whoisbuffer = [fp.sp.sendernick] + fp.server.whoisbuffer
+    fp.server.whois(fp.sp.sendernick, False)
     return 'Attempt processed, check your access with: getrights'
 
 

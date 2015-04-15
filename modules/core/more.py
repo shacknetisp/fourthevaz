@@ -12,6 +12,8 @@ def init():
             'help': 'Get next messages.',
             'args': [],
             })
+    m.add_short_command_hook(clearmore,
+        'clearmore::Clear next messages.', [])
     return m
 
 
@@ -28,4 +30,12 @@ def more(fp, args):
             return m
         except IndexError:
             pass
+    return 'No more messages.'
+
+
+def clearmore(fp, args):
+    if ('more.' + fp.user) in fp.server.state:
+        l = len(fp.server.state['more.' + fp.user])
+        del fp.server.state['more.' + fp.user]
+        return 'Cleared %d message%s.' % (l, '' if l == 1 else 's')
     return 'No more messages.'

@@ -81,8 +81,14 @@ class Server:
         for m in self.modules:
             self.aliasdb = utils.merge_dicts(self.aliasdb, m.aliases)
 
-    def whois(self, name):
-        """Append <name> to the end of the WHOIS buffer."""
+    def whois(self, name, queue=True):
+        """
+        Add <name> to the WHOIS buffer.
+        If queue, add to the end, otherwise add to the front.
+        """
+        if not queue:
+            self.whoisbuffer = [name] + self.whoisbuffer
+            return
         self.whoisbuffer.append(name)
 
     def shortchannel(self, c):

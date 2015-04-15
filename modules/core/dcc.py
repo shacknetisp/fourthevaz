@@ -128,5 +128,4 @@ def ctcp_dcc(fp):
                 fp.sp.sendernick,
                 fp.sp.host
                 ))
-            fp.server.whoisbuffer = [
-                fp.sp.sendernick] + fp.server.whoisbuffer
+            fp.server.whois(fp.sp.sendernick, False)
