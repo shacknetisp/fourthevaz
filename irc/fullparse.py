@@ -185,6 +185,10 @@ class FullParse():
         """Reply with CTCP markers."""
         self.reply(ircutils.ctcp(message), "NOTICE")
 
+    def sendctcp(self, message):
+        """Send with CTCP markers."""
+        self.reply(ircutils.ctcp(message), "PRIVMSG")
+
     def replypriv(self, message, c=''):
         """Reply using a query, ignore channels."""
         return self.reply_driver(self.sp.sendernick, message, c)

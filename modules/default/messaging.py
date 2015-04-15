@@ -2,7 +2,7 @@
 from configs.module import Module
 import utils
 import configs.match
-import running
+import irc.utils
 
 
 def init(options):
@@ -31,7 +31,6 @@ def init(options):
                 ],
             })
     m.add_base_hook('recv', recv)
-    m.add_timer_hook(30 * 1000, timer)
     return m
 
 
@@ -42,8 +41,15 @@ def tell(fp, args):
     message = '<<%s>> %s' % (fp.user, args.getlinstr('message'))
     for nick in nicks:
         fp.server.db['messaging.tells'].append((nick, message))
+        for channel in fp.server.channels:
+            if 'names' in channel:
+                for n in channel['names']:
+                    if configs.match.match(
+                    n, nick, True):
+                        fp.server.write_cmd('PRIVMSG', ('%s :' % n) +
+                        irc.utils.ctcp('PING Hello!'))
     return 'Will send "%s" to "%s"' % (args.getlinstr('message'),
-        utils.ltos(oldnicks))
+                        utils.ltos(oldnicks))
 
 
 def recv(fp):
@@ -61,24 +67,3 @@ def recv(fp):
         server.db[
             'messaging.tells'] = utils.remove_indices(
             server.db['messaging.tells'], tod)
-
-
-def timer():
-    for server in running.working_servers:
-        for channel in server.channels:
-            if 'names' in channel:
-                for name in channel['names']:
-                    tod = []
-                    for i in range(len(server.db['messaging.tells'])):
-                        n = server.db['messaging.tells'][i]
-                        if configs.match.match(
-                            name, n[0], True):
-                                if (n[0] in server.whoislist and
-                                'done' in server.whoislist[n[0]]):
-                                    if not server.whoislist[n[0]]['away']:
-                                        server.write_cmd(
-                                            'NOTICE', '%s :%s' % (name, n[1]))
-                                        tod.append(i)
-                    server.db[
-                        'messaging.tells'] = utils.remove_indices(
-                        server.db['messaging.tells'], tod)
