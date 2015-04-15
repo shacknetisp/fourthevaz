@@ -176,6 +176,15 @@ class Server:
         except ImportError as e:
             if 'ssl' in self.entry and self.entry['ssl']:
                 raise e
+
+        def handle(e):
+            if 'ssl_force' not in self.entry or not self.entry[
+                'ssl_force']:
+                print(('Invalid Certificate. ' +
+                'Add "ssl_force: True" to your ' +
+                'server entry to force connection.'))
+                pprint.pprint(self.socket.getpeercert())
+                raise e
         try:
             self.state['lastpong'] = time.time()
             self.socket = socket.socket()
@@ -191,13 +200,9 @@ class Server:
                     ssl.match_hostname(self.socket.getpeercert(),
                         self.ssl)
                 except ssl.CertificateError as e:
-                    if 'ssl_force' not in self.entry or not self.entry[
-                        'ssl_force']:
-                        print(('Invalid Certificate. ' +
-                        'Add "ssl_force: True" to your ' +
-                        'server entry to force connection.'))
-                        pprint.pprint(self.socket.getpeercert())
-                        raise e
+                    handle(e)
+                except ssl.SSLError as e:
+                    handle(e)
             self.setuser()
             self.log('Init', 'Connection succeded.')
         except OSError:
