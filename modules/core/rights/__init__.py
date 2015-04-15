@@ -79,8 +79,6 @@ def init():
             'help': 'Get a list of all rights.',
             'args': [],
             })
-    m.add_short_command_hook(whoami,
-        'whoami::Get your whois information.', [])
     m.add_rights([
         'disable',
         '%,disable',
@@ -121,12 +119,6 @@ def listrights(fp, args):
     for m in fp.server.modules:
         r += m.rights
     return utils.ltos(sorted(r, key=lambda x: x.strip('%,')))
-
-
-def whoami(fp, args):
-    if fp.external():
-        return 'You are not calling from IRC.'
-    return fp.execute('whois %s' % fp.sp.sendernick)
 
 
 def getusers(fp, args):

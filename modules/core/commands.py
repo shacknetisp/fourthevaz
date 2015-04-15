@@ -378,7 +378,12 @@ def doptext(fp, p_ptext, count=100):
                         t = t[0:ic] + (
                             result + t[ic + 2:])
                         break
-        return doptext(fp, t, count)
+        sd = {
+            'caller_nick': fp.user,
+            'caller_external': "yes" if fp.external() else 'no',
+            }
+        s = string.Template(t)
+        return doptext(fp, s.safe_substitute(sd), count)
     else:
         if fp.isquery():
             return("?")

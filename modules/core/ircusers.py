@@ -74,6 +74,9 @@ def init(options):
                     }
                 ],
             })
+    m.add_alias('whoami',
+        'if ${caller_external} "echo You are not calling from IRC." ' +
+        '"whois ${caller_nick}"')
     return m
 
 
