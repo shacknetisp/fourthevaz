@@ -8,6 +8,8 @@ See the wiki at https://github.com/shacknetisp/fourthevaz/wiki for instructions.
 
 Run with: `python3 __init__.py` (from the source directory)
 ## Core Dependancies
+* Python 3
+ * Python 3.4 for all features.
 ## Module Dependancies
 * xmltodict
 * wikipedia
