@@ -15,7 +15,7 @@ class DB:
             running.dbs[self.filename] = db
 
     def db(self):
-        """Get the db."""
+        """Return the db object."""
         return running.dbs[self.filename]
 
     def load(self):
