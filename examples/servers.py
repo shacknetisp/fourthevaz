@@ -7,9 +7,16 @@
     #You can use one database in several servers.
     'settings': 'freenode',
     #This is the server to connect to
-    'address': {'host': 'irc.freenode.net', 'port': 6667},
+    'address': {'host': 'irc.freenode.net', 'port': 6697},
     #The nick and name are defined here
     'id': {'nick': 'mybotsnick', 'name': 'An Example Bot'},
+    #SSL Connection
+    ##The address to check the certificate.
+    ##Leave 'ssl' blank or do not include it to disable SSL.
+    'ssl': 'irc.freenode.net',
+    ##Force an ssl connect even if the hostnames do not match.
+    ##Do not include this for the default of False.
+    'ssl_force': False,
     #The modulesets to use, core is always included
     'modulesets': ['default'],
     #The nickserv password, accessable with %pass% in the nickserv module

@@ -10,6 +10,7 @@ import configs.locs as locs
 import moduleregistry
 import running
 import utils
+import fnmatch
 import ast
 import os
 moduleregistry.add_module(splitparse)
@@ -52,6 +53,9 @@ class Server:
         self.lasttick = 0
         self.lastwhoistick = 0
         self.socket = None
+        self.ssl = ''
+        if 'ssl' in entry:
+            self.ssl = entry['ssl']
         self.entry = entry
         """Server's entry in servers.py"""
         self.channels = []
@@ -166,11 +170,34 @@ class Server:
 
     def connect(self):
         """Connect to the server."""
+        import pprint
+        try:
+            import ssl
+        except ImportError as e:
+            if 'ssl' in self.entry and self.entry['ssl']:
+                raise e
         try:
             self.state['lastpong'] = time.time()
             self.socket = socket.socket()
-            self.log('Init', 'Connecting to %s:%d' % (self.address, self.port))
+            if self.ssl:
+                context = ssl.create_default_context()
+                self.socket = context.wrap_socket(
+                    self.socket, server_hostname=self.ssl)
+            self.log('Init', 'Connecting to %s:%d%s' % (
+                self.address, self.port, ' (SSL)' if self.ssl else ''))
             self.socket.connect((self.address, self.port))
+            if self.ssl:
+                try:
+                    ssl.match_hostname(self.socket.getpeercert(),
+                        self.ssl)
+                except ssl.CertificateError as e:
+                    if 'ssl_force' not in self.entry or not self.entry[
+                        'ssl_force']:
+                        print(('Invalid Certificate. ' +
+                        'Add "ssl_force: True" to your ' +
+                        'server entry to force connection.'))
+                        pprint.pprint(self.socket.getpeercert())
+                        raise e
             self.setuser()
             self.log('Init', 'Connection succeded.')
         except OSError:
