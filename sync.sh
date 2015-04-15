@@ -1,5 +1,6 @@
 if [[ $@ == **upload** ]]
 then
+( find . -name '*.php' -not -path "./.git/*" -not -path "./userdata/*" -print0 | xargs -0 cat ) | wc -l > linecount
 git add --all -v .
 git commit
 git push
