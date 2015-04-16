@@ -25,9 +25,9 @@ def init():
 
 
 def joined(server):
-    if 'nspassword' in server.entry:
+    if server.auth[0] == 'nickserv':
         server.write_cmd(
-            'PRIVMSG', 'nickserv :identify %s' % server.entry['nspassword'])
+            'PRIVMSG', 'nickserv :identify %s' % server.auth[2])
 
 
 def nickserv(fp, args):
@@ -35,9 +35,9 @@ def nickserv(fp, args):
         return "Must be called from IRC."
     fp.server.state['nsuser'] = fp.user
     action = args.getlinstr('action')
-    if 'nspassword' not in fp.server.entry:
-        return 'This server does not have an nspassword entry.'
-    action = action.replace('%pass%', fp.server.entry['nspassword'])
+    if fp.server.auth[0] == 'nickserv':
+        return 'This server does not have a nickserv entry.'
+    action = action.replace('%pass%', fp.server.auth[2])
     fp.server.write_cmd('PRIVMSG', 'nickserv :' + action)
 
 

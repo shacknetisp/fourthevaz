@@ -19,8 +19,11 @@
     'ssl_force': False,
     #The modulesets to use, core is always included
     'modulesets': ['default'],
-    #The nickserv password, accessable with %pass% in the nickserv module
-    'nspassword': 'anickservpass',
+    #Authentication
+    ##(<type>, [<account>] or "", <password>)
+    ##Type can be: nickserv
+    ##The %pass% will be replaced with the password in the auth modules.
+    'auth': ('nickserv', '', 'anickservpass'),
     #The default prefixes for commands, each channel can define it's own
     'prefix': '. ! !! ~',
     #The channels to connect to

@@ -11,18 +11,18 @@ def init():
 
 def recv(fp):
     if fp.sp.iscode('433'):
-        if 'nspassword' in fp.server.entry:
+        if fp.server.auth[0] == 'nickserv':
             wantnick = fp.server.entry['id']['nick']
             fp.server.nick = fp.server.nick + '_'
             fp.server.setuser()
             fp.server.write_cmd('PRIVMSG',
                     'nickserv :identify %s %s' % (
                     wantnick,
-                    fp.server.entry['nspassword']))
+                    fp.server.auth[2]))
             fp.server.write_cmd('PRIVMSG',
                 'nickserv :ghost %s %s' % (
                     wantnick,
-                    fp.server.entry['nspassword']))
+                    fp.server.auth[2]))
             fp.server.nick = wantnick
             fp.server.setuser()
         else:

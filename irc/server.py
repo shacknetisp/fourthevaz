@@ -72,6 +72,8 @@ class Server:
         """List of nicks to run WHOIS on next."""
         self.whoislist = {}
         """WHOIS information list."""
+        self.auth = entry['auth']
+        """Tuple for auth: (<type>, [<account>] or "", <password>)."""
 
     def update_aliases(self):
         """Regenerate the alias database."""
