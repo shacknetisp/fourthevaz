@@ -21,7 +21,16 @@ def init():
                     },
                 ]
             })
+    m.add_base_hook('commands.ignore', commands_ignore)
     return m
+
+
+def commands_ignore(fp, ignore):
+    if fp.sp.sendernick.lower() in [
+        'nickserv',
+        'chanserv',
+        ]:
+            ignore['ignore'] = True
 
 
 def joined(server):

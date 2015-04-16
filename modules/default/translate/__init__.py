@@ -14,13 +14,13 @@ def init():
                 'name': 'from',
                 'optional': True,
                 'keyvalue': 'language',
-                'help': 'Language to translate from [Auto-Detect].',
+                'help': 'Language to translate from. [Auto-Detect].',
                 },
                     {
                 'name': 'to',
                 'optional': True,
                 'keyvalue': 'language',
-                'help': 'Language to translate to [English].',
+                'help': 'Language to translate to. [English].',
                 },
             {
                 'name': 'words',

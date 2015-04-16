@@ -10,7 +10,6 @@ import configs.locs as locs
 import moduleregistry
 import running
 import utils
-import fnmatch
 import ast
 import os
 moduleregistry.add_module(splitparse)
@@ -35,7 +34,7 @@ class Server:
         if entry['settings'] not in running.serverdb.db():
             running.serverdb.db()[entry['settings']] = {}
         self.db = running.serverdb.db()[entry['settings']]
-        """Persistant dictionary."""
+        """Persistant dictionary for database-specific data."""
         if entry['settings'] not in running.accesslist.db():
             running.serverdb.accesslist()[entry['settings']] = {}
         self.adb = running.accesslist.db()[entry['settings']]
@@ -44,7 +43,9 @@ class Server:
         """Temporary dictionary for server-specific data."""
         self.options = options
         self.address = address
+        """IRC Server IP/Host"""
         self.port = port
+        """IRC Server Port"""
         self.nick = nick
         """IRC Nick"""
         self.name = name
@@ -110,8 +111,8 @@ class Server:
 
     def reinit(self):
         """Completely reload the server's modules and aliases."""
-        self.update_aliases()
         mload.serverinit(self)
+        self.update_aliases()
         self.load_commands()
 
     def initjoin(self):

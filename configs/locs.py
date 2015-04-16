@@ -11,7 +11,10 @@ if len(overridehome) > 0:
 cmoddir = userdata + '/mlocal'
 os.makedirs(userdata, exist_ok=True)
 userdb = userdata + '/db'
-"""User DB folder, store module data here or in Server.db."""
+"""
+User DB folder.
+Store module data here or in Server.db if it's small enough.
+"""
 os.makedirs(userdb, exist_ok=True)
 os.makedirs(cmoddir, exist_ok=True)
 open(cmoddir + '/__init__.py', 'w').write('\n')

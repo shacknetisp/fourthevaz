@@ -20,7 +20,8 @@ def match(string, regex, fullmatch):
 
 def matchnocase(string, regex, fullmatch):
     """
-    Match <string> to <regex> using a variety of matches and case-insensitivity.
+    Match <string> to <regex> using a variety of matches.
+    Use case-insensitivity.
     If <fullmatch> use str.find() as well.
     """
     a = None

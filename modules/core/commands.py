@@ -441,8 +441,6 @@ def recv(fp):
             fp.reply(r)
             print((traceback.format_exc()))
             return
-        if fp.sp.sendernick in ['ChanServ', 'NickServ']:
-            return
         if fp.external():
             return
         text = fp.sp.text
