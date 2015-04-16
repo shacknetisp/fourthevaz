@@ -20,17 +20,18 @@ else
 path=$2
 fi
 
-pidfile="$2/pid"
+pidfile="$path/feud.pid"
 
 function start {
     nohup ./__init__.py "$2" &
-    echo "$!" > "$path/pid"
+    echo "$!" > "$pidfile"
     echo Running with PID $!
 }
 
 function stop {
-    kill -SIGTERM $(cat "$path/pid")
-    echo Stopped PID $(cat "$path/pid")
+    kill -SIGTERM $(cat "$pidfile")
+    echo Stopped PID $(cat "$pidfile")
+    rm "$pidfile"
 }
 
 if [ "$1" == "start" ]
@@ -48,6 +49,6 @@ then
 fi
 if [ "$1" == "reinit" ]
 then
-    kill -SIGHUP $(cat "$path/pid")
-    echo Reinited PID $(cat "$path/pid")
+    kill -SIGHUP $(cat "$pidfile")
+    echo Reinited PID $(cat "$pidfile")
 fi
