@@ -76,7 +76,7 @@ def init():
         ['text...::Text to echo.'], noquote=True)
     m.add_short_command_hook(color,
         'color::Echo colored text.',
-        ['color::Color: fgnd,[bgnd].',
+        ['color::Color: fgnd[,bgnd].',
         'text...::Text to echo.'], noquote=True)
     m.add_short_command_hook(lambda fp, args: formatcodes.reset,
         'reset::Echo the reset code.',
