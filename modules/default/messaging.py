@@ -62,7 +62,7 @@ def recv(fp):
             if configs.match.match(
                 name, n[0], True):
                     server.write_cmd(
-                        'NOTICE', '%s :%s' % (name, n[1]))
+                        'PRIVMSG', '%s :%s' % (name, n[1]))
                     tod.append(i)
         server.db[
             'messaging.tells'] = utils.remove_indices(
