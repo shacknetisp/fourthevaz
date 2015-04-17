@@ -236,15 +236,17 @@ def lastseen(fp, args):
     if 'mtime' in fp.server.state[
         'lastseen'].db()[search] and 'chat' in args.lin:
             ts = fp.server.state['lastseen'].db()[search]['mtime']
-            return "%s was last seen chatting at %s UTC, %s" % (
+            return "%s was last seen chatting at %s UTC (%s ago), %s" % (
                 search,
                 datetime.datetime.fromtimestamp(ts).strftime(
                     '%Y-%m-%d %H:%M:%S'),
+                utils.time.agostr(ts),
                 fp.server.state['lastseen'].db()[search]['maction']
                 )
-    return "%s was last seen at %s UTC, %s" % (
+    return "%s was last seen at %s UTC (%s ago), %s" % (
         search,
         datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'),
+        utils.time.agostr(ts),
         fp.server.state['lastseen'].db()[search]['action']
         )
 

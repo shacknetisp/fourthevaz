@@ -103,3 +103,29 @@ def utcepoch():
     import datetime
     dt = datetime.datetime.utcnow()
     return dt.timestamp()
+
+
+class time:
+    """Time related functions"""
+
+    def durstr(dur):
+        """Return dur as a formatted string."""
+        ret = ""
+        for style in [
+            (60 * 60 * 24 * 7, 'w'),
+            (60 * 60 * 24, 'd'),
+            (60 * 60, 'h'),
+            (60, 'm'),
+            (1, 's'),
+            ]:
+                amount = dur // style[0]
+                extra = dur % style[0]
+                dur = extra
+                if amount > 0:
+                    ret += '%d%s' % (amount, style[1])
+
+        return ret if ret else '???'
+
+    def ago(ts):
+        """Return durstr(utcepoch() - ts)."""
+        return time.durstr(utcepoch() - ts)

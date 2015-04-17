@@ -247,11 +247,12 @@ def doredflare(fp, args):
                     best = lsdb[k]
         if not best:
             return 'I have never seen %s.' % search
-        return '"%s" was last seen on "%s" at %s.' % (
+        return '"%s" was last seen on "%s" at %s (%s ago).' % (
             best['name'],
             best['server'],
             datetime.datetime.fromtimestamp(
-                best['time']).strftime('%Y-%m-%d %H:%M:%S UTC')
+                best['time']).strftime('%Y-%m-%d %H:%M:%S UTC'),
+            utils.time.agostr(best['time']),
             )
     elif 'playerstats' in args.lin:
         search = args.getlinstr('search', '')
