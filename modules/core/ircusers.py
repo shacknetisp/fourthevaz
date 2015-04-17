@@ -183,6 +183,8 @@ def recv(fp):
             'action'] = "using %s %s." % (fp.sp.command.upper(),
                 fp.sp.target if fp.sp.target else fp.sp.text)
         fp.server.state['lastseen'].save()
+        if fp.sp.sendernick not in fp.server.whoislist:
+            fp.server.whois(fp.sp.sendernick, False)
 
 
 def authme(fp, args):
