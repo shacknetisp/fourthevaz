@@ -159,7 +159,7 @@ def getrights(fp, args):
             extra += fp.channelrights('='.join(user.split('=')[:-2]), c)
         except IndexError:
             pass
-    if 'base' not in args.lin and not args.getlinstr('rights', ''):
+    if 'base' not in args.lin or args.getlinstr('rights', ''):
         r = access.fullrights(fp, access.getrights(fp.server, user)
         + extra)
     else:
