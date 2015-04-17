@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from configs.module import Module
+import time
+import random
 
 
-def init():
+def init(options):
+    options['server'].state['nickserv.ghosting'] = False
     m = Module('nickserv')
     m.set_help('Authenticate with NickServ.')
     m.add_base_hook('recv', recv)
@@ -22,7 +25,27 @@ def init():
                 ]
             })
     m.add_base_hook('commands.ignore', commands_ignore)
+    m.add_base_hook('nicktrouble', nicktrouble)
     return m
+
+
+def nicktrouble(server):
+    def flushsleep():
+        server.flush()
+        time.sleep(0.5)
+    if server.auth[0] == 'nickserv' and not server.state[
+        'nickserv.ghosting']:
+        wantnick = server.entry['id']['nick']
+        server.write_cmd('NICK', wantnick + str(random.randrange(0, 100)))
+        flushsleep()
+        server.write_cmd('PRIVMSG',
+            'nickserv :ghost %s %s' % (
+                wantnick,
+                server.auth[2]))
+        server.state['nickserv.ghosting'] = True
+        flushsleep()
+        server.setuser()
+        flushsleep()
 
 
 def commands_ignore(fp, ignore):
@@ -39,6 +62,9 @@ def joined(server):
             'PRIVMSG', 'nickserv :identify %s %s' % (server.auth[1]
             if server.auth[1] else server.nick,
             server.auth[2]))
+        server.flush()
+        server.setuser()
+        server.join_channels()
 
 
 def nickserv(fp, args):

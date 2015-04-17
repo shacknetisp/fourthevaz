@@ -73,7 +73,7 @@ class Server:
         """List of nicks to run WHOIS on next."""
         self.whoislist = {}
         """WHOIS information list."""
-        self.auth = entry['auth']
+        self.auth = entry['auth'] if 'auth' in entry else None
         """Tuple for auth: (<type>, [<account>] or "", <password>)."""
 
     def update_aliases(self):
@@ -118,6 +118,10 @@ class Server:
     def initjoin(self):
         self.do_base_hook('joined', self)
         self.properties['joined'] = True
+        if not self.auth:
+            self.join_channels()
+
+    def join_channels(self):
         for channel in self.channels:
             self.join_channel(channel)
 
@@ -133,6 +137,20 @@ class Server:
         self.logbuffer.append(text)
         if self.options['print_log']:
             print((text.strip('\n')))
+
+    def flush(self):
+        """Flush the output buffer before the process loop."""
+        while self.outputbuffer:
+            if current_milli_time() - self.lasttick > self.options[
+                'tick_min']:
+                    self.lasttick = current_milli_time()
+                    out = self.outputbuffer.popleft()
+                    try:
+                        self.socket.send(out)
+                    except OSError:
+                        if self.socket.fileno() < 0:
+                            return
+                        raise Server.ServerConnectionException(self)
 
     def write_raw(self, binary):
         """Write binary to the output buffer."""

@@ -20,6 +20,7 @@
     #The modulesets to use, core is always included
     'modulesets': ['default'],
     #Authentication
+    ##Omit this for no authentication
     ##(<type>, [<account>] or "", <password>)
     ##Type can be: nickserv
     ##The %pass% will be replaced with the password in the auth modules.
