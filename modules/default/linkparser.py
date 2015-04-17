@@ -4,7 +4,7 @@ import requests
 import socket
 URL_REGEX = r"""
 \b
-[http(s|)://]?
+[(https|http|ftp|sftp|irc)://]?
 [.*]?[\.]?.*\..*
 \b
 """
