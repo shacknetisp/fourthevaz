@@ -465,8 +465,10 @@ def recv(fp):
             return
         ptext = text[len(prefix):]
         try:
-            if fp.isquery:
+            if fp.isquery():
                 ptext = ptext.lstrip(string.punctuation)
+            elif len(ptext.lstrip(string.punctuation)) < len(ptext):
+                return
             r = doptext(fp, ptext)
         except NoEndToken as e:
             r = e.msg

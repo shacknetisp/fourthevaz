@@ -2,10 +2,11 @@
 import configs.module
 import requests
 import socket
-URL_REGEX =  """
-(((http|ftp|https|ftps|sftp)://)|(www\.))+(([a-zA-Z
-0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.
-[0-9]{1,3}\.[0-9]{1,3}))(/[a-zA-Z0-9\&amp;%_\./-~-]*)?
+URL_REGEX = r"""
+\b
+[(http(s|)|(s|)ftp(s|)://]?
+[.*]?[\.]?.*\.[/]?.*
+\b
 """
 import re
 linkparse = None
@@ -43,9 +44,12 @@ def recv(fp):
     try:
         find = re.findall(
             URL_REGEX.replace('\n', ''), fp.sp.text)[-1]
-        if find.find('http') == -1 and find.count('.') < 2:
+        print(find)
+        if find.find('http') == -1 and (find.count('.') < 2 and
+        find.count('/') == 0):
             return
         fp.server.state['lastlink.%s' % fp.outtarget()] = find
+        print(find)
     except IndexError:
         pass
 
