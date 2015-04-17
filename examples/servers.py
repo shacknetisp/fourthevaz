@@ -23,7 +23,7 @@
     ##Omit this for no authentication
     ##(<type>, [<account>] or "", <password>)
     ##Type can be: nickserv
-    ##The %pass% will be replaced with the password in the auth modules.
+    ##%pass% will be replaced with the password in the auth modules.
     'auth': ('nickserv', '', 'anickservpass'),
     #The default prefixes for commands, each channel can define it's own
     'prefix': '. ! !! ~',
