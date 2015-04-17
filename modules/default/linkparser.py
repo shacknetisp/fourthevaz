@@ -4,8 +4,8 @@ import requests
 import socket
 URL_REGEX = r"""
 \b
-[(http(s|)|(s|)ftp(s|)://]?
-[.*]?[\.]?.*\.[/]?.*
+[http(s|)://]?
+[.*]?[\.]?.*\..*
 \b
 """
 import re
@@ -44,12 +44,9 @@ def recv(fp):
     try:
         find = re.findall(
             URL_REGEX.replace('\n', ''), fp.sp.text)[-1]
-        print(find)
-        if find.find('http') == -1 and (find.count('.') < 2 and
-        find.count('/') == 0):
+        if find.find('http') == -1 and find.count('.') < 2:
             return
         fp.server.state['lastlink.%s' % fp.outtarget()] = find
-        print(find)
     except IndexError:
         pass
 
