@@ -2,11 +2,10 @@
 import configs.module
 import requests
 import socket
-URL_REGEX = r"""
-\b
-[(https|http|ftp|sftp|irc)://]?
-[.*]?[\.]?.*\..*
-\b
+URL_REGEX =  """
+(((http|ftp|https|ftps|sftp)://)|(www\.))+(([a-zA-Z
+0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.
+[0-9]{1,3}\.[0-9]{1,3}))(/[a-zA-Z0-9\&amp;%_\./-~-]*)?
 """
 import re
 linkparse = None
