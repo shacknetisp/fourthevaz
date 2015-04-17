@@ -5,7 +5,7 @@ import random
 
 def init():
     m = Module(__name__)
-    m.set_help('Random humorous replies.')
+    m.set_help('"Spurious use of IRC leads to more spuriousness."')
     m.add_base_hook('recv', recv)
     m.add_base_hook('commands.ignore', commands_ignore)
     return m
