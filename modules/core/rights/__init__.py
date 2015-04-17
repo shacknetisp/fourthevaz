@@ -16,11 +16,22 @@ def init():
             'help': 'Get user rights.',
             'args': [
                 {
+                    'name': 'base',
+                    'keyvalue': '',
+                    'optional': True,
+                    'help': 'Only show base rights.',
+                    },
+                {
                     'name': 'user',
                     'optional': True,
                     'help': 'The user to view, defaults to caller. ([<nick>]:'
                     '[<hostname>]:[<NickServ Account>])'
                     },
+                {
+                    'name': 'rights',
+                    'optional': True,
+                    'help': 'Rights to test.'
+                    }
                 ],
             })
     m.add_command_hook('addrights',
@@ -146,9 +157,19 @@ def getrights(fp, args):
             extra += fp.channelrights('='.join(user.split('=')[:-2]), c)
         except IndexError:
             pass
+    if 'base' not in args.lin and not args.getlinstr('rights', ''):
+        r = access.fullrights(fp, access.getrights(fp.server, user)
+        + extra)
+    else:
+        r = access.getrights(fp.server, user)
+    if args.getlinstr('rights', ''):
+        hasrights = True
+        for right in args.getlinstr('rights', '').split(' '):
+            if right not in r:
+                hasrights = False
+        return "Yes" if hasrights else "No"
     return user + ': ' + utils.ltos(sorted(
-        utils.unique(access.fullrights(fp, access.getrights(fp.server, user)
-        + extra),
+        utils.unique(r,
         ), key=lambda x: x.strip('#-')), '; ')
 
 
