@@ -49,23 +49,26 @@ def serverinit(server):
                 server.add_module(os.path.splitext(f)[0])
 
 
-def import_module_py(name, modulesets=[], doreload=True):
-    possible = ['mlocal.']
+def import_module_py(name, modulesets=[], doreload=True, ret={}):
+    possible = [['mlocal.']]
     for mset in modulesets:
-        possible.append('mlocal.sets.%s.' % mset)
-        possible.append('modules.%s.' % mset)
-    possible.append('modules.core.')
+        possible.append(('mlocal.sets.%s.' % mset, mset))
+        possible.append(('modules.%s.' % mset, mset))
+    possible.append(['modules.core.', 'core'])
     m = None
     err = None
+    usedset = ""
     for i in possible:
         try:
-            if not find_module(i + name):
+            if not find_module(i[0] + name):
                 continue
         except ImportError as e:
             err = e
             continue
         try:
-            m = importlib.import_module(i + name)
+            m = importlib.import_module(i[0] + name)
+            if len(i) == 2:
+                usedset = i[1]
         except ImportError as e:
             raise DepException(e)
         if not hasattr(m, 'init'):
@@ -77,19 +80,22 @@ def import_module_py(name, modulesets=[], doreload=True):
         raise DDRException(name)
     if doreload:
         importlib.reload(m)
+    ret['usedset'] = usedset
     return m
 
 
 def import_module(name, modulesets=[], doreload=True, options={}):
-    m = import_module_py(name, modulesets, doreload)
+    e = {}
+    m = import_module_py(name, modulesets, doreload, e)
     if m.init.__code__.co_argcount == 1:
         mr = m.init(options)
     else:
         mr = m.init()
-
+    mr.set = e['usedset']
     mr.module = m
-    print(('Loaded: %s: %s, Hooks: %s%s' % (
+    print(('Loaded: %s (%s): %s, Hooks: %s%s' % (
         name,
+        mr.set,
         str(m),
         str(list(mr.base_hooks.keys())),
         str(list(mr.command_hooks.keys())),

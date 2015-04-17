@@ -10,6 +10,7 @@ import string
 class Module:
 
     def __init__(self, name):
+        self.set = ""
         self.base_hooks = {}
         self.command_hooks = {}
         self.timer_hooks = []
