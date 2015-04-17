@@ -83,6 +83,10 @@ def init():
         'aliases',
         '%,aliases'
         ])
+    m.add_implicit_rights({
+        '%,op': '%,aliases',
+        'admin': 'aliases',
+        })
     m.add_base_hook('alias.prepare', alias_prepare)
     return m
 
