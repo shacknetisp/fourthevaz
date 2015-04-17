@@ -147,6 +147,8 @@ def getusers(fp, args):
 
 def getrights(fp, args):
     user = args.getlinstr('user', fp.accesslevelname)
+    if user == '.':
+        user = fp.accesslevelname
     try:
         access.raiseifnotformeduser(user)
     except access.AccessLevelError:
