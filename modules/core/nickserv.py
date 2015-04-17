@@ -36,8 +36,9 @@ def commands_ignore(fp, ignore):
 def joined(server):
     if server.auth[0] == 'nickserv':
         server.write_cmd(
-            'PRIVMSG', 'nickserv :identify %s %s' % (server.auth[1],
-                server.auth[2]))
+            'PRIVMSG', 'nickserv :identify %s %s' % (server.auth[1]
+            if server.auth[1] else server.nick,
+            server.auth[2]))
 
 
 def nickserv(fp, args):
