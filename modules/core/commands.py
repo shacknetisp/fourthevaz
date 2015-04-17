@@ -18,12 +18,10 @@ def init():
 
 
 def ext_prepare(fp, o):
-    d = {
+    o.update({
         'evaz_caller_nick': fp.user,
         'evaz_caller_external': '1' if fp.external() else '0'
-        }
-    for k in d:
-        o[k] = d[k]
+        })
 
 
 class NoEndToken(Exception):

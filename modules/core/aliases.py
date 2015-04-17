@@ -88,12 +88,10 @@ def init():
 
 
 def alias_prepare(fp, o):
-    d = {
+    o.update({
         'caller_nick': fp.user,
         'caller_external': "yes" if fp.external() else 'no',
-        }
-    for k in d:
-        o[k] = d[k]
+        })
 
 
 def delete(fp, args):
