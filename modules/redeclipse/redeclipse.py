@@ -3,6 +3,7 @@ import configs.module
 import configs.mload
 import utils
 import configs.match
+import string
 
 
 def init(options):
@@ -143,5 +144,7 @@ def recv(fp):
         if not found:
             return
         ptext = text[len(prefix):]
+        if len(ptext.lstrip(string.punctuation)) < len(ptext):
+            return
         if ptext:
             fp.reply(commands.doptext(fp, ptext))
