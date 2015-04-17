@@ -126,6 +126,6 @@ class time:
 
         return ret if ret else '???'
 
-    def ago(ts):
+    def agostr(ts):
         """Return durstr(utcepoch() - ts)."""
         return time.durstr(utcepoch() - ts)
