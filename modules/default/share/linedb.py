@@ -117,12 +117,15 @@ class LineDB:
                     'name': self.name,
                     'optional': True,
                     'help': str(
-                        'The %s, in this format: [%s%s] <search>.' % (
+                        'The %s, in this format' +
+                        '(add/remove will be ignored if -add or -remove' +
+                        'is set): [add/remove] [%s%s] <search>.' % (
                         self.name, self.seperprefix, self.seper)),
                     'end': True,
                     }
                     ]
                 })
+        m.add_command_alias(self.plural, self.name)
 
     def add(self, fp, args, dt, channel=False):
         line = args.getlinstr(self.name)
@@ -142,14 +145,25 @@ class LineDB:
         return '"%s" has been added to %s %s' % (line, self.seper, topic)
 
     def main(self, fp, args, dt):
-        commands = fp.server.import_module('commands', False)
         line = args.getlinstr(self.name, '')
         if 'add' in args.lin:
-            return commands.doptext(fp, '%s.add %s' % (self.plural, line))
+            return fp.execute('%s.add %s' % (self.plural, line))
         elif 'remove' in args.lin:
-            return commands.doptext(fp, '%s.remove %s%s' % (self.plural,
+            return fp.execute(fp, '%s.remove %s%s' % (self.plural,
                 "-force " if 'force' in args.lin else '',
                 line))
+        else:
+            try:
+                action = line.split()
+                line = line.split()[1:]
+                if action == 'add':
+                    return fp.execute('%s.add %s' % (self.plural, line))
+                elif action == 'remove':
+                    return fp.execute(fp, '%s.remove %s%s' % (self.plural,
+                    "-force " if 'force' in args.lin else '',
+                    line))
+            except IndexError:
+                pass
         topic, line = self.splitline(line,
            dt)
         db = fp.server.state['%s.db' % self.plural].db()
