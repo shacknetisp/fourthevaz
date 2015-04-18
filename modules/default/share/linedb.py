@@ -117,9 +117,9 @@ class LineDB:
                     'name': self.name,
                     'optional': True,
                     'help': str(
-                        'The %s, in this format' +
-                        '(add/remove will be ignored if -add or -remove' +
-                        'is set): [add/remove] [%s%s] <search>.' % (
+                        'The %s, in this format'
+                        ' (add/remove will be ignored if -add or -remove'
+                        ' is set): [add/remove] [%s%s] <search>.' % (
                         self.name, self.seperprefix, self.seper)),
                     'end': True,
                     }
