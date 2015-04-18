@@ -33,21 +33,7 @@ def init():
                     },
                 ],
             })
-    m.add_timer_hook(10 * 1000, timer)
     return m
-
-
-def timer():
-    for server in bot.servers():
-        if server.nick in server.whoislist:
-            if 'channels' in server.whoislist[
-                server.nick] and 'done' in server.whoislist[server.nick]:
-                todi = []
-                for i in range(len(server.channels)):
-                    c = server.channels[i]
-                    if c not in server.whoislist[server.nick]['channels']:
-                        todi.append(i)
-                server.channels = utils.remove_indices(server.channels, todi)
 
 
 def join(fp, args):
