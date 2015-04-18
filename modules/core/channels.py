@@ -40,7 +40,8 @@ def init():
 def timer():
     for server in bot.servers():
         if server.nick in server.whoislist:
-            if 'channels' in server.whoislist[server.nick]:
+            if 'channels' in server.whoislist[
+                server.nick] and 'done' in server.whoislist[server.nick]:
                 todi = []
                 for i in range(len(server.channels)):
                     c = server.channels[i]
