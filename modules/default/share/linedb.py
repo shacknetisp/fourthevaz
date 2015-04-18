@@ -154,12 +154,12 @@ class LineDB:
                 line))
         else:
             try:
-                action = line.split()
-                line = line.split()[1:]
+                action = line.split()[0]
+                line = " ".join(line.split()[1:])
                 if action == 'add':
                     return fp.execute('%s.add %s' % (self.plural, line))
                 elif action == 'remove':
-                    return fp.execute(fp, '%s.remove %s%s' % (self.plural,
+                    return fp.execute('%s.remove %s%s' % (self.plural,
                     "-force " if 'force' in args.lin else '',
                     line))
             except IndexError:
