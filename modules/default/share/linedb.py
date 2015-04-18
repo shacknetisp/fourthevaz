@@ -95,8 +95,10 @@ class LineDB:
                     'name': self.name,
                     'optional': True,
                     'help': str(
-                        'The %s, in this format: [%s%s] <search>.%s' % (
-                        self.name, self.seperprefix, self.seper, self.eh)),
+                        'The %s, in this format'
+                        ' (add/remove will be ignored if -add or -remove'
+                        ' is set): [add/remove] [%s%s] <search>.' % (
+                        self.name, self.seperprefix, self.seper)),
                     'end': True,
                     }
                     ]
@@ -117,9 +119,7 @@ class LineDB:
                     'name': self.name,
                     'optional': True,
                     'help': str(
-                        'The %s, in this format'
-                        ' (add/remove will be ignored if -add or -remove'
-                        ' is set): [add/remove] [%s%s] <search>.' % (
+                        'The %s, in this format: [%s%s] <search>.' % (
                         self.name, self.seperprefix, self.seper)),
                     'end': True,
                     }
