@@ -94,6 +94,8 @@ class Server:
         Add <name> to the WHOIS buffer.
         If queue, add to the end, otherwise add to the front.
         """
+        self.log('WHOIS', "%s = %d" % (name,
+        len(self.whoisbuffer) + 1))
         if not queue:
             self.whoisbuffer = [name] + self.whoisbuffer
             return
