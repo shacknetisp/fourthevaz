@@ -17,3 +17,4 @@ Run with: `python3 __init__.py` (from the source directory)
 * wikipedia
 * pytz
 * pint
+* BeautifulSoup 3 or 4
