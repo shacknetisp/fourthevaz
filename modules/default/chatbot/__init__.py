@@ -13,7 +13,7 @@ def init(options):
     m.set_help('Talk with the chatbot.')
     m.add_short_command_hook(chatbot, 'chatbot::Talk to the bot',
         ['text...::What you have to say.'],
-        'normal')
+        'normal', noquote=True)
     m.add_command_alias('c', 'chatbot')
     m.add_command_alias('talk', 'chatbot')
     return m
