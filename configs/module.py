@@ -116,7 +116,6 @@ class Module:
                 'optional': False,
                 'help': arg.split('::')[1],
                 'end': False,
-                'rights': rights,
                 }
             arg = arg.split('::')[0]
             if arg[0] == '[':
@@ -139,6 +138,7 @@ class Module:
             'help': string.split('::')[1],
             'noquote': noquote,
             'args': args,
+            'rights': rights,
             })
 
     def add_command_alias(self, alias, hook):
