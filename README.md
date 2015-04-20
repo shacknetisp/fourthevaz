@@ -1,4 +1,4 @@
-## Fourth Evaz
+## Fourth Evaz IRC Bot
 
 *A General-Purpose IRC bot.*
 
