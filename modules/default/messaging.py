@@ -39,15 +39,17 @@ def tell(fp, args):
     oldnicks = nick.split(',')
     nicks = nick.split(',')
     message = '<<%s>> %s' % (fp.user, args.getlinstr('message'))
+    pinged = False
     for nick in nicks:
         fp.server.db['messaging.tells'].append((nick, message))
         for channel in fp.server.channels:
             if 'names' in channel:
                 for n in channel['names']:
                     if configs.match.match(
-                    n, nick, True):
+                    n, nick, True) and not pinged:
                         fp.server.write_cmd('PRIVMSG', ('%s :' % n) +
                         irc.utils.ctcp('PING Hello!'))
+                        pinged = True
     return 'Will send "%s" to "%s"' % (args.getlinstr('message'),
                         utils.ltos(oldnicks))
 
