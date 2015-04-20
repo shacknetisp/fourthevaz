@@ -30,6 +30,8 @@ def chatbot(fp, args):
         lastphrase = ""
     fp.server.state[
         etime] = time.time()
+    if not args.getlinstr('text', ''):
+        return "I'll only answer if you say something."
     out = ai.process(args.getlinstr('text'), lastphrase)
     fp.server.state[e] = out
     return out
