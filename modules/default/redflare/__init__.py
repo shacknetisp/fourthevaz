@@ -25,7 +25,7 @@ def init(options):
     options['server'].state['redflare'].save()
 
     m = configs.module.Module(__name__)
-    m.set_help('Operate on RedFlares.')
+    m.set_help('Get server information from Redflares.')
     m.add_command_hook('redflare', {
         'function': doredflare,
         'help': 'Search players on a RedFlare.',
