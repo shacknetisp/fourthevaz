@@ -75,6 +75,7 @@ class Server:
         """WHOIS information list."""
         self.auth = entry['auth'] if 'auth' in entry else None
         """Tuple for auth: (<type>, [<account>] or "", <password>)."""
+        self.connecttimes = 0
 
     def update_aliases(self):
         """Regenerate the alias database."""
@@ -232,6 +233,7 @@ class Server:
             self.log('Init', 'Connection succeded.')
         except OSError:
             raise Server.ServerConnectException(self)
+        self.connecttimes = 0
 
     def socketready(self):
         ircmsg = ""

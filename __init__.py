@@ -61,8 +61,10 @@ if __name__ == '__main__':
                             server.connect()
                             server.initjoin()
                         except type(server).ServerConnectException as e:
-                            print((str(e)))
-                            server.socket = None
+                            server.connecttimes += 1
+                            if server.connecttimes > 4:
+                                print((str(e)))
+                                server.socket = None
                 readyr = []
                 times = 0
                 while (readyr or not times) and times < 5:
