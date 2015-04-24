@@ -15,9 +15,15 @@ def init(options):
         del options['server'].state['wserver']
     try:
         if 'apiport' in options['server'].entry:
-            options['server'].state[
+            try:
+                options['server'].state[
+                        'wserver'] = wsgiref.simple_server.make_server(
+                    '', options['server'].entry['apiport'],
+                    application(options['server']))
+            except TypeError:
+                options['server'].state[
                     'wserver'] = wsgiref.simple_server.make_server(
-                '', options['server'].entry['apiport'],
+                0, options['server'].entry['apiport'],
                 application(options['server']))
             print(('Opening API server on %d' % options[
                 'server'].entry['apiport']))
