@@ -271,6 +271,8 @@ def doredflare(fp, args):
                     ret.append("%s (%d:%.2f)" % (player[0], number,
                 round(player[1] / sorteddb[0][1], 2)))
             number += 1
+        if not ret:
+            return 'I have never seen anyone like that before.'
         return utils.ltos(ret)
     elif 'serverstats' in args.lin:
         search = args.getlinstr('search', '')
@@ -289,6 +291,8 @@ def doredflare(fp, args):
                     ret.append("%s (%d:%.2f)" % (player[0], number,
                 round(player[1] / sorteddb[0][1], 2)))
             number += 1
+        if not ret:
+            return 'I have never seen a server like that before.'
         return utils.ltos(ret)
     else:
         search = args.getlinstr('search', '')
