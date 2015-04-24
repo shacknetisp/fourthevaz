@@ -8,6 +8,8 @@
     'settings': 'freenode',
     #This is the server to connect to
     'address': {'host': 'irc.freenode.net', 'port': 6697},
+    #The API port to bind to, omit to not bind to an API port
+    'apiport': 5719,
     #The nick and name are defined here
     'id': {'nick': 'mybotsnick', 'name': 'An Example Bot'},
     #SSL Connection
