@@ -10,9 +10,10 @@ class FullParse():
     High-level parser, contains Server and SplitParse references.
     """
 
-    def __init__(self, server, sp, dcc=None):
+    def __init__(self, server, sp, dcc=None, nomore=False):
         self.server = server
         """Current Server"""
+        self.nomore = nomore
         self.dcc = dcc
         """DCC object, set to None if the message didn't come from DCC."""
         self.isexternal = False
@@ -135,7 +136,7 @@ class FullParse():
                 command = 'PRIVMSG'
             else:
                 command = 'NOTICE'
-        if message.count('\n') == 0 and not self.dcc:
+        if message.count('\n') == 0 and not self.nomore:
             if self.moreflag:
                 messages = textwrap.wrap(message, 450)
                 self.moreflag = False

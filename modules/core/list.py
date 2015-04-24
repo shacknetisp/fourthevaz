@@ -50,6 +50,8 @@ def clist(fp, args):
     else:
         for m in fp.server.modules:
             output.append(m.name)
+    if not output:
+        return 'No results.'
     return('%s' % (
         utils.ltos(sorted(output))
         ))

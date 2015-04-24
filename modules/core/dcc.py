@@ -63,9 +63,9 @@ class DCC:
     def process_message(self, sp):
         self.server.log('DCC', sp.message)
         self.server.do_base_hook('prerecv', irc.fullparse.FullParse(
-            self.server, sp, self))
+            self.server, sp, dcc=self, nomore=True))
         self.server.do_base_hook('recv', irc.fullparse.FullParse(
-            self.server, sp, self))
+            self.server, sp, dcc=self, nomore=True))
 
 
 def timer():
