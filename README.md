@@ -18,3 +18,4 @@ Run with: `python3 __init__.py` (from the source directory)
 * pytz
 * pint
 * BeautifulSoup 3 or 4
+* *`pip3 install xmltodict pytz pint wikipedia`*
