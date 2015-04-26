@@ -56,11 +56,30 @@ def init():
         lambda fp: fp.replyctcp('FINGER ' + fp.server.name))
     m.add_base_hook('ctcp.errmsg',
         lambda fp: fp.replyctcp('ERRMSG Invalid Data'))
+    m.add_base_hook('apiaction', apiaction)
     return m
 
 
 def source(fp, args):
     return version.source
+
+
+def apiaction(ret, server, q, environ, action):
+    if action == 'info':
+        del ret['message']
+        ret['addr'] = server.entry['address']
+        ret['channels'] = [
+            c['channel'] for c in server.channels]
+        ret['nicks'] = [
+            name
+            for c in server.channels
+            for name in c['names']
+            ]
+        ret['modules'] = [
+        (m.name, m.set)
+        for m in server.modules
+        ]
+        ret['status'] = 'good'
 
 
 def gitver(fp, args):

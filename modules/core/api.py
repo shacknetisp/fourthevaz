@@ -26,6 +26,7 @@ def init(options):
                 'server'].entry['apiport']))
     m.set_help('Access various bot functions from a json API.')
     m.add_timer_hook(1 * 1000, timer)
+    m.add_base_hook('apiaction', apiaction)
     return m
 
 
@@ -33,11 +34,6 @@ class application:
 
     def __init__(self, server):
         self.server = server
-
-    def process_message(self, sp):
-        fp = irc.fullparse.FullParse(
-            self.server, sp, nomore=True)
-        return fp.execute(sp.text)
 
     def __call__(self, environ, start_response):
         ret = {
@@ -48,40 +44,35 @@ class application:
                        [('content-type', 'text/html;charset=utf-8')])
         q = parse.parse_qs(environ['QUERY_STRING'])
         action = q['action'][0] if 'action' in q else ''
-        ip = environ['REMOTE_ADDR']
         try:
-            if action == 'info':
-                del ret['message']
-                ret['addr'] = self.server.entry['address']
-                ret['channels'] = [
-                    c['channel'] for c in self.server.channels]
-                ret['nicks'] = [
-                    name
-                    for c in self.server.channels
-                    for name in c['names']
-                    ]
-                ret['modules'] = [
-                (m.name, m.set)
-                for m in self.server.modules
-                ]
-                ret['status'] = 'good'
-            elif action == 'command':
-                if 'command' not in q:
-                    ret['message'] = 'no command'
-                    ret['status'] = 'error'
-                ret['output'] = self.process_message(
-                    irc.splitparse.SplitParser(
-                    ':%s!%s PRIVMSG %s :%s' % (':' + ip, "~api@" + ip,
-                        self.server.nick,
-                        q['command'][0],
-                        )))
-                ret['status'] = 'good'
-            else:
-                ret['message'] = 'invalid action'
-                ret['status'] = 'error'
+            ret['message'] = 'invalid action'
+            ret['status'] = 'error'
+            self.server.do_base_hook('apiaction',
+                ret, self.server, q, environ, action)
         except KeyError:
             pass
         return [json.dumps(ret).encode('utf-8')]
+
+
+def apiaction(ret, server, q, environ, action):
+    if action == 'command':
+        del ret['message']
+
+        def process_message(sp):
+            fp = irc.fullparse.FullParse(
+                server, sp, nomore=True)
+            return fp.execute(sp.text)
+        ip = environ['REMOTE_ADDR']
+        if 'command' not in q:
+            ret['message'] = 'no command'
+            ret['status'] = 'error'
+        ret['output'] = process_message(
+            irc.splitparse.SplitParser(
+            ':%s!%s PRIVMSG %s :%s' % (':' + ip, "~api@" + ip,
+                server.nick,
+                q['command'][0],
+                )))
+        ret['status'] = 'good'
 
 
 def timer():
