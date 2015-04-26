@@ -39,6 +39,9 @@ def init():
 
 
 def showhelp(fp, args):
+    if 'command' not in args.lin:
+        return ('Basic Commands: ' +
+        '`list`, `modhelp <module>`, `help <command>`.')
     wmodule = args.getlinstr(
         'command').split(' ')[0].split('.')[0].split(' ')[0]
     try:
@@ -67,8 +70,7 @@ def showhelp(fp, args):
                     command = m.command_hooks[wcommand]
                     usedtext += '.' + wcommand
                 elif not wcommand:
-                    return(
-                        "You must specify a command or (modhelp %s)" % m.name)
+                    return(fp.execute('modhelp ' + m.name))
                 else:
                     return("%s isn't in %s." % (wcommand, m.name))
             except IndexError:
@@ -109,6 +111,6 @@ def showhelp(fp, args):
 def modhelp(fp, args):
     for m in fp.server.modules:
         if m.name == args.getlinstr('module'):
-            return('%s' % m.helptext)
+            return('%s -- %s' % (m.helptext, fp.execute('list ' + m.name)))
     return('Unable to find module %s.' % args.getlinstr('module'))
 
