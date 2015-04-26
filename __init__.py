@@ -14,20 +14,12 @@ import os
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 
-def signal_handler(signal, frame):
-    print('Going down from a signal!')
-    sys.exit(0)
-
-
 def hup_handler(signal, frame):
     print('Reloading from HUP.')
     running.reinit = True
 
 
 if __name__ == '__main__':
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
-    signal.signal(signal.SIGQUIT, signal_handler)
     signal.signal(signal.SIGHUP, hup_handler)
 
     print(('Fourth Evaz %s' % version.versionstr()))
