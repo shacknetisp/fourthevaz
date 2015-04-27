@@ -243,9 +243,11 @@ def apiaction(ret, server, q, environ, action):
             return 'No stats recorded.'
         number = 1
         for player in sorteddb:
-            ret['_html'] += cgi.escape(
-                "%s (%d:%.2f)" % (player[0], number,
-            round(player[1] / sorteddb[0][1], 2))) + '<br>'
+            ratio = round(player[1] / sorteddb[0][1], 2)
+            if ratio < 0.03:
+                ret['_html'] += cgi.escape(
+                    "%s (%d:%.2f)" % (player[0], number,
+                ratio)) + '<br>'
 
 
 def doredflare(fp, args):
