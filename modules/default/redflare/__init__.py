@@ -244,7 +244,7 @@ def apiaction(ret, server, q, environ, action):
         number = 1
         for player in sorteddb:
             ratio = round(player[1] / sorteddb[0][1], 2)
-            if ratio < 0.03:
+            if ratio > 0.03:
                 ret['_html'] += cgi.escape(
                     "%s (%d:%.2f)" % (player[0], number,
                 ratio)) + '<br>'
