@@ -10,6 +10,7 @@ import configs.locs
 import os
 import requests
 import datetime
+import cgi
 
 
 def init(options):
@@ -114,6 +115,7 @@ def init(options):
                 },
             ]
         })
+    m.add_base_hook('apiaction', apiaction)
     m.add_timer_hook(60 * 1000, timer)
     return m
 
@@ -220,6 +222,30 @@ def enableredflare(fp, args):
             fp.server.db['redflare.enable.%s' % channel])
     except ValueError as e:
         return str(e)
+
+
+def apiaction(ret, server, q, environ, action):
+    if action == 'redflare_playerstats':
+        ret['_html'] = ""
+        if 'url' not in q:
+            ret['_html'] = '<b>No URL.</b>'
+            return
+        url = q['url'][0]
+        try:
+            acdb = server.state['redflare'].db()[url][
+                'ac.players']['list']
+        except KeyError:
+            ret['_html'] = '<b>Unknown URL.</b>'
+            return
+        sorteddb = list(
+            reversed(sorted(list(acdb.items()), key=lambda x: x[1])))
+        if not sorteddb:
+            return 'No stats recorded.'
+        number = 1
+        for player in sorteddb:
+            ret['_html'] += cgi.escape(
+                "%s (%d:%.2f)" % (player[0], number,
+            round(player[1] / sorteddb[0][1], 2))) + '<br>'
 
 
 def doredflare(fp, args):

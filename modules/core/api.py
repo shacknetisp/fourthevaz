@@ -49,6 +49,8 @@ class application:
             ret['status'] = 'error'
             self.server.do_base_hook('apiaction',
                 ret, self.server, q, environ, action)
+            if '_html' in ret:
+                return [ret['_html'].encode('utf-8')]
         except KeyError:
             pass
         return [json.dumps(ret).encode('utf-8')]
