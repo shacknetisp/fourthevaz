@@ -248,6 +248,7 @@ def apiaction(ret, server, q, environ, action):
                 ret['_html'] += cgi.escape(
                     "%s (%d:%.2f)" % (player[0], number,
                 ratio)) + '<br>'
+            number += 1
 
 
 def doredflare(fp, args):
