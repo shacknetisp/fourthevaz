@@ -10,6 +10,7 @@ import configs.locs as locs
 import moduleregistry
 import running
 import utils
+import string
 import ast
 import os
 moduleregistry.add_module(splitparse)
@@ -137,6 +138,7 @@ class Server:
     def log(self, prefix, p_text):
         """Log <prefix>: <p_text>"""
         text = prefix + ': ' + p_text
+        text = ''.join([x for x in text if x in string.printable])
         self.logbuffer.append(text)
         if self.options['print_log']:
             print((text.strip('\n')))
