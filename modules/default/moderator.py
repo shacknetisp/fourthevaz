@@ -104,9 +104,8 @@ def getcharacterrepition(s):
 
 
 def recv(fp):
-    if fp.sp.iscode('allchat') and fp.channel:
-        if not fp.server.db[
-            'bot.enable.%s' % fp.channel.entry['channel']]:
+    if fp.sp.iscode('chat') and fp.channel:
+        if fp.channelhasright('disable'):
             return
         db = fp.server.state['moderator']
         rfes = 'moderator.enable.%s' % fp.channel.entry['channel']

@@ -82,6 +82,6 @@ def timer():
         if 'wserver' not in server.state:
             continue
         wserver = server.state['wserver']
-        inr, _, _ = select.select([wserver], [], [], 0.1)
+        inr, _, _ = select.select([wserver], [], [], 0.01)
         if inr:
             wserver.handle_request()
