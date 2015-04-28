@@ -48,6 +48,7 @@ class LineDB:
             {
                 'rights': [] if self.channel else ['normal'],
                 'function': self.f_add,
+                'noquote': True,
                 'help': 'Add a %s to the database.' % self.name,
                 'args': [
                     {
@@ -106,6 +107,7 @@ class LineDB:
         m.add_command_hook('remove',
             {
                 'function': self.f_remove,
+                'noquote': True,
                 'help': 'Remove a %s.' % self.name,
                 'rights': [] if self.channel else ['normal'],
                 'args': [
