@@ -126,7 +126,8 @@ def recv(fp):
             fp.server.whoislist[fp.sp.object]['user'] = n
             fp.server.whoislist[fp.sp.object]['channels'] = o + v + n
         elif fp.sp.iscode('330'):
-            fp.server.whoislist[fp.sp.object]['authed'] = fp.sp.getsplit(4)
+            fp.server.whoislist[fp.sp.object]['authed'] = (
+                'ns:' + fp.sp.getsplit(4))
         elif fp.sp.iscode('301'):
             fp.server.whoislist[fp.sp.object]['away'] = True
         elif fp.sp.iscode('318'):

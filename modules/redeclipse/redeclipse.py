@@ -112,7 +112,7 @@ def recv(fp):
         authname = ""
         rf = redflare.RedFlare('http://redflare.ofthings.net/reports')
         entry = fp.server.db['reservers'][fp.sp.sendernick].split(':')
-        host = ':'.join(entry[0:-1])
+        host = 're:'.join(entry[0:-1])
         if host == '%':
             host = fp.sp.host.split('@')[1]
         host = geoip.geoip(host)['query']
