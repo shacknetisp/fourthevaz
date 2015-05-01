@@ -124,7 +124,7 @@ class Server:
     def import_module(self, name, do_reload):
         """Return an imported module from the current modulesets."""
         return mload.import_module_py(
-            name, self.entry['modulesets'], do_reload)
+            name, self.entry['modulesets'], self.type, do_reload)
 
     def add_module(self, name, mset=[]):
         """Load module <name>."""

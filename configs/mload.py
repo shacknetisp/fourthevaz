@@ -50,12 +50,20 @@ def serverinit(server):
                 server.add_module(os.path.splitext(f)[0])
 
 
-def import_module_py(name, modulesets=[], doreload=True, ret={}):
+def import_module_py(name, modulesets=[],
+    protocol='irc', doreload=True, ret={}):
     possible = [['mlocal.']]
     for mset in modulesets:
         possible.append(('mlocal.sets.%s.' % mset, mset))
         possible.append(('modules.%s.' % mset, mset))
     possible.append(['modules.core.', 'core'])
+    p2 = []
+    for p in possible:
+        if len(p) == 2:
+            p2.append((p[0] + '%s.' % protocol, p[1]))
+        else:
+            p2.append([p[0] + '%s.' % protocol])
+    possible += p2
     m = None
     err = None
     usedset = ""
@@ -85,9 +93,10 @@ def import_module_py(name, modulesets=[], doreload=True, ret={}):
     return m
 
 
-def import_module(name, modulesets=[], doreload=True, options={}):
+def import_module(name, modulesets=[], protocol='irc',
+    doreload=True, options={}):
     e = {}
-    m = import_module_py(name, modulesets, doreload, e)
+    m = import_module_py(name, modulesets, protocol, doreload, e)
     if m.init.__code__.co_argcount == 1:
         mr = m.init(options)
     else:
