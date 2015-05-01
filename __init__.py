@@ -35,6 +35,8 @@ if __name__ == '__main__':
             if 'type' in s:
                 p = s['type']
             server = importlib.import_module("%s.server" % p).Server(s)
+            server.fp = importlib.import_module(
+                "%s.fullparse" % p).FullParse
             server.connect()
             running.working_servers.append(server)
         while not running.reinit:

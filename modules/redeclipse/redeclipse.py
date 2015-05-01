@@ -112,7 +112,7 @@ def recv(fp):
         authname = ""
         rf = redflare.RedFlare('http://redflare.ofthings.net/reports')
         entry = fp.server.db['reservers'][fp.sp.sendernick].split(':')
-        host = 're:'.join(entry[0:-1])
+        host = ':'.join(entry[0:-1])
         if host == '%':
             host = fp.sp.host.split('@')[1]
         host = geoip.geoip(host)['query']
@@ -123,7 +123,7 @@ def recv(fp):
                 for player in server['playerauths']:
                     if player[0] == fp.user:
                         authname = player[1]
-        fp.setaccess("%s==:%s" % (fp.user, authname))
+        fp.setaccess("%s==re:%s" % (fp.user, authname))
 
         try:
             text = fp.sp.text[fp.sp.text.index('> ') + 2:]

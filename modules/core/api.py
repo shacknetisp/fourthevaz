@@ -59,21 +59,23 @@ class application:
 def apiaction(ret, server, q, environ, action):
     if action == 'command':
         del ret['message']
-
-        def process_message(sp):
-            fp = irc.fullparse.FullParse(
-                server, sp, nomore=True)
-            return fp.execute(sp.text)
         ip = environ['REMOTE_ADDR']
         if 'command' not in q:
             ret['message'] = 'no command'
             ret['status'] = 'error'
-        ret['output'] = process_message(
-            irc.splitparse.SplitParser(
-            ':%s!%s PRIVMSG %s :%s' % (':' + ip, "~api@" + ip,
-                server.nick,
-                q['command'][0],
-                )))
+        if server.type == 'irc':
+            def process_message(sp):
+                fp = irc.fullparse.FullParse(
+                    server, sp, nomore=True)
+                return fp.execute(sp.text)
+            ret['output'] = process_message(
+                server.fakeaction(
+                ':%s!%s PRIVMSG %s :%s' % (':' + ip, "~api@" + ip,
+                    server.nick,
+                    q['command'][0],
+                    )))
+        elif server.type == 'file':
+            ret['output'] = server.fp(server, q['command'][0])
         ret['status'] = 'good'
 
 
