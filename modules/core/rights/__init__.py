@@ -171,7 +171,7 @@ def getrights(fp, args):
             if right not in r:
                 hasrights = False
         return "Yes" if hasrights else "No"
-    return user + ': ' + utils.ltos(sorted(
+    return user + ' -- ' + utils.ltos(sorted(
         utils.unique(r,
         ), key=lambda x: x.strip('#-')), '; ')
 
