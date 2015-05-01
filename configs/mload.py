@@ -40,6 +40,7 @@ def serverinit(server):
         return n[0] == '_' or n in [
             'share',
             'sets',
+            'irc',
         ] or fnmatch.fnmatch(n, '*.ext')
     server.modules = []
     paths = server.modulepaths()
@@ -91,6 +92,8 @@ def import_module(name, modulesets=[], doreload=True, options={}):
         mr = m.init(options)
     else:
         mr = m.init()
+    if not mr:
+        return None
     mr.set = e['usedset']
     mr.module = m
     print(('Loaded: %s (%s): %s, Hooks: %s%s' % (

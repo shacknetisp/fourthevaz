@@ -22,15 +22,16 @@ def timer():
     html.write('<h1>%s Status</h1>' % version.name)
     outputline('%d Servers:' % len(running.working_servers))
     for server in running.working_servers:
-        outputline(' %s:%d %s (%s:%s)' % (
-            server.entry['address']['host'],
-            server.entry['address']['port'],
-            server.entry['settings'],
-            server.entry['id']['nick'],
-            server.entry['id']['name'],
-            ))
-        for channel in server.channels:
-            outputline('  %s' % channel['channel'])
-            if 'names' in channel:
-                for name in channel['names']:
-                    outputline('   %s' % name)
+        if server.type == 'irc':
+            outputline(' %s:%d %s (%s:%s)' % (
+                server.entry['address']['host'],
+                server.entry['address']['port'],
+                server.entry['settings'],
+                server.entry['id']['nick'],
+                server.entry['id']['name'],
+                ))
+            for channel in server.channels:
+                outputline('  %s' % channel['channel'])
+                if 'names' in channel:
+                    for name in channel['names']:
+                        outputline('   %s' % name)

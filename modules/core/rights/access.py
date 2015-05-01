@@ -55,7 +55,7 @@ def fullrights(fp, rights, r=True):
         else:
             if right in implied:
                 for implication in implied[right]:
-                    if splitchannel(implication):
+                    if splitchannel(implication) and fp.type == '':
                         if not fp.external():
                             for channel in fp.server.channels:
                                 if 'names' in channel:

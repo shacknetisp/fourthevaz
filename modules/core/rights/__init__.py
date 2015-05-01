@@ -154,11 +154,12 @@ def getrights(fp, args):
     except access.AccessLevelError:
         return "Malformed user!"
     extra = []
-    for c in fp.server.channels:
-        try:
-            extra += fp.channelrights('='.join(user.split('=')[:-2]), c)
-        except IndexError:
-            pass
+    if fp.type == 'irc':
+        for c in fp.server.channels:
+            try:
+                extra += fp.channelrights('='.join(user.split('=')[:-2]), c)
+            except IndexError:
+                pass
     if 'base' not in args.lin or args.getlinstr('rights', ''):
         r = access.fullrights(fp, access.getrights(fp.server, user)
         + extra)

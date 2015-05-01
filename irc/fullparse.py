@@ -1,58 +1,41 @@
 # -*- coding: utf-8 -*-
-import utils
+import base.fullparse
 import textwrap
 from . import utils as ircutils
 formatcodes = ircutils.formatcodes
 
 
-class FullParse():
-    """
-    High-level parser, contains Server and SplitParse references.
-    """
+class FullParse(base.fullparse.FullParse):
 
-    def __init__(self, server, sp, dcc=None, nomore=False):
-        self.server = server
-        """Current Server"""
-        self.nomore = nomore
-        self.dcc = dcc
-        """DCC object, set to None if the message didn't come from DCC."""
-        self.isexternal = False
+    def __init__(self, server, sp, dcc=None, nomore=None):
+        super(FullParse, self).__init__(server, nomore=nomore)
         self.sp = sp
         """SplitParser object."""
-        self.moreflag = False
+        self.dcc = dcc
+        """DCC object, set to None if the message didn't come from DCC."""
         self.channel = None
         """A FullParse.Channel object, set to None if not in a channel."""
+        authed = ""
+        self.user = self.sp.sendernick
+        """
+        IRC Nick or name from an external server (Red Eclipse, etc...).
+        Use unless you need to directly get the IRC nick.
+        """
+        if self.user in self.server.whoislist:
+            if 'done' in self.server.whoislist[self.user]:
+                t = self.server.whoislist[self.user]
+                authed = t['authed'] if 'authed' in t and t['authed'] else ''
+        self.setaccess("%s=%s=%s" % (
+            self.sp.sendernick, self.sp.host, authed))
         if self.isquery() or self.sp.target == '*':
             self.channel = None
         else:
             self.channel = FullParse.Channel(self)
             if not self.channel.entry:
                 self.channel = None
-        authed = ""
-        user = self.sp.sendernick
-        if user in self.server.whoislist:
-            if 'done' in self.server.whoislist[user]:
-                t = self.server.whoislist[user]
-                authed = t['authed'] if 'authed' in t and t['authed'] else ''
-        self.setaccess("%s=%s=%s" % (
-            self.sp.sendernick, self.sp.host, authed))
-        self.user = self.sp.sendernick
-        """
-        IRC Nick or name from an external server (Red Eclipse, etc...).
-        Use unless you need to directly get the IRC nick.
-        """
         o = {'external': False}
         self.server.do_base_hook('isexternal', self, o)
         self.isexternal = o['external']
-
-    def execute(self, command):
-        """Execute <command> with the commands module."""
-        commands = self.server.import_module('commands', False)
-        return commands.doptext(self, command)
-
-    def me(self, text):
-        """Returns an ACTION text"""
-        return '\x01ACTION %s\x01' % text
 
     def get_aliases(self):
         """Returns a dictionary of all current aliases."""
@@ -62,26 +45,6 @@ class FullParse():
         return utils.merge_dicts(self.server.aliasdb,
             channeld)
 
-    def external(self):
-        """Returns true if the messages comes from a server relay."""
-        return self.isexternal
-
-    def setaccess(self, s=""):
-        """Set the access string of this fullparse object."""
-        if s:
-            self.accesslevelname = s
-
-    def isquery(self):
-        """Did the message come from a query?"""
-        return self.sp.target == self.server.nick
-
-    def outtarget(self):
-        """Returns the target to send messages to."""
-        if self.isquery():
-            return self.sp.sendernick
-        else:
-            return self.sp.target
-
     def hasright(self, right):
         """Returns if the user has the specified right."""
         access = self.server.import_module('rights.access', False)
@@ -90,6 +53,21 @@ class FullParse():
             extra += self.channelrights(self.sp.sendernick, c)
         return (right in (access.fullrights(self, access.getrights(
             self.server, self.accesslevelname) + extra)))
+
+    def isquery(self):
+        """Did the message come from a query?"""
+        return self.sp.target == self.server.nick
+
+    def me(self, text):
+        """Returns an ACTION text"""
+        return '\x01ACTION %s\x01' % text
+
+    def outtarget(self):
+        """Returns the target to send messages to."""
+        if self.isquery():
+            return self.sp.sendernick
+        else:
+            return self.sp.target
 
     def channelrights(self, nick, channel):
         extra = []

@@ -1,16 +1,13 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 from imports import *
-import select
-import time
 import configs.locs as locs
 import db.text
 import signal
-import sys
 import running
 import os
-
-
+import importlib
+import time
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 
@@ -34,45 +31,23 @@ if __name__ == '__main__':
             running.serverdb.load()
         running.serverdb.save()
         for s in configs.servers.servers:
-            server = irc.server.Server(
-                s['address']['host'],
-                s['address']['port'],
-                s['id']['nick'],
-                s['id']['name'],
-                s['channels'], s)
+            p = "irc"
+            if 'type' in s:
+                p = s['type']
+            server = importlib.import_module("%s.server" % p).Server(s)
             server.connect()
             running.working_servers.append(server)
         while not running.reinit:
             try:
-                inr = []
-                for server in running.working_servers:
-                    if server.socket and server.socket.fileno() > 0:
-                        inr.append(server.socket)
-                    elif server.socket and server.socket.fileno() < 0:
-                        try:
-                            server.connect()
-                            server.initjoin()
-                        except type(server).ServerConnectException as e:
-                            server.connecttimes += 1
-                            if server.connecttimes > 4:
-                                print((str(e)))
-                                server.socket = None
-                readyr = []
-                times = 0
-                while (readyr or not times) and times < 5:
-                    times += 1
-                    readyr, readyw, readyx = select.select(
-                        inr, [], [], 0.05)
-                    for sock in readyr:
-                        for server in running.working_servers:
-                            if sock == server.socket:
-                                try:
-                                    server.socketready()
-                                except type(server).ServerConnectionException:
-                                    server.socket.close()
-                    readyr = []
+                for s in configs.servers.servers:
+                    p = "irc"
+                    if 'type' in s:
+                        p = s['type']
+                    importlib.import_module('%s' % p).loop()
                 did = []
                 for server in running.working_servers:
+                    if server.type != 'file':
+                        continue
                     for m in server.modules:
                         if m.name not in did:
                             did.append(m.name)
@@ -85,14 +60,10 @@ if __name__ == '__main__':
                                     except Exception:
                                         import traceback
                                         print((traceback.format_exc()))
-                for server in running.working_servers:
-                    server.process()
             except InterruptedError:
                 pass
         for server in running.working_servers:
-            if server.socket:
-                server.socket.send(b"QUIT :I'll be back soon!\n")
-                server.socket.close()
+            server.reiniting()
         running.working_servers = utils.remove_indices(running.working_servers,
             list(range(len(running.working_servers))))
         moduleregistry.reloadscheduled = True

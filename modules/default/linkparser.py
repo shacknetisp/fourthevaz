@@ -41,9 +41,14 @@ def gettitle(url):
 
 
 def recv(fp):
+    text = ""
+    if fp.type == "irc":
+        text = fp.sp.text
+    elif fp.type == "file":
+        text = fp.text
     try:
         find = re.findall(
-            URL_REGEX.replace('\n', ''), fp.sp.text)[-1]
+            URL_REGEX.replace('\n', ''), text)[-1]
         if find.find('http') == -1 and find.count('.') < 2:
             return
         fp.server.state['lastlink.%s' % fp.outtarget()] = find

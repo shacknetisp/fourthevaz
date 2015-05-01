@@ -122,7 +122,9 @@ def doptext(fp, p_ptext, count=100):
                     return
     if command:
         if not fp.hasright('owner'):
-            if fp.hasright('disable') or fp.haschannelright('disable'):
+            if fp.hasright('disable') or (
+                fp.type == 'irc' and
+                fp.haschannelright('disable')):
                 return
             if not fp.canuse(command['module'].name, command['name']):
                 return
@@ -418,57 +420,70 @@ def doptext(fp, p_ptext, count=100):
 
 
 def recv(fp):
-    if fp.sp.iscode('privmsg'):
-        if fp.channelhasright('disable'):
-            return
-        ignore = {'ignore': False}
-        fp.server.do_base_hook('commands.ignore', fp, ignore)
-        if ignore['ignore']:
-            return
-        try:
-            if fp.sp.text[0] == '\x01':
-                st = fp.sp.text.strip('\x01')
-                try:
-                    fp.ctcptext = " ".join(st.split()[1:])
-                except IndexError:
-                    fp.ctcptext = ""
-                fp.server.do_base_hook('ctcp.%s' % st.split()[0].lower(), fp)
+    if fp.type == 'irc':
+        if fp.sp.iscode('privmsg'):
+            if fp.channelhasright('disable'):
                 return
-        except Exception as e:
-            r = 'Uncaught ' + str(type(e).__name__) + '!'
-            fp.reply(r)
-            print((traceback.format_exc()))
-            return
-        if fp.external():
-            return
-        text = fp.sp.text
-        prefixt = fp.server.entry['prefix'].split()
-        if fp.channel:
-            prefixt = fp.channel.entry['prefix'].split()
-        elif fp.isquery():
-            for prefix in prefixt:
-                if text.find(prefix) != 0:
-                    text = prefix + text
+            ignore = {'ignore': False}
+            fp.server.do_base_hook('commands.ignore', fp, ignore)
+            if ignore['ignore']:
+                return
+            try:
+                if fp.sp.text[0] == '\x01':
+                    st = fp.sp.text.strip('\x01')
+                    try:
+                        fp.ctcptext = " ".join(st.split()[1:])
+                    except IndexError:
+                        fp.ctcptext = ""
+                    fp.server.do_base_hook(
+                        'ctcp.%s' % st.split()[0].lower(), fp)
+                    return
+            except Exception as e:
+                r = 'Uncaught ' + str(type(e).__name__) + '!'
+                fp.reply(r)
+                print((traceback.format_exc()))
+                return
+            if fp.external():
+                return
+            text = fp.sp.text
+            prefixt = fp.server.entry['prefix'].split()
+            if fp.channel:
+                prefixt = fp.channel.entry['prefix'].split()
+            elif fp.isquery():
+                for prefix in prefixt:
+                    if text.find(prefix) != 0:
+                        text = prefix + text
+                        break
+            possible = [
+                fp.server.nick + ', ',
+                fp.server.nick + ': ',
+                ] + prefixt
+            found = False
+            prefix = prefixt[0]
+            for p in possible:
+                if text.find(p) == 0:
+                    found = True
+                    prefix = p
                     break
-        possible = [
-            fp.server.nick + ', ',
-            fp.server.nick + ': ',
-            ] + prefixt
-        found = False
-        prefix = prefixt[0]
-        for p in possible:
-            if text.find(p) == 0:
-                found = True
-                prefix = p
-                break
-        if not found:
-            return
-        ptext = text[len(prefix):]
-        try:
-            if fp.isquery():
-                ptext = ptext.lstrip(string.punctuation)
-            elif len(ptext.lstrip(string.punctuation)) < len(ptext):
+            if not found:
                 return
+            ptext = text[len(prefix):]
+            try:
+                if fp.isquery():
+                    ptext = ptext.lstrip(string.punctuation)
+                elif len(ptext.lstrip(string.punctuation)) < len(ptext):
+                    return
+                r = doptext(fp, ptext)
+            except NoEndToken as e:
+                r = e.msg
+            except Exception as e:
+                r = 'Uncaught ' + str(type(e).__name__) + '!'
+                print((traceback.format_exc()))
+            if r:
+                fp.reply(r)
+    elif fp.type == 'file':
+        ptext = fp.text.strip()
+        try:
             r = doptext(fp, ptext)
         except NoEndToken as e:
             r = e.msg
