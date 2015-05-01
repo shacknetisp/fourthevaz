@@ -17,6 +17,7 @@ class FullParse(base.fullparse.FullParse):
             self.user, "", ""))
 
     def room(self):
+        """Return the current 'room'."""
         return "file"
 
     def get_aliases(self):

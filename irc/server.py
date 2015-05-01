@@ -57,6 +57,7 @@ class Server(base.server.Server):
         self.reinit()
 
     def roomtemplate(self):
+        """Return the room template."""
         return ("#", "channel")
 
     def whois(self, name, queue=True):

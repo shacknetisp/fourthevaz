@@ -27,6 +27,7 @@ class Server(base.server.Server):
         self.reinit()
 
     def roomtemplate(self):
+        """Return the room template."""
         return ("", "room")
 
     def doline(self, line):

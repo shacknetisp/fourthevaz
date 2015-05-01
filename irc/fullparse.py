@@ -39,6 +39,7 @@ class FullParse(base.fullparse.FullParse):
         self.isexternal = o['external']
 
     def room(self):
+        """Return the current 'room'."""
         return self.channel.entry['channel'] if self.channel else None
 
     def get_aliases(self):
