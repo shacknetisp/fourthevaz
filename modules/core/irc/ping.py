@@ -30,8 +30,9 @@ def recv(fp):
 
 def timer():
     for server in running.working_servers:
-        if time.time() - server.state['lastpong'] > 15:
-            server.write_cmd('PING', server.nick)
-        if time.time() - server.state['lastpong'] > 45:
-            server.reconnect()
+        if server.type == 'irc':
+            if time.time() - server.state['lastpong'] > 15:
+                server.write_cmd('PING', server.nick)
+            if time.time() - server.state['lastpong'] > 45:
+                server.reconnect()
 

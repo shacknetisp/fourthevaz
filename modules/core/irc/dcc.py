@@ -70,27 +70,28 @@ class DCC:
 
 def timer():
     for server in running.working_servers:
-        index = 0
-        tod = []
-        sockets = []
-        for dcc in server.state['dcc.chat']:
-            if not dcc.ready:
-                if time.time() - dcc.time > 10:
-                    tod.append(index)
-            elif not dcc.socket:
-                if time.time() - dcc.time > 10:
-                    tod.append(index)
-            else:
-                sockets.append(dcc.socket)
-            index += 1
-        server.state['dcc.chat'] = utils.remove_indices(
-            server.state['dcc.chat'], tod)
-        readyr, readyw, readyx = select.select(
-                    sockets, [], [], 0.05)
-        for sock in readyr:
+        if server.type == 'irc':
+            index = 0
+            tod = []
+            sockets = []
             for dcc in server.state['dcc.chat']:
-                if sock == dcc.socket:
-                    dcc.socketready()
+                if not dcc.ready:
+                    if time.time() - dcc.time > 10:
+                        tod.append(index)
+                elif not dcc.socket:
+                    if time.time() - dcc.time > 10:
+                        tod.append(index)
+                else:
+                    sockets.append(dcc.socket)
+                index += 1
+            server.state['dcc.chat'] = utils.remove_indices(
+                server.state['dcc.chat'], tod)
+            readyr, readyw, readyx = select.select(
+                        sockets, [], [], 0.05)
+            for sock in readyr:
+                for dcc in server.state['dcc.chat']:
+                    if sock == dcc.socket:
+                        dcc.socketready()
 
 
 def whois_done(server, nick, whois):

@@ -46,8 +46,6 @@ if __name__ == '__main__':
                     importlib.import_module('%s' % p).loop()
                 did = []
                 for server in running.working_servers:
-                    if server.type != 'file':
-                        continue
                     for m in server.modules:
                         if m.name not in did:
                             did.append(m.name)

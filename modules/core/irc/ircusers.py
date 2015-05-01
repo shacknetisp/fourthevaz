@@ -256,6 +256,8 @@ def lastseen(fp, args):
 def timer():
     import running
     for server in running.working_servers:
+        if server.type != 'irc':
+            continue
         for channel in server.channels:
             if 'names' in channel:
                 for name in channel['names']:

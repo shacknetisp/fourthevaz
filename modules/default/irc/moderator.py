@@ -65,6 +65,8 @@ def init(options):
 
 def timer():
     for server in running.working_servers:
+        if server.type != 'irc':
+            continue
         db = server.state['moderator']
         for p in db:
             if time.time() - db[p]['lastmessage'] > 10:
