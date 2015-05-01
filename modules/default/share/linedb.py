@@ -157,10 +157,11 @@ class LineDB:
         else:
             try:
                 action = line.split()[0]
-                line = " ".join(line.split()[1:])
                 if action == 'add':
+                    line = " ".join(line.split()[1:])
                     return fp.execute('%s.add %s' % (self.plural, line))
                 elif action == 'remove':
+                    line = " ".join(line.split()[1:])
                     return fp.execute('%s.remove %s%s' % (self.plural,
                     "-force " if 'force' in args.lin else '',
                     line))
