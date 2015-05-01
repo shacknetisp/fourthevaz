@@ -28,7 +28,7 @@ def raiseifnotformeduser(u):
         return
     if u.count('=') < accesslen - 1:
         raise AccessLevelError('The user %s is malformed!' % u)
-    if u[-1] and u[-1].count(':') == 0:
+    if u.split('=')[-1] and u.split('=')[-1].count(':') == 0:
         raise AccessLevelError('The user %s has no auth type!' % u)
 
 
