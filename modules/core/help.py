@@ -92,6 +92,14 @@ def showhelp(fp, args):
     if not command:
         if wcommand in fp.get_aliases():
             return '<%s>' % (fp.get_aliases()[wcommand])
+        v = fp.server.import_module('commands.executer', False).execute(
+            fp.server,
+            wcommand,
+            "",
+            {'FOURTHEVAZ': 'help'},
+            )
+        if v is not None:
+            return v
         return('That command does not exist.')
     if woption:
         for c in command['args']:

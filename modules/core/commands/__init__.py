@@ -4,12 +4,10 @@ import shlex
 import utils
 import traceback
 import string
-import fnmatch
-import os
-import subprocess
 
 
-def init():
+def init(options):
+    options['server'].import_module('commands.executer', True)
     m = Module('commands')
     m.set_help('Call the command system.')
     m.add_base_hook('recv', recv)
@@ -400,16 +398,18 @@ def doptext(fp, p_ptext, count=100):
             pargs = ptext[len(ptext.split(' ')[0].split('.')[0]):].strip()
             pargs = fp.execute('qecho %s' % pargs.replace(
                 '"', '\\"').replace("'", "\\'"))
-            sd = {}
+            sd = {
+                'FOURTHEVAZ': 'exec',
+                }
             fp.server.do_base_hook('ext.prepare', fp, sd)
-            for path in fp.server.modulepaths():
-                for f in os.listdir(path):
-                    if fnmatch.fnmatch(f, '%s.ext' %
-                    ptext.split(' ')[0].split('.')[0]):
-                        return subprocess.check_output([path + '/' + f],
-                             input=pargs.encode(),
-                             shell=True,
-                             env=sd).decode().strip()
+            v = fp.server.import_module('commands.executer', False).execute(
+                fp.server,
+                ptext.split(' ')[0].split('.')[0],
+                pargs,
+                sd
+                )
+            if v is not None:
+                return v
             for m in fp.server.modules:
                 if ptext.split(' ')[0].split('.')[0] == m.name:
                     return doptext(fp,
