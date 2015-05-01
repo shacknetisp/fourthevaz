@@ -56,6 +56,9 @@ class Server(base.server.Server):
         self.properties['joined'] = False
         self.reinit()
 
+    def roomtemplate(self):
+        return ("#", "channel")
+
     def whois(self, name, queue=True):
         """
         Add <name> to the WHOIS buffer.

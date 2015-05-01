@@ -38,6 +38,9 @@ class FullParse(base.fullparse.FullParse):
         self.server.do_base_hook('isexternal', self, o)
         self.isexternal = o['external']
 
+    def room(self):
+        return self.channel.entry['channel'] if self.channel else None
+
     def get_aliases(self):
         """Returns a dictionary of all current aliases."""
         channeld = {}

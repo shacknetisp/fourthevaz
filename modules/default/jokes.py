@@ -9,7 +9,8 @@ def init(options):
     server = options['server']
     linedb = server.import_module("share.linedb", True)
     server.state['jokes.linedb'] = linedb.LineDB(
-        'joke', 'jokes', '#', 'channel', add, main, remove, showlist, True,
+        'joke', 'jokes', server.roomtemplate()[0],
+        server.roomtemplate()[1], add, main, remove, showlist, True,
         ' !target! and !joker! are the tokens.')
     ldb = server.state['jokes.linedb']
     ldb.initserver(server)

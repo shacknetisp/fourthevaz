@@ -9,7 +9,8 @@ def init(options):
     server = options['server']
     linedb = server.import_module("share.linedb", True)
     server.state['quotes.linedb'] = linedb.LineDB(
-        'quote', 'quotes', '#', 'channel', add, main, remove, showlist, True,
+        'quote', 'quotes', server.roomtemplate()[0],
+        server.roomtemplate()[1], add, main, remove, showlist, True,
         channel=True)
     ldb = server.state['quotes.linedb']
     ldb.initserver(server)

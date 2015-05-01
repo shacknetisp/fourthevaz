@@ -16,6 +16,9 @@ class FullParse(base.fullparse.FullParse):
         self.setaccess("%s=%s=%s" % (
             self.user, "", ""))
 
+    def room(self):
+        return "file"
+
     def get_aliases(self):
         """Returns a dictionary of all current aliases."""
         return utils.merge_dicts(self.server.aliasdb)

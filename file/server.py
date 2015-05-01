@@ -26,6 +26,9 @@ class Server(base.server.Server):
         """Input File"""
         self.reinit()
 
+    def roomtemplate(self):
+        return ("", "room")
+
     def doline(self, line):
         self.do_base_hook('recv', fullparse.FullParse(self, line))
 
