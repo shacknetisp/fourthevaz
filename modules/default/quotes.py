@@ -21,15 +21,12 @@ def init(options):
 
 def add(fp, args):
     ldb = fp.server.state['quotes.linedb']
-    c = fp.channel.entry[
-                'channel'] if fp.channel and fp.channel.entry else ''
-    return ldb.add(fp, args, c, True)
+    return ldb.add(fp, args, fp.room(), True)
 
 
 def main(fp, args):
     ldb = fp.server.state['quotes.linedb']
-    c = fp.channel.entry['channel'] if fp.channel and fp.channel.entry else ""
-    return ldb.main(fp, args, c)
+    return ldb.main(fp, args, fp.room())
 
 
 def showlist(fp, args):
@@ -39,7 +36,5 @@ def showlist(fp, args):
 
 def remove(fp, args):
     ldb = fp.server.state['quotes.linedb']
-    c = fp.channel.entry[
-                'channel'] if fp.channel and fp.channel.entry else ""
-    return ldb.remove(fp, args, c, True)
+    return ldb.remove(fp, args, fp.room(), True)
 
