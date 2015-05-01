@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import base.fullparse
 import textwrap
+import utils
 from . import utils as ircutils
 formatcodes = ircutils.formatcodes
 
