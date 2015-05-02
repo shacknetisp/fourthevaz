@@ -64,16 +64,16 @@ def apiaction(ret, server, q, environ, action):
             ret['message'] = 'no command'
             ret['status'] = 'error'
         if server.type == 'irc':
-            def process_message(sp):
+            def process_message(i):
+                sp = irc.splitparse.SplitParser(i)
                 fp = irc.fullparse.FullParse(
                     server, sp, nomore=True)
                 return fp.execute(sp.text)
             ret['output'] = process_message(
-                server.fakeaction(
                 ':%s!%s PRIVMSG %s :%s' % (':' + ip, "~api@" + ip,
                     server.nick,
                     q['command'][0],
-                    )))
+                    ))
         elif server.type == 'file':
             ret['output'] = server.fp(server, q['command'][0])
         ret['status'] = 'good'
