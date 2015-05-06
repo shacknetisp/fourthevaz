@@ -50,6 +50,8 @@ def init():
                     },
                 ],
             })
+    m.add_short_command_hook(docs, "docs::Get link to the documentation", [])
+    m.add_command_alias('documentation', 'docs')
     m.add_base_hook('ctcp.userinfo', ctcp_userinfo)
     m.add_base_hook('ctcp.clientinfo', ctcp_clientinfo)
     m.add_base_hook('ctcp.finger',
@@ -62,6 +64,10 @@ def init():
 
 def source(fp, args):
     return version.source
+
+
+def docs(fp, args):
+    return version.docs
 
 
 def apiaction(ret, server, q, environ, action):

@@ -3,6 +3,7 @@ import platform
 name = "Fourth Evaz"
 version = (0, 2, 4)
 source = "https://github.com/shacknetisp/fourthevaz"
+docs = "https://shacknetisp.github.io/fourthevaz-documentation"
 
 
 def gitstr():
