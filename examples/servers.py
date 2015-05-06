@@ -2,6 +2,9 @@
 [
   #Each server is a dictionary
   {
+    #The protocol to use
+    ##Defaults to `irc`
+    'type': 'irc',
     #The settings key is the name of the database to use.
     #The database stores aliases and module settings.
     #You can use one database in several servers.
