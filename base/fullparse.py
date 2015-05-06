@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import utils
 
 
 class FullParse():
@@ -18,6 +19,10 @@ class FullParse():
         """Execute <command> with the commands module."""
         commands = self.server.import_module('commands', False)
         return commands.doptext(self, command)
+
+    def get_aliases(self):
+        """Returns a dictionary of all current aliases."""
+        return utils.merge_dicts(self.server.aliasdb)
 
     def external(self):
         """Returns true if the messages comes from a server relay."""

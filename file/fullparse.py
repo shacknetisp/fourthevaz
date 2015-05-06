@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import base.fullparse
-import utils
 
 
 class FullParse(base.fullparse.FullParse):
@@ -20,10 +19,6 @@ class FullParse(base.fullparse.FullParse):
         """Return the current 'room'."""
         return "file"
 
-    def get_aliases(self):
-        """Returns a dictionary of all current aliases."""
-        return utils.merge_dicts(self.server.aliasdb)
-
     def reply_driver(self, message):
         for m in message.split('\n'):
             self.server.output(m)
@@ -40,7 +35,7 @@ class FullParse(base.fullparse.FullParse):
         return self.reply_driver(message)
 
     def replypriv(self, message):
-        """Reply using a query, ignore channels."""
+        """Reply privately."""
         return self.reply_driver(message)
 
     def canuse(self, module, command=''):

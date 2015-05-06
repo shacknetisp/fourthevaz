@@ -216,12 +216,14 @@ class Server(base.server.Server):
                 self.write_cmd('WHOIS', self.whoisbuffer.pop(0))
 
     def process_message(self, sp):
+        """Process a SplitParser"""
         if sp.iscode('endmotd') and not self.properties['joined']:
             self.initjoin()
         self.do_base_hook('prerecv', fullparse.FullParse(self, sp))
         self.do_base_hook('recv', fullparse.FullParse(self, sp))
 
     def reiniting(self):
+        """Called upon a reinit"""
         if self.socket:
             self.socket.send(b"QUIT :I'll be back soon!\n")
             self.socket.close()
