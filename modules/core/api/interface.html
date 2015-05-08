@@ -1,0 +1,127 @@
+<html>
+  <head>
+    <title></title>
+    <meta content="">
+    <style></style>
+    <title>Fourth Evaz Web Client</title>
+    <script
+    src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+    </script>
+    <script>
+    var output = "Type <b>help help</b> or <b>help commands</b> if you are stuck.<hr>"
+    function escapeHTML( string )
+{
+    var pre = document.createElement('pre');
+    var text = document.createTextNode( string );
+    pre.appendChild(text);
+    return pre.innerHTML;
+}
+    function stringDivider(str, width, spaceReplacer) {
+    if (str.length>width) {
+        var p=width
+        for (;p>0 && (str[p]!=' ' && str[p]!='\n');p--) {
+        }
+        if (p>0) {
+            var left = str.substring(0, p);
+            var right = str.substring(p+1);
+            return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
+        }
+    }
+    return str;
+}
+
+    function clientSideInclude(id, url) {
+  var req = false;
+  // For Safari, Firefox, and other non-MS browsers
+  if (window.XMLHttpRequest) {
+    try {
+      req = new XMLHttpRequest();
+    } catch (e) {
+      req = false;
+    }
+  } else if (window.ActiveXObject) {
+    // For Internet Explorer on Windows
+    try {
+      req = new ActiveXObject("Msxml2.XMLHTTP");
+    } catch (e) {
+      try {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+      } catch (e) {
+        req = false;
+      }
+    }
+  }
+ var element = document.getElementById(id);
+ if (!element) {
+  return "[Error]";
+ }
+  if (req) {
+    req.open('GET', url, false);
+    req.send(null);
+    return req.responseText;
+  } else {
+    return
+   "[Error]";
+  }
+}
+    function update(){
+        document.getElementById('output').innerHTML = output;
+        document.getElementById('input').focus();
+        document.getElementById('input').scrollIntoView();
+    }
+    function doinput(){
+        v = document.getElementById('input');
+        hist[hist.length] = v.value;
+        hidx = hist.length;
+        var url = '/?action=command&command=' + escape(v.value);
+        ret = JSON.parse(clientSideInclude('output',url))['output'];
+        output = output + '<b>You</b>: ' + v.value + '<br><b>---</b><br><b>Fourth Evaz</b>: ' + ret.replace('\n', '<br>') + '<hr>';
+        update();
+        v.value = ""
+    }
+    var hist = [];
+    var hidx = hist.length;
+    function setinput(){
+    document.getElementById('input').onkeypress = function(e){
+    element = document.getElementById('input');
+    if (!e) e = window.event;
+    var keyCode = e.keyCode || e.which;
+    if (keyCode == '38')
+    {
+    hidx = hidx - 1;
+    if(hist[hidx] != null)
+    {
+    element.value = hist[hidx];
+    }
+    else
+    {
+    hidx = hidx + 1;
+    }
+    }
+    if (keyCode == '40')
+    {
+    hidx = hidx + 1;
+    if(hist[hidx] != null)
+    {
+    element.value = hist[hidx];
+    }
+    else
+    {
+    element.value = "";
+    hidx = hist.length
+    }
+    }
+    if (keyCode == '13'){
+        doinput();
+        return false;
+        }
+    }
+    }
+    </script>
+  </head>
+  <body onload="update();setinput()">
+  <span id="output">
+  </span>
+  <input id="input" type="text" style="width: 80%;">
+  </body>
+</html>

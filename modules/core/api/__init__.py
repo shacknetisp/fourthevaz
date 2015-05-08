@@ -7,6 +7,7 @@ import bot
 from urllib import parse
 import irc.fullparse
 import irc.splitparse
+import os.path
 
 
 def init(options):
@@ -26,7 +27,8 @@ def init(options):
                 'server'].entry['apiport']))
     m.set_help('Access various bot functions from a json API.')
     m.add_timer_hook(1 * 1000, timer)
-    m.add_base_hook('apiaction', apiaction)
+    m.add_base_hook('api.action.command', apiactioncommand)
+    m.add_base_hook('api.path.interface', apipathinterface)
     return m
 
 
@@ -42,13 +44,20 @@ class application:
             }
         start_response('200 OK',
                        [('content-type', 'text/html;charset=utf-8')])
+        path = environ['PATH_INFO'].strip('/')
         q = parse.parse_qs(environ['QUERY_STRING'])
         action = q['action'][0] if 'action' in q else ''
         try:
-            ret['message'] = 'invalid action'
-            ret['status'] = 'error'
-            self.server.do_base_hook('apiaction',
-                ret, self.server, q, environ, action)
+            if path:
+                ret['message'] = 'unknown request'
+                ret['status'] = 'error'
+                self.server.do_base_hook('api.path.%s' % path,
+                    ret, self.server, q, environ)
+            else:
+                ret['message'] = 'invalid action'
+                ret['status'] = 'error'
+                self.server.do_base_hook('api.action.%s' % action,
+                    ret, self.server, q, environ)
             if '_html' in ret:
                 return [ret['_html'].encode('utf-8')]
         except KeyError:
@@ -56,27 +65,32 @@ class application:
         return [json.dumps(ret).encode('utf-8')]
 
 
-def apiaction(ret, server, q, environ, action):
-    if action == 'command':
-        del ret['message']
-        ip = environ['REMOTE_ADDR']
-        if 'command' not in q:
-            ret['message'] = 'no command'
-            ret['status'] = 'error'
-        if server.type == 'irc':
-            def process_message(i):
-                sp = irc.splitparse.SplitParser(i)
-                fp = irc.fullparse.FullParse(
-                    server, sp, nomore=True)
-                return fp.execute(sp.text)
-            ret['output'] = process_message(
-                ':%s!%s PRIVMSG %s :%s' % (':' + ip, "~api@" + ip,
-                    server.nick,
-                    q['command'][0],
-                    ))
-        elif server.type == 'file':
-            ret['output'] = server.fp(server, q['command'][0])
-        ret['status'] = 'good'
+def apiactioncommand(ret, server, q, environ):
+    del ret['message']
+    ip = environ['REMOTE_ADDR']
+    if 'command' not in q:
+        ret['message'] = 'no command'
+        ret['status'] = 'error'
+    if server.type == 'irc':
+        def process_message(i):
+            sp = irc.splitparse.SplitParser(i)
+            fp = irc.fullparse.FullParse(
+                server, sp, nomore=True)
+            return fp.execute(sp.text)
+        ret['output'] = process_message(
+            ':%s!%s PRIVMSG %s :%s' % (':' + ip, "~api@" + ip,
+                server.nick,
+                q['command'][0],
+                ))
+    elif server.type == 'file':
+        ret['output'] = server.fp(server, q['command'][0])
+    ret['status'] = 'good'
+
+
+def apipathinterface(ret, server, q, environ):
+    del ret['message']
+    ret['_html'] = open(os.path.dirname(__file__) + '/interface.html').read()
+    ret['status'] = 'good'
 
 
 def timer():
