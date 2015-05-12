@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import requests
-from lxml.html import fromstring
+import utils
 
 
 def get_title(url, timeout=1):
     r = requests.get(url, timeout=timeout)
-    tree = fromstring(r.content)
-    return tree.findtext('.//title')
+    return utils.find_between(r.content.decode(), '<title>', '</title>')
