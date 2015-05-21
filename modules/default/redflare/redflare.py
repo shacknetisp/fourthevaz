@@ -4,8 +4,8 @@ import requests
 
 class RedFlare:
 
-    def __init__(self, url):
-        json = requests.get(url).json()
+    def __init__(self, url, timeout=10):
+        json = requests.get(url, timeout=timeout).json()
         self.servers = []
         self.players = []
         for serverkey in json:

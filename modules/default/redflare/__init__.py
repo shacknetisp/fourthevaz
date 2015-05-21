@@ -125,7 +125,7 @@ def timer():
     dbf = db.text.DB(configs.locs.userdb + '/redflare.py')
     dbdh = dbf.db()
     for url in dbdh['list']:
-        rf = redflare.RedFlare(url)
+        rf = redflare.RedFlare(url, timeout=1)
         if 'lastseen' not in dbdh:
             dbdh['lastseen'] = {}
         if 'ac.players' not in dbdh:
