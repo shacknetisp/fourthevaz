@@ -33,6 +33,6 @@ def timer():
         if server.type == 'irc':
             if time.time() - server.state['lastpong'] > 15:
                 server.write_cmd('PING', server.nick)
-            if time.time() - server.state['lastpong'] > 45:
+            if time.time() - server.state['lastpong'] > 255:
                 server.reconnect()
 
