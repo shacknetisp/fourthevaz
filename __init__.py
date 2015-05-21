@@ -62,6 +62,7 @@ if __name__ == '__main__':
                                         print((traceback.format_exc()))
             except InterruptedError:
                 pass
+            time.sleep(0.05)
         for server in running.working_servers:
             server.reiniting()
         running.working_servers = utils.remove_indices(running.working_servers,
