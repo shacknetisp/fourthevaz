@@ -32,7 +32,7 @@ def init(options):
 def nicktrouble(server):
     def flushsleep():
         server.flush()
-        time.sleep(0.5)
+        time.sleep(0.2)
     if server.auth[0] == 'nickserv' and not server.state[
         'nickserv.ghosting']:
         wantnick = server.entry['id']['nick']

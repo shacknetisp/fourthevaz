@@ -127,8 +127,8 @@ def ctcp_dcc(fp):
             fp.reply('You have the -:dcc right, you may not use DCC.')
             return
     if len(fp.ctcptext.split()) == 4:
-        if (fp.ctcptext.split()[0] == 'CHAT'
-        and fp.ctcptext.split()[1]) == 'CHAT':
+        if (fp.ctcptext.split()[0].lower() == 'chat'
+        and fp.ctcptext.split()[1].lower() == 'chat'):
             fp.server.log('DCC',
                 'Accepted DCC connection from %s (%s:%d)' % (
                     fp.sp.sendernick,
