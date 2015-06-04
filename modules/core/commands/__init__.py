@@ -333,6 +333,8 @@ def doptext(fp, p_ptext, count=100):
         except IndexError:
             pass
         t = tsplit[0]
+        if t.count('$') == 1 and t.count('$*') == 1:
+            argsplit = args.split()
         while found:
             found = False
             for ic in range(len(t)):
