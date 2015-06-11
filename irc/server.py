@@ -65,6 +65,8 @@ class Server(base.server.Server):
         Add <name> to the WHOIS buffer.
         If queue, add to the end, otherwise add to the front.
         """
+        if name in self.whoisbuffer:
+            return
         self.log('WHOIS', "%s = %d" % (name,
         len(self.whoisbuffer) + 1))
         if not queue:
