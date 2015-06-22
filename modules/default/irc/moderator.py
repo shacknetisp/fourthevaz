@@ -129,7 +129,7 @@ def recv(fp):
                     'evilness': 0,
                     'kicks': 0,
                     }
-            if time.time() - db[fp.sp.sendernick]['lastmessage'] < 2 or (
+            if time.time() - db[fp.sp.sendernick]['lastmessage'] < 1 or (
                 db[fp.sp.sendernick]['lastmessagetext'] == fp.sp.text
                 ):
                 db[fp.sp.sendernick]['evilness'] += 1
