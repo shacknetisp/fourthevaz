@@ -9,12 +9,12 @@ def init():
         {
             'function': join,
             'rights': ['admin'],
-            'help': 'Join channel.',
+            'help': 'Hop or Join channel.',
             'args': [
                 {
                     'name': 'channel',
                     'optional': False,
-                    'help': 'Channel to join.',
+                    'help': 'Channel to hop/join.',
                     },
                 ],
             })
@@ -27,29 +27,33 @@ def init():
                 {
                     'name': 'channel',
                     'optional': True,
-                    'help': 'Channel to join.',
+                    'help': 'Channel to part.',
                     },
                 ],
             })
+    m.add_command_alias('hop', 'join')
     return m
 
 
 def join(fp, args):
-    channel = args.getlinstr('channel')
+    channel = args.getlinstr('channel', '')
 
     for c in fp.server.channels:
-        if c['channel'] == channel:
+        if c['channel'] == channel if channel else fp.room():
             fp.server.write_cmd('PART', fp.server.shortchannel(c)['channel'])
             fp.server.write_cmd('JOIN', fp.server.shortchannel(c)['channel'])
             return "Attempted to rejoin %s" % channel
 
+    if not channel:
+        return 'You must specify a channel.'
     fp.server.channels.append(fp.server.shortchannel(channel))
     fp.server.join_channel(channel)
     return "Attempted to join %s" % channel
 
 
 def part(fp, args):
-    channel = args.getlinstr('channel')
+    channel = args.getlinstr('channel',
+        fp.room() if fp.room() else args.getlinstr('channel'))
     ch = False
     if fp.channel and channel == fp.channel.entry['channel']:
         ch = True
