@@ -18,7 +18,7 @@ def init(options):
     m.add_base_hook('whois.done', whois_done)
     m.add_base_hook('ctcp.dcc', ctcp_dcc)
     m.add_base_hook('dcc.connected', dcc_connected)
-    m.add_timer_hook(200, timer)
+    m.add_timer_hook(500, timer)
     return m
 
 
