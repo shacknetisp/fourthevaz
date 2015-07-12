@@ -93,10 +93,10 @@ def listservers(fp, args):
 
 
 def recv(fp):
-    redflare = fp.server.import_module('redflare.redflare', False)
-    geoip = fp.server.import_module('geoip', False)
-    commands = fp.server.import_module('commands', False)
     if fp.external() and isredeclipse(fp):
+        redflare = fp.server.import_module('redflare.redflare', False)
+        geoip = fp.server.import_module('geoip', False)
+        commands = fp.server.import_module('commands', False)
         if fp.sp.iscode('QUIT') or fp.sp.iscode('PART'):
             for k in fp.server.state:
                 if k.find('%s.authname.' % fp.sp.sendernick) == 0:

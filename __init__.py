@@ -17,7 +17,10 @@ def hup_handler(signal, frame):
 
 
 if __name__ == '__main__':
-    signal.signal(signal.SIGHUP, hup_handler)
+    try:
+        signal.signal(signal.SIGHUP, hup_handler)
+    except ValueError:
+        print('No HUP signal support.')
 
     print(('Fourth Evaz %s' % version.versionstr()))
     while True:
