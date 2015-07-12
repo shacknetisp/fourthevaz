@@ -120,7 +120,7 @@ def init(options):
         })
     m.add_base_hook('api.action.redflare_playerstats',
         apiactionredflare_playerstats)
-    m.add_timer_hook(10 * 1000, timer)
+    m.add_timer_hook(60 * 1000, timer)
     return m
 
 
