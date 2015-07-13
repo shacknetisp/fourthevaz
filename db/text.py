@@ -3,12 +3,15 @@ import ast
 import pprint
 import running
 import os
+from threading import Thread, Lock
+import copy
 
 
 class DB:
     """A text database object, saves in pprint format."""
 
     def __init__(self, filename, db=dict()):
+        self.lock = Lock()
         """Register a DB object with <filename> and initialize with <db>."""
         self.filename = filename
         if self.filename not in running.dbs:
@@ -23,12 +26,18 @@ class DB:
         running.dbs[self.filename] = ast.literal_eval(
             open(self.filename).read())
 
+    def save_thread(self, d):
+        with self.lock:
+            """Safe-save the db."""
+            with open(self.filename + '.working', 'w') as f:
+                f.write(pprint.pformat(d))
+            try:
+                os.unlink(self.filename)
+            except:
+                pass
+            os.rename(self.filename + '.working', self.filename)
+
     def save(self):
-        """Safe-save the db."""
-        with open(self.filename + '.working', 'w') as f:
-            f.write(pprint.pformat(running.dbs[self.filename]))
-        try:
-            os.unlink(self.filename)
-        except:
-            pass
-        os.rename(self.filename + '.working', self.filename)
+        with self.lock:
+            Thread(target=DB.save_thread, args=(self,
+                copy.deepcopy(running.dbs[self.filename]),)).start()

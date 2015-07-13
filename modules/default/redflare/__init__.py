@@ -11,10 +11,6 @@ import os
 import requests
 import datetime
 import cgi
-from threading import Thread, Lock
-
-lock = Lock()
-
 
 def init(options):
     if 'redflares' not in options['server'].db:
@@ -124,15 +120,8 @@ def init(options):
     return m
 
 
-def s_thread(d):
-    lock.acquire()
-    d.save()
-    lock.release()
-
-
 def timer():
     dbf = db.text.DB(configs.locs.userdb + '/redflare.py')
-    lock.acquire()
     dbdh = dbf.db()
     for url in dbdh['list']:
         rf = redflare.RedFlare(url, timeout=1)
@@ -195,8 +184,7 @@ def timer():
                     tod.append(p)
             for todi in tod:
                 del dbd['list'][todi]
-    lock.release()
-    Thread(target=s_thread, args=(dbf,)).start()
+    dbf.save()
 
 
 def redflares(fp, args):
