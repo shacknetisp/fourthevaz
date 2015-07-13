@@ -16,6 +16,8 @@ class DB:
         self.filename = filename
         if self.filename not in running.dbs:
             running.dbs[self.filename] = db
+        if self.filename not in running.locks:
+            running.locks[self.filename] = Lock()
 
     def db(self):
         """Return the db object."""
@@ -27,7 +29,7 @@ class DB:
             open(self.filename).read())
 
     def save_thread(self, d):
-        with self.lock:
+        with running.locks[self.filename]:
             """Safe-save the db."""
             with open(self.filename + '.working', 'w') as f:
                 f.write(pprint.pformat(d))
@@ -38,6 +40,6 @@ class DB:
             os.rename(self.filename + '.working', self.filename)
 
     def save(self):
-        with self.lock:
+        with running.locks[self.filename]:
             Thread(target=DB.save_thread, args=(self,
                 copy.deepcopy(running.dbs[self.filename]),)).start()
