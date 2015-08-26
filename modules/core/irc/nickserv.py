@@ -58,10 +58,13 @@ def commands_ignore(fp, ignore):
 
 def joined(server):
     if server.auth[0] == 'nickserv':
-        server.write_cmd(
-            'PRIVMSG', 'nickserv :identify %s %s' % (server.auth[1]
-            if server.auth[1] else server.nick,
-            server.auth[2]))
+        if server.auth[1]:
+            server.write_cmd(
+                'PRIVMSG', 'nickserv :identify %s %s' % (server.auth[1],
+                    server.auth[2]))
+        else:
+            server.write_cmd(
+                'PRIVMSG', 'nickserv :identify %s' % (server.auth[2]))
         server.flush()
         server.setuser()
         server.join_channels()
@@ -72,7 +75,7 @@ def nickserv(fp, args):
         return "Must be called from IRC."
     fp.server.state['nsuser'] = fp.user
     action = args.getlinstr('action')
-    if fp.server.auth[0] == 'nickserv':
+    if fp.server.auth[0] != 'nickserv':
         return 'This server does not have a nickserv entry.'
     action = action.replace('%pass%', fp.server.auth[2])
     fp.server.write_cmd('PRIVMSG', 'nickserv :' + action)

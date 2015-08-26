@@ -3,7 +3,7 @@
 
 def stripuser(u):
     """Return u stripped of IRC prefixes (@+)"""
-    return u.strip('@+')
+    return u.strip('@+~')
 
 
 def ctcp(t):

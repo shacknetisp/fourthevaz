@@ -115,7 +115,7 @@ def recv(fp):
             v = []
             n = []
             for c in fp.sp.text.split():
-                if c[0] == '@':
+                if c[0] in ['@', '~']:
                     o.append(irc.utils.stripuser(c))
                 elif c[0] == '+':
                     v.append(irc.utils.stripuser(c))
@@ -128,6 +128,9 @@ def recv(fp):
         elif fp.sp.iscode('330'):
             fp.server.whoislist[fp.sp.object]['authed'] = (
                 'ns:' + fp.sp.getsplit(4))
+        elif fp.sp.iscode('307'):
+            fp.server.whoislist[fp.sp.object]['authed'] = (
+                'ns:' + fp.sp.object)
         elif fp.sp.iscode('301'):
             fp.server.whoislist[fp.sp.object]['away'] = True
         elif fp.sp.iscode('318'):
