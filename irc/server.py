@@ -198,7 +198,7 @@ class Server(base.server.Server):
             ircmsg = ircmsg.strip('\r')
             ircmsg = regex.sub("", ircmsg)
             self.log('In', ircmsg)
-            if ircmsg and ircmsg[0] == ':':
+            if ircmsg:
                 self.process_message(splitparse.SplitParser(ircmsg))
 
     def process(self):
