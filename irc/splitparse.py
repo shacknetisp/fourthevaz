@@ -27,7 +27,7 @@ class SplitParser():
         """Host and ident: ~ident@my.host.here"""
         try:
             self.host = self.sender[
-                self.sender.index('~'):]
+                self.sender.index('!'):].strip('~')
         except ValueError:
             self.host = ""
         self.text = ""
