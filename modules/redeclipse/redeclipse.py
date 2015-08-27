@@ -116,6 +116,8 @@ def recv(fp):
         host = ':'.join(entry[0:-1])
         if host == '%':
             host = fp.sp.host.split('@')[1]
+        if host == '&':
+            host = fp.server.ip
         host = geoip.geoip(host)['query']
         if not host:
             host = ''

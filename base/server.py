@@ -30,11 +30,15 @@ class Server:
         self.properties = {}
         self.modules = []
         self.reloaded = False
+        self.ip = None
 
     def reiniting(self):
         pass
 
     def connect(self):
+        pass
+
+    def shutdown(self):
         pass
 
     def update_aliases(self):

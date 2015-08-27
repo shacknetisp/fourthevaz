@@ -6,6 +6,7 @@ import os
 from threading import Thread, Lock
 import copy
 
+savelock = Lock()
 
 class DB:
     """A text database object, saves in pprint format."""
@@ -30,14 +31,15 @@ class DB:
 
     def save_thread(self, d):
         with running.locks[self.filename]:
-            """Safe-save the db."""
-            with open(self.filename + '.working', 'w') as f:
-                f.write(pprint.pformat(d))
-            try:
-                os.unlink(self.filename)
-            except:
-                pass
-            os.rename(self.filename + '.working', self.filename)
+            with savelock:
+                """Safe-save the db."""
+                with open(self.filename + '.working', 'w') as f:
+                    f.write(pprint.pformat(d))
+                try:
+                    os.unlink(self.filename)
+                except:
+                    pass
+                os.rename(self.filename + '.working', self.filename)
 
     def save(self):
         with running.locks[self.filename]:

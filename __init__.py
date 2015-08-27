@@ -8,6 +8,7 @@ import running
 import os
 import importlib
 import time
+import sys
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 
@@ -16,11 +17,26 @@ def hup_handler(signal, frame):
     running.reinit = True
 
 
+def sig_handler(signal, frame):
+    print("Caught signal, exiting.")
+    with db.text.savelock:
+        for server in running.working_servers:
+            server.shutdown()
+        time.sleep(3)
+        sys.exit(0)
+
 if __name__ == '__main__':
     try:
         signal.signal(signal.SIGHUP, hup_handler)
     except ValueError:
         print('No HUP signal support.')
+
+    for s in [signal.SIGINT, signal.SIGTERM]:
+        try:
+            signal.signal(s, sig_handler)
+            signal.siginterrupt(s, False)
+        except ValueError:
+            pass
 
     print(('Fourth Evaz %s' % version.versionstr()))
     while True:

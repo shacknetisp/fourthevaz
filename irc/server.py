@@ -7,6 +7,7 @@ from collections import deque
 from irc import splitparse
 from irc import fullparse
 import moduleregistry
+import requests
 moduleregistry.add_module(splitparse)
 moduleregistry.add_module(fullparse)
 current_milli_time = lambda: int(round(time.time() * 1000))
@@ -55,6 +56,8 @@ class Server(base.server.Server):
         self.connecttimes = 0
         self.properties['joined'] = False
         self.reinit()
+        self.ip = requests.get("http://curlmyip.de").text or "127.0.0.1"
+        self.log('Init', "IP: %s" % self.ip)
 
     def roomtemplate(self):
         """Return the room template."""
@@ -229,6 +232,13 @@ class Server(base.server.Server):
         if self.socket:
             self.socket.send(b"QUIT :I'll be back soon!\n")
             self.socket.close()
+
+    def shutdown(self):
+        """Called upon a shutdown"""
+        if self.socket:
+            self.socket.send(b"QUIT :Goodbye!\n")
+            self.socket.close()
+            self.log("Shutdown", "Closed socket.")
 
     class ServerConnectException(Exception):
 
