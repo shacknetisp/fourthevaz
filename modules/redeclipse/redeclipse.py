@@ -54,7 +54,8 @@ def init(options):
 def isredeclipse(fp):
     user = fp.sp.sendernick
     if user in fp.server.whoislist and 'done' in fp.server.whoislist[user]:
-        return (fp.server.whoislist[user]['ident'] == '~redeclips')
+        return (
+            fp.server.whoislist[user]['ident'].strip('~').find("redeclip") == 0)
 
 
 def isexternal(fp, o):
