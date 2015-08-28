@@ -116,7 +116,7 @@ class FullParse(base.fullparse.FullParse):
         command = c
         if not command:
             if self.channel:
-                command = 'PRIVMSG'
+                command = 'NOTICE'
             else:
                 command = 'NOTICE'
         if message.count('\n') == 0 and not self.nomore:
