@@ -4,6 +4,7 @@ import configs.mload
 import utils
 import configs.match
 import string
+import socket
 
 
 def init(options):
@@ -118,7 +119,7 @@ def recv(fp):
             host = fp.sp.host.split('@')[1]
         if host == '&':
             host = fp.server.ip
-        host = geoip.geoip(host)['query']
+        host = socket.gethostbyaddr(host)[2][0]
         if not host:
             host = ''
         for server in rf.servers:
