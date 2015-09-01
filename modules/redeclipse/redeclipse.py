@@ -97,7 +97,6 @@ def listservers(fp, args):
 def recv(fp):
     if fp.external() and isredeclipse(fp):
         redflare = fp.server.import_module('redflare.redflare', False)
-        geoip = fp.server.import_module('geoip', False)
         commands = fp.server.import_module('commands', False)
         if fp.sp.iscode('QUIT') or fp.sp.iscode('PART'):
             for k in fp.server.state:
@@ -117,8 +116,6 @@ def recv(fp):
         host = ':'.join(entry[0:-1])
         if host == '%':
             host = fp.sp.host.split('@')[1]
-        if host == '&':
-            host = fp.server.ip
         host = socket.gethostbyaddr(host)[2][0]
         if not host:
             host = ''

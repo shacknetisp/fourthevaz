@@ -4,14 +4,17 @@ import shlex
 import utils
 import traceback
 import string
+import time
 
 
 def init(options):
     options['server'].import_module('commands.executer', True)
+    options['server'].state["needauth"] = {}
     m = Module('commands')
     m.set_help('Call the command system.')
     m.add_base_hook('recv', recv)
     m.add_base_hook('ext.prepare', ext_prepare)
+    m.add_base_hook('whois.done', whoisdone)
     return m
 
 
@@ -119,6 +122,17 @@ def doptext(fp, p_ptext, count=100):
                         k, utils.ltos(list(v.keys())), k))
                     return
     if command:
+        if fp.type == 'irc' and not fp.external():
+            lastwhois = (
+                fp.server.whoislist[fp.user]['time']
+                if fp.user in fp.server.whoislist else 0)
+            if time.time() - lastwhois > 90:
+                if fp.user in fp.server.whoislist:
+                    fp.server.whois(fp.user)
+                if fp.user not in fp.server.state["needauth"]:
+                    fp.server.state["needauth"][fp.user] = []
+                fp.server.state["needauth"][fp.user].append((p_ptext, fp.sp))
+                return
         if not fp.hasright('owner'):
             if fp.hasright('disable') or (
                 fp.type == 'irc' and
@@ -419,6 +433,17 @@ def doptext(fp, p_ptext, count=100):
                         m.name))
         return("?")
     return None
+
+
+def whoisdone(server, nick, info):
+    from irc import fullparse
+    if nick in server.state["needauth"]:
+        while server.state["needauth"][nick]:
+            cmd, sp = server.state["needauth"][nick].pop(0)
+            fp = fullparse.FullParse(server, sp)
+            r = doptext(fp, cmd)
+            if r:
+                fp.reply(r)
 
 
 def recv(fp):

@@ -7,6 +7,7 @@ import traceback
 import os
 import db.text
 import configs.locs
+import time
 
 
 def init(options):
@@ -90,8 +91,6 @@ def recv(fp):
             if 'newnames' not in channel.entry:
                 channel.entry['newnames'] = []
             channel.entry['newnames'] += names
-            for n in names:
-                fp.server.whois(n)
         elif fp.sp.iscode('366'):
             channel = fp.Channel(fp, fp.sp.object)
             try:
@@ -106,6 +105,7 @@ def recv(fp):
                 'user': [],
                 'channels': [],
                 'away': False,
+                'time': 0,
                 }
             fp.server.whoislist[fp.sp.object]['ident'] = fp.sp.getsplit(4)
             fp.server.whoislist[fp.sp.object]['host'] = fp.sp.getsplit(5)
@@ -134,6 +134,7 @@ def recv(fp):
         elif fp.sp.iscode('301'):
             fp.server.whoislist[fp.sp.object]['away'] = True
         elif fp.sp.iscode('318'):
+            fp.server.whoislist[fp.sp.object]['time'] = time.time()
             fp.server.whoislist[fp.sp.object]['done'] = True
             fp.server.do_base_hook('whois.done', fp.server, fp.sp.object,
                 fp.server.whoislist[fp.sp.object])
@@ -263,7 +264,4 @@ def timer():
         if server.type != 'irc':
             continue
         for channel in server.channels:
-            if 'names' in channel:
-                for name in channel['names']:
-                    server.whois(name)
             server.write_cmd('NAMES', channel['channel'])

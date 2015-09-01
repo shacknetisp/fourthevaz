@@ -56,8 +56,6 @@ class Server(base.server.Server):
         self.connecttimes = 0
         self.properties['joined'] = False
         self.reinit()
-        self.ip = requests.get("http://curlmyip.de").text or "127.0.0.1"
-        self.log('Init', "IP: %s" % self.ip)
 
     def roomtemplate(self):
         """Return the room template."""
