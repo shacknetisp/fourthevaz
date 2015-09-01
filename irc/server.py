@@ -21,8 +21,8 @@ class Server(base.server.Server):
 
     def __init__(self, entry, options={
         'print_log': True,
-        'tick_min': 400,
-        'whois_tick_min': 1000,
+        'tick_min': 300,
+        'whois_tick_min': 500,
         'recv_size': pow(2, 12),
         }):
         super(Server, self).__init__(entry, options)
