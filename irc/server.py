@@ -119,6 +119,7 @@ class Server(base.server.Server):
         """Write binary to the output buffer."""
         self.outputbuffer.append(binary)
         self.log('Out', binary.decode())
+        self.process()
 
     def write_cmd(self, command, text):
         """Write <command> with <text> to the output buffer."""
