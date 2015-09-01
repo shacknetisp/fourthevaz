@@ -34,6 +34,8 @@ def init():
 
 
 def getl(l):
+    if l == 'auto':
+        return l
     from . import iso639
     importlib.reload(iso639)
     item = iso639.find(whatever=l)
@@ -43,15 +45,23 @@ def getl(l):
 
 
 def translate(fp, args):
+    from . import iso639
+    importlib.reload(iso639)
     translate = fp.server.import_module('translate.translate', True)
-    fromword = args.getlinstr('from', '')
+    fromword = args.getlinstr('from', 'auto')
     toword = args.getlinstr('to', 'en')
     inp = args.getlinstr('words')
-    translator = translate.TranslateService()
-    if fromword == '':
-        fromword = list(translator.detect(inp).keys())[0]
     try:
-        return(translator.trans_sentence(
-        getl(fromword), getl(toword), inp))
+        r = translate.translate(inp, getl(fromword), getl(toword))
+        fromword = r[1]
+        try:
+            fromword = iso639.find(whatever=fromword)['name']
+        except ValueError:
+            pass
+        try:
+            toword = iso639.find(whatever=toword)['name']
+        except ValueError:
+            pass
+        return("%s to %s: %s" % (fromword, toword, r[0]))
     except ValueError as e:
         return(str(e))
