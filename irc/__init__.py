@@ -31,7 +31,7 @@ def loop():
     while (readyr or not times) and times < 5:
         times += 1
         readyr, readyw, readyx = select.select(
-            inr, [], [], 0.05)
+            inr, [], [], 0.01)
         for sock in readyr:
             for server in running.working_servers:
                 if server.type != 'irc':
