@@ -122,7 +122,7 @@ def doptext(fp, p_ptext, count=100):
                         k, utils.ltos(list(v.keys())), k))
                     return
     if command:
-        if fp.type == 'irc' and not fp.external():
+        if fp.type == 'irc' and not fp.external() and count == 99:
             lastwhois = (
                 fp.server.whoislist[fp.user]['time']
                 if fp.user in fp.server.whoislist else 0)

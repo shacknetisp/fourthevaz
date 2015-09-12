@@ -18,7 +18,7 @@ class FullParse():
     def execute(self, command):
         """Execute <command> with the commands module."""
         commands = self.server.import_module('commands', False)
-        return commands.doptext(self, command)
+        return commands.doptext(self, command, 99)
 
     def get_aliases(self):
         """Returns a dictionary of all current aliases."""
