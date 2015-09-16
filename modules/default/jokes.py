@@ -32,7 +32,7 @@ def main(fp, args):
         return r
     return r.replace(
                     '!target!', args.getlinstr(
-                        'joke', fp.user)).replace(
+                        'joke/target', fp.user)).replace(
                             '!joker!', fp.user)
 
 

@@ -173,7 +173,7 @@ class LineDB:
             except IndexError:
                 pass
         if not self.search:
-            line == ""
+            line = ""
         topic, line = self.splitline(line,
            dt)
         db = fp.server.state['%s.db' % self.plural].db()
