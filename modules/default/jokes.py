@@ -11,20 +11,12 @@ def init(options):
     server.state['jokes.linedb'] = linedb.LineDB(
         'joke', 'jokes', server.roomtemplate()[0],
         server.roomtemplate()[1], add, main, remove, showlist, True,
-        ' !target! and !joker! are the tokens.')
+        ' !target! and !joker! are the tokens.', channel=True,
+        aname="joke/target", search=False)
     ldb = server.state['jokes.linedb']
     ldb.initserver(server)
     m = configs.module.Module('jokes')
     ldb.configure(m)
-    for k in list(m.command_hooks.keys()):
-        a = m.command_hooks[k]
-        if a['name'] == 'joke':
-            a['args'] = [{
-                'name': 'target',
-                'keyvalue': 'name',
-                'optional': True,
-                'help': 'Target to replace !target!.',
-                }] + a['args']
     return m
 
 
@@ -40,7 +32,7 @@ def main(fp, args):
         return r
     return r.replace(
                     '!target!', args.getlinstr(
-                        'target', fp.user)).replace(
+                        'joke', fp.user)).replace(
                             '!joker!', fp.user)
 
 

@@ -10,7 +10,8 @@ import utils
 class LineDB:
 
     def __init__(self, name, plural, seperprefix,
-        seper, add, main, remove, showlist, random, eh='', channel=False):
+        seper, add, main, remove, showlist, random, eh='', channel=False,
+        aname=None, search=True):
         self.dbfolder = configs.locs.userdb + '/' + plural
         os.makedirs(self.dbfolder, exist_ok=True)
         self.name = name
@@ -24,6 +25,8 @@ class LineDB:
         self.channel = channel
         self.random = random
         self.randomtext = "random" if random else "single"
+        self.aname = aname if aname else self.name
+        self.search = search
         self.eh = eh
 
     def splitline(self, i1, i2=""):
@@ -52,7 +55,7 @@ class LineDB:
                 'help': 'Add a %s to the database.' % self.name,
                 'args': [
                     {
-                    'name': '%s' % self.name,
+                    'name': '%s' % self.aname,
                     'optional': False,
                     'help': str(
                         'The %s, in this format: [%s%s] <%s>.%s,' % (
@@ -93,7 +96,7 @@ class LineDB:
                     'help': '-force option for remove alias.',
                     },
                     {
-                    'name': self.name,
+                    'name': self.aname,
                     'optional': True,
                     'help': str(
                         'The %s, in this format'
@@ -118,7 +121,7 @@ class LineDB:
                     'help': 'Force removal of multiple quotes.',
                     },
                     {
-                    'name': self.name,
+                    'name': self.aname,
                     'optional': True,
                     'help': str(
                         'The %s, in this format: [%s%s] <search>.' % (
@@ -130,12 +133,14 @@ class LineDB:
         m.add_command_alias(self.plural, self.name)
 
     def add(self, fp, args, dt, channel=False):
-        line = args.getlinstr(self.name)
+        line = args.getlinstr(self.aname)
         topic, line = self.splitline(line,
             dt)
         if topic == "":
             return 'You must specify a topic.'
-        if channel and not fp.hasright(topic + ',normal'):
+        elif topic[0] != '#' and channel:
+            topic = fp.room()
+        if topic and channel and not fp.hasright(topic + ',normal'):
                 return 'You need <normal> in the target channel.'
         if (topic not in fp.server.state['%s.db' % self.plural].db()) or (
             not self.random):
@@ -147,7 +152,7 @@ class LineDB:
         return '"%s" has been added to %s %s' % (line, self.seper, topic)
 
     def main(self, fp, args, dt):
-        line = args.getlinstr(self.name, '')
+        line = args.getlinstr(self.aname, '')
         if 'add' in args.lin:
             return fp.execute('%s.add %s' % (self.plural, line))
         elif 'remove' in args.lin:
@@ -167,6 +172,8 @@ class LineDB:
                     line))
             except IndexError:
                 pass
+        if not self.search:
+            line == ""
         topic, line = self.splitline(line,
            dt)
         db = fp.server.state['%s.db' % self.plural].db()
@@ -187,10 +194,12 @@ class LineDB:
             fp.server.state['%s.db' % self.plural].db())
 
     def remove(self, fp, args, dt, channel=False):
-        line = args.getlinstr(self.name, '')
+        line = args.getlinstr(self.aname, '')
         topic, line = self.splitline(line,
             dt)
 
+        if topic[0] != '#' and channel:
+            topic = fp.room()
         if channel and not fp.hasright(topic + ',normal'):
                 return 'You need <normal> in the target channel.'
 
