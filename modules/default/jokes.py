@@ -32,8 +32,8 @@ def main(fp, args):
         return r
     return r.replace(
                     '!target!', args.getlinstr(
-                        'joke/target', fp.server.nick)).replace(
-                            '!joker!', fp.user)
+                        'joke/target', fp.user)).replace(
+                            '!joker!', fp.server.nick)
 
 
 def showlist(fp, args):
