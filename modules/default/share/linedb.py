@@ -156,7 +156,7 @@ class LineDB:
         if 'add' in args.lin:
             return fp.execute('%s.add %s' % (self.plural, line))
         elif 'remove' in args.lin:
-            return fp.execute(fp, '%s.remove %s%s' % (self.plural,
+            return fp.execute('%s.remove %s%s' % (self.plural,
                 "-force " if 'force' in args.lin else '',
                 line))
         else:
