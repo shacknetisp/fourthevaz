@@ -1,5 +1,7 @@
 ## Fourth Evaz IRC Bot
 
+**This is no longer developed, work is done on [Vepybot](https://github.com/shacknetisp/vepybot) instead.**
+
 *A General-Purpose IRC bot.*
 
 *Works with Red Eclipse (http://redeclipse.net)*
